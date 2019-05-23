@@ -1,0 +1,38 @@
+{
+  "extends": ["tslint:latest", "tslint-react"],
+  "rules": {
+    "quotemark": {
+      "options": ["single", "jsx-double", "avoid-template", "avoid-escape"],
+      "severity": "error"
+    },
+    "object-literal-sort-keys": {
+      "options": ["match-declaration-order-only"],
+      "severity": "error"
+    },
+    "interface-name": {
+      "options": ["never-prefix"],
+      "severity": "error"
+    },
+    "ordered-imports": {
+      "options": {
+        "import-sources-order": "any",
+        "named-imports-order": "any",
+        "grouped-imports": true,
+        "groups": [
+          {
+            "name": "packages",
+            "match": "^(?!\\.).*$",
+            "order": 10
+          },
+          {
+            "name": "relative imports",
+            "match": "^\\.",
+            "order": 20
+          }
+        ]
+      },
+      "severity": "error"
+    },
+    "no-submodule-imports": false
+  }
+}

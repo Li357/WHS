@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "lint": "tslint src/**/*.{ts,tsx} App.tsx"
   },
   "dependencies": {
     "ramda": "^0.26.1",
@@ -23,6 +24,8 @@
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.54.1",
     "react-test-renderer": "16.8.3",
+    "tslint": "^5.16.0",
+    "tslint-react": "^4.0.0",
     "typescript": "^3.4.5"
   },
   "jest": {
