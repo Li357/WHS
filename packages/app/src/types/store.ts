@@ -31,7 +31,7 @@ export type UserInfoKeys =
   | 'username' | 'password' | 'name' | 'schoolPicture' | 'profilePhoto' | 'isTeacher'
   | 'classOf' | 'homeroom' | 'counselor' | 'dean' | 'id';
 export interface SetUserInfoAction extends Action<UserActions.SET_USER_INFO> {
-  payload: Pick<UserState, UserInfoKeys>;
+  payload: Partial<Pick<UserState, UserInfoKeys>>;
 }
 
 export interface SetUserScheduleAction extends Action<UserActions.SET_USER_SCHEDULE> {
@@ -47,7 +47,7 @@ export interface DayState {
   isBreak: boolean;
   isFinals: boolean;
   hasAssembly: boolean;
-  lastStateUpdate: Date;
+  lastStateUpdate: Date | null;
 }
 
 export enum DayActions {
@@ -57,10 +57,10 @@ export enum DayActions {
 
 export type DayInfoKeys = 'isBreak' | 'isFinals' | 'hasAssembly' | 'lastStateUpdate';
 export interface SetDayInfoAction extends Action<DayActions.SET_DAY_INFO> {
-  payload: Pick<DayState, DayInfoKeys>;
+  payload: Partial<Pick<DayState, DayInfoKeys>>;
 }
 
-export interface SetDaySchedule extends Action<DayActions.SET_DAY_SCHEDULE> {
+export interface SetDayScheduleAction extends Action<DayActions.SET_DAY_SCHEDULE> {
   payload: DaySchedule;
 }
 
@@ -73,14 +73,15 @@ export interface LogOutAction extends Action<MiscellaneousActions.LOG_OUT> {}
 export interface OtherAction extends Action<MiscellaneousActions.OTHER> {} /* handles third-party actions for TS */
 
 export type UserAction = SetUserInfoAction | SetUserScheduleAction | AddScheduleAction | OtherAction;
-export type DayAction = SetDayInfoAction | SetDaySchedule | OtherAction;
+export type DayAction = SetDayInfoAction | SetDayScheduleAction | OtherAction;
+export type MiscellaneousAction = LogOutAction | OtherAction;
 
 export interface AppState {
   user: UserState;
   day: DayState;
 }
+export type AppAction = UserAction | DayAction | MiscellaneousAction;
 
-export type AppAction = UserAction | DayAction;
 export interface StoreAndPersistor {
   store: Store<AppState & PersistedState, AppAction>;
   persistor: Persistor;

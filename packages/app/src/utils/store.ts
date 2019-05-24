@@ -1,22 +1,18 @@
 import { applyMiddleware, createStore, Middleware } from 'redux';
-import { persistStore, persistCombineReducers } from 'redux-persist';
+import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import userReducer from '../reducers/user';
-import dayReducer from '../reducers/day';
-import { StoreAndPersistor, AppState } from '../types/store';
+import { StoreAndPersistor, AppState, AppAction } from '../types/store';
+import rootReducer from '../reducers/root';
 
 export default function initializeStore(): StoreAndPersistor {
   const persistConfig = {
     key: 'root',
     storage,
   };
-  const persistedReducer = persistCombineReducers<AppState>(persistConfig, {
-    user: userReducer,
-    day: dayReducer,
-  });
+  const persistedReducer = persistReducer<AppState, AppAction>(persistConfig, rootReducer);
 
   const middleware: Middleware[] = [thunk];
   if (process.env.NODE_ENV === 'development') {

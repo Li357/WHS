@@ -1,6 +1,6 @@
 import { UserAction, UserActions, UserState } from '../types/store';
 
-const initialState: UserState = {
+export const initialUserState: UserState = {
   username: '',
   password: '',
   name: '',
@@ -16,7 +16,7 @@ const initialState: UserState = {
   id: '',
 };
 
-export default function userReducer(state: UserState = initialState, action: UserAction): UserState {
+export default function userReducer(state: UserState = initialUserState, action: UserAction): UserState {
   switch (action.type) {
     case UserActions.SET_USER_INFO:
       return { ...state, ...action.payload };
