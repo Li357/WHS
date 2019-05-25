@@ -4,8 +4,6 @@ import {
 } from '../types/schedule';
 import { sortByProps, insert, getWithFallback } from './array';
 
-/* Schedule Processing */
-
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item
  * @param startMod start mod of the item whose sourceId is being generated

@@ -3,8 +3,13 @@
  * @param arr array to insert items into
  * @param items items to insert
  * @param index index to insert at
+ * @throws RangeError if specified index is not in interval [0, arr.length]
  */
 export function insert<T>(arr: T[], items: T[], index: number) {
+  if (index > arr.length || index < 0) {
+    throw new RangeError('Array index out of range!');
+  }
+
   return [...arr.slice(0, index), ...items, ...arr.slice(index)];
 }
 
@@ -13,7 +18,7 @@ export function insert<T>(arr: T[], items: T[], index: number) {
  * @param arr array to be sorted
  * @param props list of props to sort by, left is higher-precedence
  */
-export function sortByProps<T>(arr: T[], props: Array<keyof T>) {
+export function sortByProps<T extends object>(arr: T[], props: Array<keyof T>) {
   const shallowCopy = [...arr];
   return shallowCopy.sort((a, b) => {
     for (const prop of props) {
@@ -31,16 +36,13 @@ export function sortByProps<T>(arr: T[], props: Array<keyof T>) {
  * @param path key hierarchy to get
  * @param fallback default value if undefined encountered along the way
  */
-export function getWithFallback<T>(obj: { [key: string]: any }, path: string[], fallback: T) {
-  let deepValue = fallback;
+export function getWithFallback<T>(obj: any, path: string[], fallback: T) {
   let currObj = obj;
   for (const key of path) {
-    const value: any = currObj[key];
-    if (value === undefined) {
-      return deepValue;
+    if (currObj === undefined) {
+      return fallback;
     }
-    currObj = value;
-    deepValue = value;
+    currObj = currObj[key];
   }
-  return deepValue;
+  return currObj !== undefined ? currObj : fallback;
 }
