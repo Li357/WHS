@@ -4,10 +4,10 @@ import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import { StoreAndPersistor, AppState, AppAction } from '../types/store';
+import { AppState, AppAction } from '../types/store';
 import rootReducer from '../reducers/root';
 
-export default function initializeStore(): StoreAndPersistor {
+export default function initializeStore() {
   const persistConfig = {
     key: 'root',
     storage,

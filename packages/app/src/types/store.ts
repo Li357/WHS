@@ -1,5 +1,4 @@
-import { Store, Action } from 'redux';
-import { Persistor, PersistedState } from 'redux-persist';
+import { Action } from 'redux';
 
 import { Schedule, DaySchedule } from './schedule';
 
@@ -81,8 +80,3 @@ export interface AppState {
   day: DayState;
 }
 export type AppAction = UserAction | DayAction | MiscellaneousAction;
-
-export interface StoreAndPersistor {
-  store: Store<AppState & PersistedState, AppAction>;
-  persistor: Persistor;
-}

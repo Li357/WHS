@@ -8,7 +8,7 @@ export const initialDayState: DayState = {
   lastStateUpdate: null,
 };
 
-export default function dayReducer(state: DayState = initialDayState, action: DayAction): DayState {
+export default function dayReducer(state: DayState = initialDayState, action: DayAction) {
   switch (action.type) {
     case DayActions.SET_DAY_INFO:
       return { ...state, ...action.payload };

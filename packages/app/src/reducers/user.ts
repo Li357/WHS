@@ -16,7 +16,7 @@ export const initialUserState: UserState = {
   id: '',
 };
 
-export default function userReducer(state: UserState = initialUserState, action: UserAction): UserState {
+export default function userReducer(state: UserState = initialUserState, action: UserAction) {
   switch (action.type) {
     case UserActions.SET_USER_INFO:
       return { ...state, ...action.payload };
