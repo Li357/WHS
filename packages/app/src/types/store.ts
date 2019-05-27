@@ -63,6 +63,32 @@ export interface SetDayScheduleAction extends Action<DayActions.SET_DAY_SCHEDULE
   payload: DaySchedule;
 }
 
+export type FontThemeKeys = 'titleFont' | 'subtitleFont';
+export interface ThemeState {
+  backgroundColor: string;
+  foregroundColor: string;
+  textColor: string;
+  subtextColor: string;
+  borderColor: string;
+  accentColor: string;
+
+  titleFont: string;
+  subtitleFont: string;
+}
+
+export enum ThemeActions {
+  SET_THEME = 'SET_THEME',
+}
+
+export enum Theme {
+  LIGHT = 'light',
+  DARK = 'dark',
+}
+
+export interface SetThemeAction extends Action<ThemeActions.SET_THEME> {
+  payload: Theme;
+}
+
 export enum MiscellaneousActions {
   LOG_OUT = 'LOG_OUT',
   OTHER = '',
@@ -73,10 +99,12 @@ export interface OtherAction extends Action<MiscellaneousActions.OTHER> {} /* ha
 
 export type UserAction = SetUserInfoAction | SetUserScheduleAction | AddScheduleAction | OtherAction;
 export type DayAction = SetDayInfoAction | SetDayScheduleAction | OtherAction;
+export type ThemeAction = SetThemeAction | OtherAction;
 export type MiscellaneousAction = LogOutAction | OtherAction;
 
 export interface AppState {
   user: UserState;
   day: DayState;
+  theme: ThemeState;
 }
-export type AppAction = UserAction | DayAction | MiscellaneousAction;
+export type AppAction = UserAction | DayAction | ThemeAction | MiscellaneousAction;

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "lint": "tslint src/**/*.{ts,tsx} App.tsx"
+    "lint": "tslint src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}"
   },
   "dependencies": {
     "date-fns": "^2.0.0-alpha.1",
@@ -39,5 +39,8 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": ["./assets"]
   }
 }

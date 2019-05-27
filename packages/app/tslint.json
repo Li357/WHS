@@ -5,10 +5,7 @@
       "options": ["single", "jsx-double", "avoid-template", "avoid-escape"],
       "severity": "error"
     },
-    "object-literal-sort-keys": {
-      "options": ["match-declaration-order-only"],
-      "severity": "error"
-    },
+    "object-literal-sort-keys": false,
     "interface-name": {
       "options": ["never-prefix"],
       "severity": "error"
@@ -21,7 +18,7 @@
         "groups": [
           {
             "name": "packages",
-            "match": "^(?!\\.).*$",
+            "match": "^[^\\.]+$",
             "order": 10
           },
           {
