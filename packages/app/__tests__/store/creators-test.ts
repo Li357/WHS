@@ -1,5 +1,5 @@
 import * as creators from '../../src/actions/creators';
-import { UserActions, DayActions, MiscellaneousActions } from '../../src/types/store';
+import { UserActions, DayActions, MiscellaneousActions, ThemeActions, Theme } from '../../src/types/store';
 import { Schedule, DaySchedule } from '../../src/types/schedule';
 
 describe('action creators', () => {
@@ -54,10 +54,26 @@ describe('action creators', () => {
     expect(creators.setDaySchedule(payload)).toEqual(expectedAction);
   });
 
+  it('should create action to set theme', () => {
+    const payload = Theme.DARK;
+    const expectedAction = {
+      type: ThemeActions.SET_THEME,
+      payload,
+    };
+    expect(creators.setTheme(payload)).toEqual(expectedAction);
+  });
+
   it('should create action to log out', () => {
     const expectedAction = {
       type: MiscellaneousActions.LOG_OUT,
     };
     expect(creators.logOut()).toEqual(expectedAction);
+  });
+
+  it('should create other action', () => {
+    const expectedAction = {
+      type: MiscellaneousActions.OTHER,
+    };
+    expect(creators.other()).toEqual(expectedAction);
   });
 });

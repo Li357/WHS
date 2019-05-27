@@ -1,7 +1,8 @@
 import userReducer, { initialUserState } from '../../src/reducers/user';
 import dayReducer, { initialDayState } from '../../src/reducers/day';
+import themeReducer, { lightTheme, darkTheme } from '../../src/reducers/theme';
 import rootReducer from '../../src/reducers/root';
-import { MiscellaneousActions, OtherAction, AppState } from '../../src/types/store';
+import { MiscellaneousActions, OtherAction, AppState, Theme } from '../../src/types/store';
 import * as creators from '../../src/actions/creators';
 import { DaySchedule, ModNumber, Schedule } from '../../src/types/schedule';
 
@@ -27,6 +28,7 @@ describe('reducers', () => {
     it('should return initial state', () => {
       expect(userReducer(undefined, dummyAction)).toEqual(initialUserState);
       expect(userReducer(initialUserState, dummyAction)).toEqual(initialUserState);
+      expect(userReducer(initialUserState, creators.other())).toEqual(initialUserState);
     });
 
     it('should handle SET_USER_INFO', () => {
@@ -75,6 +77,7 @@ describe('reducers', () => {
     it('should return initial state', () => {
       expect(dayReducer(undefined, dummyAction)).toEqual(initialDayState);
       expect(dayReducer(initialDayState, dummyAction)).toEqual(initialDayState);
+      expect(dayReducer(initialDayState, creators.other())).toEqual(initialDayState);
     });
 
     it('should handle SET_DAY_INFO', () => {
@@ -106,14 +109,29 @@ describe('reducers', () => {
     });
   });
 
+  describe('theme', () => {
+    it('should return initial state', () => {
+      expect(themeReducer(undefined, dummyAction)).toEqual(lightTheme);
+      expect(themeReducer(lightTheme, dummyAction)).toEqual(lightTheme);
+      expect(themeReducer(darkTheme, creators.other())).toEqual(darkTheme);
+    });
+
+    it('should handle SET_THEME', () => {
+      expect(themeReducer(lightTheme, creators.setTheme(Theme.DARK))).toEqual(darkTheme);
+      expect(themeReducer(darkTheme, creators.setTheme(Theme.DARK))).toEqual(darkTheme);
+    });
+  });
+
   describe('root', () => {
     const initialAppState: AppState = {
       user: initialUserState,
       day: initialDayState,
+      theme: lightTheme,
     };
 
     it('should return initial state', () => {
       expect(rootReducer(undefined, dummyAction)).toEqual(initialAppState);
+      expect(rootReducer(initialAppState, creators.other())).toEqual(initialAppState);
     });
 
     it('should handle LOG_OUT', () => {
@@ -132,6 +150,7 @@ describe('reducers', () => {
           hasAssembly: false,
           lastStateUpdate: new Date(),
         },
+        theme: darkTheme,
       };
       expect(rootReducer(dummyAppState, creators.logOut())).toEqual(initialAppState);
     });

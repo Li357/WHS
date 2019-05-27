@@ -4,7 +4,7 @@ import {
   UserActions, UserState, SetUserInfoAction, UserInfoKeys, SetUserScheduleAction, AddScheduleAction,
   DayState, DayActions, DayInfoKeys, SetDayInfoAction, SetDayScheduleAction,
   Theme, SetThemeAction, ThemeActions,
-  MiscellaneousActions, LogOutAction,
+  MiscellaneousActions, LogOutAction, OtherAction,
 } from '../types/store';
 import { Schedule, DaySchedule } from '../types/schedule';
 
@@ -40,4 +40,8 @@ export const setTheme = (payload: Theme): SetThemeAction => ({
 
 export const logOut = (): LogOutAction => ({
   type: MiscellaneousActions.LOG_OUT,
+});
+
+export const other = (): OtherAction => ({
+  type: MiscellaneousActions.OTHER,
 });
