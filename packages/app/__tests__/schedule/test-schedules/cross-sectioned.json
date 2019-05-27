@@ -1,0 +1,223 @@
+{
+  "none": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 2,
+      "length": 1,
+      "endMod": 3
+    }
+  ],
+  "single": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    }
+  ],
+  "double": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 3,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    }
+  ],
+  "oneAndTwoHalves": [
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 4,
+      "length": 1,
+      "endMod": 5
+    },
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 4,
+      "length": 2,
+      "endMod": 6
+    },
+    {
+      "sourceId": 3,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 5,
+      "length": 1,
+      "endMod": 6
+    }
+  ],
+  "consecutive": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 3,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 2,
+      "length": 1,
+      "endMod": 3
+    },
+    {
+      "sourceId": 4,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 2,
+      "length": 1,
+      "endMod": 3
+    },
+    {
+      "sourceId": 5,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 1,
+      "endMod": 4
+    },
+    {
+      "sourceId": 6,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 2,
+      "endMod": 5
+    }
+  ],
+  "partialOverlap": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 4,
+      "length": 3,
+      "endMod": 7
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 6,
+      "length": 2,
+      "endMod": 8
+    },
+    {
+      "sourceId": 3,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 7,
+      "length": 1,
+      "endMod": 8
+    }
+  ]
+}

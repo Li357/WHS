@@ -1,4 +1,19 @@
 /**
+ * Split array without mutation
+ * @param arr array to be spliced
+ * @param start index to start cutting at
+ * @param deleteCount amount of items to cut
+ * @param items items to insert in place of cut
+ * @throws RangeError if specified start is not in interval [0, arr.length)
+ */
+export function splice<T>(arr: T[], start: number, deleteCount: number, items: T[] = []) {
+  if (start > arr.length - 1 || start < 0) {
+    throw new RangeError('Array index out of range!');
+  }
+  return [...arr.slice(0, start), ...items, ...arr.slice(start + deleteCount)];
+}
+
+/**
  * Inserts items into an array without mutation
  * @param arr array to insert items into
  * @param items items to insert
@@ -9,7 +24,6 @@ export function insert<T>(arr: T[], items: T[], index: number) {
   if (index > arr.length || index < 0) {
     throw new RangeError('Array index out of range!');
   }
-
   return [...arr.slice(0, index), ...items, ...arr.slice(index)];
 }
 

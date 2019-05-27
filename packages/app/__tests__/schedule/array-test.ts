@@ -1,6 +1,31 @@
-import { insert, sortByProps, getWithFallback } from '../../src/utils/array';
+import { insert, sortByProps, getWithFallback, splice } from '../../src/utils/array';
 
 describe('array utils', () => {
+  describe('splice', () => {
+    it('should delete at specified index', () => {
+      expect(splice(['a', 'b'], 1, 1)).toEqual(['a']);
+    });
+
+    it('should handle start + deleteCount beyond length', () => {
+      expect(splice(['a', 'b'], 1, 2)).toEqual(['a']);
+    });
+
+    it('should insert items at deleted index', () => {
+      expect(splice(['a', 'b'], 1, 1, ['c'])).toEqual(['a', 'c']);
+    });
+
+    it('should throw if start out of range', () => {
+      expect(() => splice(['a'], 1, 1)).toThrowError(RangeError);
+      expect(() => splice(['a'], -1, 1)).toThrowError(RangeError);
+    });
+
+    it('should not mutate input', () => {
+      const input = ['a'];
+      splice(input, 0, 1);
+      expect(input).not.toEqual([]);
+    });
+  });
+
   describe('insert', () => {
     it('should insert at index', () => {
       expect(insert(['a'], ['a'], 1)).toEqual(['a', 'a']);

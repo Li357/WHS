@@ -1,0 +1,72 @@
+{
+  "groupByDay": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 5,
+      "startMod": 0,
+      "length": 15,
+      "endMod": 15
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 0,
+      "length": 15,
+      "endMod": 15
+    },
+    {
+      "sourceId": 3,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 3,
+      "startMod": 0,
+      "length": 15,
+      "endMod": 15
+    }
+  ],
+  "sortByModThenLength": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 0,
+      "length": 1,
+      "endMod": 1
+    },
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 2,
+      "endMod": 3
+    },
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    }
+  ]
+}

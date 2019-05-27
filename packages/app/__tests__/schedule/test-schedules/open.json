@@ -1,0 +1,110 @@
+{
+  "full": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 0,
+      "length": 7,
+      "endMod": 7
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 7,
+      "length": 8,
+      "endMod": 15
+    }
+  ],
+  "between": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 0,
+      "length": 6,
+      "endMod": 6
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 9,
+      "length": 6,
+      "endMod": 15
+    }
+  ],
+  "beginning": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 8,
+      "length": 7,
+      "endMod": 15
+    }
+  ],
+  "end": [
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 0,
+      "length": 7,
+      "endMod": 7
+    }
+  ],
+  "both": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 6,
+      "length": 1,
+      "endMod": 7
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 7,
+      "length": 1,
+      "endMod": 8
+    }
+  ],
+  "withCrossSections": [
+    {
+      "sourceId": 1,
+      "columns": [],
+      "day": 1,
+      "startMod": 3,
+      "length": 2,
+      "endMod": 5
+    }
+  ]
+}
