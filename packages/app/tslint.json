@@ -32,6 +32,7 @@
     },
     "no-submodule-imports": false,
     "no-implicit-dependencies": [true, "dev"],
-    "arrow-parens": true
+    "arrow-parens": true,
+    "max-classes-per-file": false
   }
 }

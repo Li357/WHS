@@ -24,6 +24,10 @@ export type ScheduleItem = ClassItem | CrossSectionedItem;
 export type RawSchedule = ClassItem[];
 export type UserDaySchedule = ScheduleItem[];
 export type Schedule = UserDaySchedule[];
+export interface TeacherSchedule {
+  url: string;
+  schedule: Schedule;
+}
 
 export enum ModNumber {
   HOMEROOM = 0,

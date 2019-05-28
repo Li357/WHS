@@ -3,10 +3,22 @@ import { UserActions, DayActions, MiscellaneousActions, ThemeActions, Theme } fr
 import { Schedule, DaySchedule } from '../../src/types/schedule';
 
 describe('action creators', () => {
-  it('should create action to set user info', () => {
+  it('should create action to set user credentials', () => {
     const payload = {
       username: 'John',
       password: '1234',
+    };
+    const expectedAction = {
+      type: UserActions.SET_USER_CREDENTIALS,
+      payload,
+    };
+    expect(creators.setUserCredentials(payload)).toEqual(expectedAction);
+  });
+
+  it('should create action to set user info', () => {
+    const payload = {
+      homeroom: 'John Smith',
+      counselor: 'John Smith',
     };
     const expectedAction = {
       type: UserActions.SET_USER_INFO,
@@ -24,13 +36,22 @@ describe('action creators', () => {
     expect(creators.setUserSchedule(payload)).toEqual(expectedAction);
   });
 
-  it('should create action to add a schedule', () => {
-    const payload: Schedule = [];
+  it('should create action to set teacher schedules', () => {
+    const payload: Schedule[] = [];
     const expectedAction = {
-      type: UserActions.ADD_SCHEDULE,
+      type: UserActions.SET_TEACHER_SCHEDULES,
       payload,
     };
-    expect(creators.addSchedule(payload)).toEqual(expectedAction);
+    expect(creators.setTeacherSchedules(payload)).toEqual(expectedAction);
+  });
+
+  it('should create action to add teacher schedule', () => {
+    const payload: Schedule = [];
+    const expectedAction = {
+      type: UserActions.ADD_TEACHER_SCHEDULE,
+      payload,
+    };
+    expect(creators.addTeacherSchedule(payload)).toEqual(expectedAction);
   });
 
   it('should create action to set day info', () => {

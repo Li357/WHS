@@ -1,12 +1,19 @@
 // tslint:disable: object-literal-sort-keys
 
 import {
-  UserActions, UserState, SetUserInfoAction, UserInfoKeys, SetUserScheduleAction, AddScheduleAction,
+  UserActions, UserState, UserInfoKeys,
+  SetUserInfoAction, SetUserScheduleAction, SetUserCredentialsAction,
+  SetTeacherSchedulesAction, AddTeacherScheduleAction,
   DayState, DayActions, DayInfoKeys, SetDayInfoAction, SetDayScheduleAction,
   Theme, SetThemeAction, ThemeActions,
   MiscellaneousActions, LogOutAction, OtherAction,
 } from '../types/store';
-import { Schedule, DaySchedule } from '../types/schedule';
+import { Schedule, DaySchedule, TeacherSchedule } from '../types/schedule';
+
+export const setUserCredentials = (payload: Pick<UserState, 'username' | 'password'>): SetUserCredentialsAction => ({
+  type: UserActions.SET_USER_CREDENTIALS,
+  payload,
+});
 
 export const setUserInfo = (payload: Partial<Pick<UserState, UserInfoKeys>>): SetUserInfoAction => ({
   type: UserActions.SET_USER_INFO,
@@ -18,8 +25,13 @@ export const setUserSchedule = (payload: Schedule): SetUserScheduleAction => ({
   payload,
 });
 
-export const addSchedule = (payload: Schedule): AddScheduleAction => ({
-  type: UserActions.ADD_SCHEDULE,
+export const setTeacherSchedules = (payload: TeacherSchedule[]): SetTeacherSchedulesAction => ({
+  type: UserActions.SET_TEACHER_SCHEDULES,
+  payload,
+});
+
+export const addTeacherSchedule = (payload: TeacherSchedule): AddTeacherScheduleAction => ({
+  type: UserActions.ADD_TEACHER_SCHEDULE,
   payload,
 });
 

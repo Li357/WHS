@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 
-import { Schedule, DaySchedule } from './schedule';
+import { Schedule, DaySchedule, TeacherSchedule } from './schedule';
 
 export interface UserState {
   username: string;
@@ -10,7 +10,7 @@ export interface UserState {
   schoolPicture: string;
   profilePhoto: string;
   isTeacher: boolean;
-  addedSchedules: Schedule[];
+  teacherSchedules: TeacherSchedule[];
 
   /** Student-specific properties */
   classOf?: string;
@@ -21,24 +21,35 @@ export interface UserState {
 }
 
 export enum UserActions {
+  SET_USER_CREDENTIALS = 'SET_USER_CREDENTIALS',
   SET_USER_INFO = 'SET_USER_INFO',
   SET_USER_SCHEDULE = 'SET_USER_SCHEDULE',
-  ADD_SCHEDULE = 'ADD_SCHEDULE',
+  SET_TEACHER_SCHEDULES = 'SET_TEACHER_SCHEDULES',
+  ADD_TEACHER_SCHEDULE = 'ADD_TEACHER_SCHEDULE',
+}
+
+export interface SetUserCredentialsAction extends Action<UserActions.SET_USER_CREDENTIALS> {
+  payload: Pick<UserState, 'username' | 'password'>;
 }
 
 export type UserInfoKeys =
-  | 'username' | 'password' | 'name' | 'schoolPicture' | 'profilePhoto' | 'isTeacher'
+  | 'name' | 'schoolPicture' | 'profilePhoto' | 'isTeacher'
   | 'classOf' | 'homeroom' | 'counselor' | 'dean' | 'id';
+export type UserInfo = Pick<UserState, UserInfoKeys>;
 export interface SetUserInfoAction extends Action<UserActions.SET_USER_INFO> {
-  payload: Partial<Pick<UserState, UserInfoKeys>>;
+  payload: Partial<UserInfo>;
 }
 
 export interface SetUserScheduleAction extends Action<UserActions.SET_USER_SCHEDULE> {
   payload: Schedule;
 }
 
-export interface AddScheduleAction extends Action<UserActions.ADD_SCHEDULE> {
-  payload: Schedule;
+export interface SetTeacherSchedulesAction extends Action<UserActions.SET_TEACHER_SCHEDULES> {
+  payload: TeacherSchedule[];
+}
+
+export interface AddTeacherScheduleAction extends Action<UserActions.ADD_TEACHER_SCHEDULE> {
+  payload: TeacherSchedule;
 }
 
 export interface DayState {
@@ -97,7 +108,9 @@ export enum MiscellaneousActions {
 export interface LogOutAction extends Action<MiscellaneousActions.LOG_OUT> {}
 export interface OtherAction extends Action<MiscellaneousActions.OTHER> {} /* handles third-party actions for TS */
 
-export type UserAction = SetUserInfoAction | SetUserScheduleAction | AddScheduleAction | OtherAction;
+export type UserAction =
+  | SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction
+  | AddTeacherScheduleAction | OtherAction;
 export type DayAction = SetDayInfoAction | SetDayScheduleAction | OtherAction;
 export type ThemeAction = SetThemeAction | OtherAction;
 export type MiscellaneousAction = LogOutAction | OtherAction;

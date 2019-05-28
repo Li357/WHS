@@ -2,9 +2,9 @@ import userReducer, { initialUserState } from '../../src/reducers/user';
 import dayReducer, { initialDayState } from '../../src/reducers/day';
 import themeReducer, { lightTheme, darkTheme } from '../../src/reducers/theme';
 import rootReducer from '../../src/reducers/root';
-import { MiscellaneousActions, OtherAction, AppState, Theme } from '../../src/types/store';
 import * as creators from '../../src/actions/creators';
-import { DaySchedule, ModNumber, Schedule } from '../../src/types/schedule';
+import { MiscellaneousActions, OtherAction, AppState, Theme } from '../../src/types/store';
+import { DaySchedule, ModNumber, Schedule, TeacherSchedule } from '../../src/types/schedule';
 
 describe('reducers', () => {
   const dummyAction: OtherAction = { type: MiscellaneousActions.OTHER };
@@ -22,6 +22,10 @@ describe('reducers', () => {
     endMod: 2,
     data: null,
   }]);
+  const dummyTeacherSchedule: TeacherSchedule = {
+    url: 'https://example.com',
+    schedule: dummySchedule,
+  };
   const dummyDaySchedule: DaySchedule = [['8:00', '8:15', ModNumber.HOMEROOM]];
 
   describe('user', () => {
@@ -31,11 +35,26 @@ describe('reducers', () => {
       expect(userReducer(initialUserState, creators.other())).toEqual(initialUserState);
     });
 
-    it('should handle SET_USER_INFO', () => {
+    it('should handle SET_USER_CREDENTIALS', () => {
       const update = {
         username: 'John',
         password: '1234',
+      };
+      const expectedState = {
+        ...initialUserState,
+        ...update,
+      };
+
+      expect(userReducer(
+        initialUserState,
+        creators.setUserCredentials(update),
+      )).toEqual(expectedState);
+    });
+
+    it('should handle SET_USER_INFO', () => {
+      const update = {
         name: 'John Smith',
+        homeroom: 'John Smith',
       };
       const expectedState = {
         ...initialUserState,
@@ -60,15 +79,27 @@ describe('reducers', () => {
       )).toEqual(expectedState);
     });
 
-    it('should handle ADD_SCHEDULE', () => {
+    it('should handle SET_TEACHER_SCHEDULES', () => {
       const expectedState = {
         ...initialUserState,
-        addedSchedules: [dummySchedule],
+        teacherSchedules: [dummyTeacherSchedule],
       };
 
       expect(userReducer(
         initialUserState,
-        creators.addSchedule(dummySchedule),
+        creators.setTeacherSchedules([dummyTeacherSchedule]),
+      )).toEqual(expectedState);
+    });
+
+    it('should handle ADD_TEACHER_SCHEDULE', () => {
+      const expectedState = {
+        ...initialUserState,
+        teacherSchedules: [dummyTeacherSchedule],
+      };
+
+      expect(userReducer(
+        initialUserState,
+        creators.addTeacherSchedule(dummyTeacherSchedule),
       )).toEqual(expectedState);
     });
   });
