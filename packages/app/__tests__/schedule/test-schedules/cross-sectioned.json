@@ -185,6 +185,109 @@
       "endMod": 5
     }
   ],
+  "nonConsecutive": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 3,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 1,
+      "endMod": 4
+    },
+    {
+      "sourceId": 4,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 1,
+      "endMod": 4
+    }
+  ],
+  "nonConsecutiveWithBetween": [
+    {
+      "sourceId": 1,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 2,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2
+    },
+    {
+      "sourceId": 5,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 2,
+      "length": 1,
+      "endMod": 3
+    },
+    {
+      "sourceId": 3,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 1,
+      "endMod": 4
+    },
+    {
+      "sourceId": 4,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 1,
+      "endMod": 4
+    }
+  ],
   "partialOverlap": [
     {
       "sourceId": 1,

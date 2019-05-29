@@ -58,7 +58,7 @@ describe('schedule processing', () => {
     describe('interpolateCrossSectionedItems', () => {
       const schedules: Record<string, ClassItem[]> = crossSectionedSchedules;
       const {
-        none, single, double, oneAndTwoHalves, consecutive, partialOverlap,
+        none, single, double, oneAndTwoHalves, consecutive, nonConsecutive, nonConsecutiveWithBetween, partialOverlap,
       } = schedules;
 
       const flankWithClassItems = (withCrossSections: ClassItem[]) => {
@@ -141,6 +141,22 @@ describe('schedule processing', () => {
           createCrossSectionedItem([[third], [fourth]], third.startMod, fourth.endMod, first.day),
           createCrossSectionedItem([[fifth], [sixth]], fifth.startMod, sixth.endMod, first.day),
           secondFlank,
+        ]);
+      });
+
+      it('handles non-consecutive cross-sectioned blocks', () => {
+        const [first, second, third, fourth] = nonConsecutive;
+        expect(interpolateCrossSectionedItems(nonConsecutive, first.day)).toEqual([
+          createCrossSectionedItem([[first], [second]], first.startMod, second.endMod, first.day),
+          createCrossSectionedItem([[third], [fourth]], third.startMod, fourth.endMod, first.day),
+        ]);
+
+        // tslint:disable-next-line: trailing-comma
+        const [, , between, , ] = nonConsecutiveWithBetween;
+        expect(interpolateCrossSectionedItems(nonConsecutiveWithBetween, first.day)).toEqual([
+          createCrossSectionedItem([[first], [second]], first.startMod, second.endMod, first.day),
+          between,
+          createCrossSectionedItem([[third], [fourth]], third.startMod, fourth.endMod, first.day),
         ]);
       });
 
