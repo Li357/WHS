@@ -1,7 +1,13 @@
-import { insert, sortByProps, getWithFallback, splice } from '../../src/utils/array';
+import { insert, sortByProps, getWithFallback, splice, excludeKeys } from '../../src/utils/object';
 
 describe('array utils', () => {
   describe('splice', () => {
+    it('should not mutate input', () => {
+      const input = ['a'];
+      splice(input, 0, 1);
+      expect(input).not.toEqual([]);
+    });
+
     it('should delete at specified index', () => {
       expect(splice(['a', 'b'], 1, 1)).toEqual(['a']);
     });
@@ -18,15 +24,15 @@ describe('array utils', () => {
       expect(() => splice(['a'], 1, 1)).toThrowError(RangeError);
       expect(() => splice(['a'], -1, 1)).toThrowError(RangeError);
     });
-
-    it('should not mutate input', () => {
-      const input = ['a'];
-      splice(input, 0, 1);
-      expect(input).not.toEqual([]);
-    });
   });
 
   describe('insert', () => {
+    it('should not mutate input', () => {
+      const input: string[] = [];
+      insert(input, ['a'], 0);
+      expect(input).not.toEqual(['a']);
+    });
+
     it('should insert at index', () => {
       expect(insert(['a'], ['a'], 1)).toEqual(['a', 'a']);
     });
@@ -38,12 +44,6 @@ describe('array utils', () => {
     it('should throw if index out of range', () => {
       expect(() => insert([], ['a'], 1)).toThrowError(RangeError);
       expect(() => insert([], ['a'], -1)).toThrowError(RangeError);
-    });
-
-    it('should not mutate input', () => {
-      const input: string[] = [];
-      insert(input, ['a'], 0);
-      expect(input).not.toEqual(['a']);
     });
   });
 
@@ -127,6 +127,23 @@ describe('array utils', () => {
       expect(getWithFallback(obj, ['a', 'c'], 0)).toEqual(0);
       expect(getWithFallback(obj, ['a', 'b'], 0)).toEqual(0);
       expect(getWithFallback(obj, ['a', 'b', 'c', 'd'], 0)).toEqual(0);
+    });
+  });
+
+  describe('excludeKeys', () => {
+    const obj = { a: 1, b: { c: 2 } };
+
+    it('should not mutate input', () => {
+      excludeKeys(obj, ['b']);
+      expect(obj).not.toEqual({ a: 1 });
+    });
+
+    it('should exclude key with primitive value from object', () => {
+      expect(excludeKeys(obj, ['a'])).toEqual({ b: { c: 2 }});
+    });
+
+    it('should exclude key with value from object', () => {
+      expect(excludeKeys(obj, ['b'])).toEqual({ a: 1 });
     });
   });
 });

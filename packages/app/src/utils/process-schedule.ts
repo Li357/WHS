@@ -1,8 +1,9 @@
 import {
   ScheduleItem, ClassItem, CrossSectionedItem, CrossSectionedColumn,
-  RawSchedule, UserDaySchedule,
+  RawSchedule, UserDaySchedule, RawClassItem, RawClassItemKeys,
 } from '../types/schedule';
-import { sortByProps, insert, getWithFallback, splice } from './array';
+import { sortByProps, insert, getWithFallback, splice, excludeKeys } from './object';
+import { SCHEDULE_RESTRICTED_KEYS } from '../constants/fetch';
 
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item
@@ -143,13 +144,21 @@ export function interpolateOpenItems(userDaySchedule: UserDaySchedule, day: numb
 }
 
 /**
+ * Converts a raw item from website to class item
+ * @param rawItem raw schedule item to convert to class item
+ */
+export function convertToClassItem(rawItem: RawClassItem): ClassItem {
+  return excludeKeys(rawItem, SCHEDULE_RESTRICTED_KEYS);
+}
+
+/**
  * Transforms array of schedule items into full schedule with open mods and cross-sectioned blocks
  * @param rawSchedule raw schedule as fetched from WHS scheduler website
  */
 export function processSchedule(rawSchedule: RawSchedule) {
   return rawSchedule
-    .reduce((userDaySchedules: ClassItem[][], classItem) => {
-      userDaySchedules[classItem.day - 1].push(classItem);
+    .reduce((userDaySchedules: ClassItem[][], rawItem) => {
+      userDaySchedules[rawItem.day - 1].push(convertToClassItem(rawItem));
       return userDaySchedules;
     }, [[], [], [], [], []])
     .map((userDaySchedule, index) => {

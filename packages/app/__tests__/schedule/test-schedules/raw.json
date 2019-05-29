@@ -9,7 +9,10 @@
       "day": 5,
       "startMod": 0,
       "length": 15,
-      "endMod": 15
+      "endMod": 15,
+      "sectionNumber": 1,
+      "phaseNumber": 1,
+      "data": { "courseId": "1" }
     },
     {
       "sourceId": 2,
@@ -20,7 +23,10 @@
       "day": 1,
       "startMod": 0,
       "length": 15,
-      "endMod": 15
+      "endMod": 15,
+      "sectionNumber": 1,
+      "phaseNumber": 1,
+      "data": { "courseId": "1" }
     },
     {
       "sourceId": 3,
@@ -31,7 +37,10 @@
       "day": 3,
       "startMod": 0,
       "length": 15,
-      "endMod": 15
+      "endMod": 15,
+      "sectionNumber": 1,
+      "phaseNumber": 1,
+      "data": { "courseId": "1" }
     }
   ],
   "sortByModThenLength": [
@@ -44,7 +53,10 @@
       "day": 1,
       "startMod": 0,
       "length": 1,
-      "endMod": 1
+      "endMod": 1,
+      "sectionNumber": 1,
+      "phaseNumber": 1,
+      "data": { "courseId": "1" }
     },
     {
       "sourceId": 1,
@@ -55,7 +67,10 @@
       "day": 1,
       "startMod": 1,
       "length": 2,
-      "endMod": 3
+      "endMod": 3,
+      "sectionNumber": 1,
+      "phaseNumber": 1,
+      "data": { "courseId": "1" }
     },
     {
       "sourceId": 1,
@@ -66,7 +81,10 @@
       "day": 1,
       "startMod": 1,
       "length": 1,
-      "endMod": 2
+      "endMod": 2,
+      "sectionNumber": 1,
+      "phaseNumber": 1,
+      "data": { "courseId": "1" }
     }
   ]
 }

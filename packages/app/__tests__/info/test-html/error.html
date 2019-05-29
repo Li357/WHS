@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Login | Westside</title>
+    <link rel="stylesheet" href="/dist/css/site.css" />
+    <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/s/dt/dt-1.10.10/datatables.min.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  </head>
+  <body>
+    <nav class="navbar navbar-full navbar-custom navbar-dark bg-inverse">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <img src="/dist/img/logo.png" alt="Westside High School Logo" />
+        </a>
+      </div>
+    </nav>
+    <div class="page-content">
+      <div class="container">
+        <div class="login-form">
+          <div class="login-form-image">
+            <img src="/img/logo.png" alt="Westside High School" />
+          </div>
+          <div class="alert alert-danger" role="alert">
+          	The Username or Password was incorrect.
+        	</div>
+          <div class="card">
+            <div class="card-header">
+          		Login
+        		</div>
+            <div class="card-block">
+              <form role="form" action="/account/login" method="post">
+                <fieldset class="form-group">
+                  <input type="text" class="form-control" placeholder="Username" data-val="true" data-val-required="The Username field is required." id="Username" name="Username" value="Li357">
+                </fieldset>
+                <fieldset class="form-group">
+                  <input type="password" class="form-control" placeholder="Password" data-val="true" data-val-required="The Password field is required." id="Password" name="Password">
+                </fieldset>
+                <input type="hidden" value="true" data-val="true" data-val-required="The Remember me? field is required." id="RememberMe" name="RememberMe" />
+                <input type="hidden" value="" id="ReturnUrl" name="ReturnUrl" />
+                <button type="button" class="btn btn-default" disabled>Lost Password</button>
+                <button type="submit" class="btn btn-primary pull-right">Log In</button>
+                <input name="__RequestVerificationToken" type="hidden" value="" />
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      window._pageDataJson = '{"action":"Login","controller":"Account"}';
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.1.1/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="" crossorigin="anonymous"></script>
+    <script src="/js/lib/bootstrap-select/bootstrap.select.js"></script>
+    <script src="/js/lib/select2/select2.js"></script>
+    <script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+    <script src="/dist/js/layout/page-layout.js"></script>
+  </body>
+</html>

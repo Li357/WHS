@@ -8,7 +8,7 @@ import {
   SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR,
 } from '../constants/fetch';
 import { UserInfo, UserInfoKeys } from '../types/store';
-import { Schedule, ClassItem, TeacherSchedule } from '../types/schedule';
+import { Schedule, ClassItem, TeacherSchedule, RawClassItem, RawSchedule } from '../types/schedule';
 import { NetworkError } from './error';
 
 /**
@@ -42,20 +42,19 @@ export function getLoginURL(username: string, password: string) {
  * @param $ cheerio selector for parsed HTML
  */
 export function getSchoolPictureFromHTML($: CheerioSelector) {
-  const matches = $(SCHOOL_PICTURE_SELECTOR).text().match(SCHOOL_PICTURE_REGEX);
-  if (matches === null || matches[0].includes(SCHOOL_PICTURE_BLANK)) {
-    return ''; // TODO: Supply blank user url
+  const matches = $(SCHOOL_PICTURE_SELECTOR).css('background-image').match(SCHOOL_PICTURE_REGEX);
+  if (matches === null || matches[1].includes(SCHOOL_PICTURE_BLANK)) {
+    return SCHOOL_PICTURE_BLANK;
   }
-  return matches[0];
+  return matches[1];
 }
 
 /**
  * Converts name in format "last, first" to "first last"
  * @param rawName raw name from website
  */
-function processName(rawName: string) {
-  const [last, first] = rawName.split(', ');
-  return `${first} ${last}`;
+export function processName(rawName: string) {
+  return rawName.split(', ').reverse().join(' ');
 }
 
 /**
@@ -63,9 +62,9 @@ function processName(rawName: string) {
  * @param $ cheerio selector for parsed HTML
  */
 export function getUserInfoFromHTML($: CheerioSelector): UserInfo {
-  const [rawName, subtitle] = $(HEADER_SELECTOR).map((i, el) => $(el).text()).get();
-  const name = processName(rawName);
+  const [rawName, subtitle] = $(HEADER_SELECTOR).children().map((i, el) => $(el).text().trim()).get();
   const isTeacher = subtitle === 'Teacher';
+  const name = isTeacher ? rawName : processName(rawName); // Teachers do not their name in "last, first" format
   const schoolPicture = getSchoolPictureFromHTML($);
   const info: UserInfo = {
     name,
@@ -78,7 +77,7 @@ export function getUserInfoFromHTML($: CheerioSelector): UserInfo {
   if (!isTeacher) {
     const studentOverviewInfo = $(STUDENT_OVERVIEW_SELECTOR).get()
       .reduce((infoMap: Partial<UserInfo>, currentInfo: CheerioElement) => {
-        const [staffRole, staffName] = $(currentInfo).text().trim().split(': ');
+        const [staffRole, staffName] = $(currentInfo).text().split(': ').map((str) => str.trim());
         infoMap[staffRole.toLowerCase() as UserInfoKeys] = staffName;
         return infoMap;
       }, {});
@@ -97,8 +96,9 @@ export function getUserInfoFromHTML($: CheerioSelector): UserInfo {
  * @param $ cheerio selector for parsed HTML
  */
 export function getUserScheduleFromHTML($: CheerioSelector): Schedule {
-  const matches = $(SCHEDULE_SELECTOR).text().match(SCHEDULE_REGEX);
-  const rawSchedule: ClassItem[] = matches === null ? [] : JSON.parse(matches[0]).schedule;
+  // .text returns empty string in script
+  const matches = ($(SCHEDULE_SELECTOR).html() || '').trim().match(SCHEDULE_REGEX);
+  const rawSchedule: RawSchedule = matches === null ? [] : JSON.parse(matches[1]).schedule;
   return processSchedule(rawSchedule);
 }
 

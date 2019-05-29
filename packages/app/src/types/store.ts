@@ -1,6 +1,7 @@
 import { Action } from 'redux';
 
 import { Schedule, DaySchedule, TeacherSchedule } from './schedule';
+import { Omit } from './util';
 
 export interface UserState {
   username: string;
@@ -59,6 +60,7 @@ export interface DayState {
   hasAssembly: boolean;
   lastStateUpdate: Date | null;
 }
+export type SerializedDayState = Omit<DayState, 'lastStateUpdate'> & { lastStateUpdate: string | null };
 
 export enum DayActions {
   SET_DAY_INFO = 'SET_DAY_INFO',

@@ -8,6 +8,7 @@
     "lint": "tslint src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.4.2",
     "date-fns": "^2.0.0-alpha.1",
     "react": "16.8.3",
     "react-native": "0.59.8",

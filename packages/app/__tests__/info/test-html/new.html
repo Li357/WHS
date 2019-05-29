@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Andrew Li Overview | Westside</title>
+    <link rel="stylesheet" href="/dist/css/site.css" />
+    <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/s/dt/dt-1.10.10/datatables.min.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  </head>
+  <body>
+    <nav class="navbar navbar-full navbar-custom navbar-dark bg-inverse">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <img src="/dist/img/logo.png" alt="Westside High School Logo" />
+        </a>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div class="pull-xs-right navbar-right">
+          <div id="js-search-view" class="navbar-search">
+            <input type="text" placeholder="Search..." />
+            <div id="js-search-results" class="navbar-search-results">
+            </div>
+          </div>
+          <div class="dropdown dropdown-menu-right">
+            <div class="navbar-user-avatar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="" alt="" />
+            </div>
+            <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-header">Hi, Li357!</div>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/account">
+                <i class="icon ion-person icon-left"></i> Account
+              </a>
+              <form action="/account/logoff" method="post">
+                <button type="submit" class="dropdown-item">
+                  <i class="icon ion-log-out icon-left"></i> Logout
+                </button>
+                <input name="__RequestVerificationToken" type="hidden" value="" />
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+            <li class="nav-item" active-on-route>
+              <a class="nav-link" href="/teachers">Teachers</a>
+            </li>
+            <li class="nav-item" active-on-route>
+              <a class="nav-link" href="/registration">Registration</a>
+            </li>
+            <li class="nav-item" active-on-route>
+              <a class="nav-link" href="/calendar">Calendar</a>
+            </li>
+            <li class="nav-item" active-on-route>
+              <a class="nav-link" href="/links">External Links</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <section class="page-title">
+      <div class="container">
+        <div class="clearfix">
+          <div class="profile-picture" style="background-image: url(/dist/img/blank-user.png);"></div>
+          <div class="header-title">
+            <h2>Li, Andrew </h2>
+            <h6>Class of 2021</h6>
+          </div>
+        </div>
+      </div>
+    </section>
+    <nav class="navbar navbar-light bg-faded secondary-nav navbar-full">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li active-on-route class="nav-item active">
+            <a class="nav-link" href="/students/2034">Overview</a>
+          </li>
+          <li class="nav-item" active-on-route>
+            <a class="nav-link" href="/students/2034/courses">Courses</a>
+          </li>
+          <li class="nav-item" active-on-route>
+            <a class="nav-link" href="/students/2034/attendance">Attendance</a>
+          </li>
+          <li class="nav-item" active-on-route>
+            <a class="nav-link" href="/students/2034/cart">Cart</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <section class="page-content">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 col-xs-12">
+            <div id="js-schedule" class="dhx_cal_container" style="width: 100%; height: 700px; padding: 10px;">
+              <div class="dhx_cal_navline">
+                <div class="dhx_cal_date"></div>
+              </div>
+              <div class="dhx_cal_header"></div>
+              <div class="dhx_cal_data"></div>
+            </div>
+          </div>
+          <div class="col-md-4 col-xs-12">
+            <div class="card">
+              <div class="card-header">Student Overview</div>
+              <div class="card-block">
+                <p class="card-subtitle">
+                  Counselor: 
+                  <a href="/teachers/497"> John Johnson</a>
+                </p>
+                <p class="card-subtitle text-muted">
+                  Phone: 555-5555
+                </p>
+                <p class="card-subtitle text-muted">
+                  Email: Johnson.John@gmail.com
+                </p>
+                <br />
+                <p class="card-text">School Number: 99999</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                Actions
+              </div>
+              <div class="card-block">
+                <fieldset class="form-group">
+                  <a class="btn btn-secondary full-width" target="_blank" href="/printing/semesters/6/students/2034/schedule?autoPrint=true">
+                    <i class="icon ion-ios-printer icon-left"></i> Print Schedule
+                  </a>
+                </fieldset>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                Recent Attendance
+              </div>
+              <div class="card-block">
+                <small>No attendance events in the past 7 days.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      window._pageDataJson = '{"schedule":[],"semesterId":6,"studentId":"2034","action":"Student","controller":"Students","userId":"3175"}';
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.1.1/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous"></script>
+    <script src="/js/lib/bootstrap-select/bootstrap.select.js"></script>
+    <script src="/js/lib/select2/select2.js"></script>
+    <script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+    <script src="/dist/js/layout/page-layout.js"></script>
+    <script src="/js/lib/scheduler/dhtmlxscheduler.js"></script>
+    <script src="/js/lib/scheduler/dhtmlxscheduler_mvc.js"></script>
+    <script src="/dist/js/students/overview-bundle.js"></script>
+  </body>
+</html>

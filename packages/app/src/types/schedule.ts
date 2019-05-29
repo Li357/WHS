@@ -1,4 +1,9 @@
-export interface ClassItem {
+import { Omit } from './util';
+
+interface RawClassItemData {
+  courseId: string;
+}
+export interface RawClassItem {
   sourceId: number;
   sourceType: string;
   title: string;
@@ -8,7 +13,13 @@ export interface ClassItem {
   startMod: number;
   length: number;
   endMod: number;
+  sectionNumber: number;
+  phaseNumber: number;
+  data: RawClassItemData | null;
 }
+
+export type RawClassItemKeys = 'sectionNumber' | 'phaseNumber' | 'data';
+export type ClassItem = Omit<RawClassItem, RawClassItemKeys>;
 
 export type CrossSectionedColumn = ClassItem[];
 export interface CrossSectionedItem {
@@ -21,11 +32,12 @@ export interface CrossSectionedItem {
 }
 
 export type ScheduleItem = ClassItem | CrossSectionedItem;
-export type RawSchedule = ClassItem[];
 export type UserDaySchedule = ScheduleItem[];
+export type RawSchedule = RawClassItem[];
 export type Schedule = UserDaySchedule[];
 export interface TeacherSchedule {
   url: string;
+  name: string;
   schedule: Schedule;
 }
 

@@ -3,6 +3,7 @@ import {
   interpolateCrossSectionedItems,
   interpolateOpenItems,
   processSchedule,
+  convertToClassItem,
 } from '../../src/utils/process-schedule';
 import { ClassItem, ScheduleItem, RawSchedule } from '../../src/types/schedule';
 import crossSectionedSchedules from './test-schedules/cross-sectioned.json';
@@ -55,7 +56,7 @@ describe('schedule processing', () => {
 
   describe('interpolators', () => {
     describe('interpolateCrossSectionedItems', () => {
-      const schedules: { [scheduleName: string]: ClassItem[] } = crossSectionedSchedules;
+      const schedules: Record<string, ClassItem[]> = crossSectionedSchedules;
       const {
         none, single, double, oneAndTwoHalves, consecutive, partialOverlap,
       } = schedules;
@@ -160,7 +161,7 @@ describe('schedule processing', () => {
     });
 
     describe('interpolateOpenItems', () => {
-      const schedules: { [key: string]: ScheduleItem[] } = openSchedules;
+      const schedules: Record<string, ScheduleItem[]> = openSchedules;
       const { full, between, beginning, end, both, withCrossSections } = schedules;
 
       it('ignores full schedule', () => {
@@ -214,8 +215,23 @@ describe('schedule processing', () => {
     });
   });
 
+  describe('convertToClassItem', () => {
+    const [rawItem]: RawSchedule = rawSchedules.groupByDay;
+    expect(convertToClassItem(rawItem)).toEqual({
+      sourceId: 1,
+      sourceType: 'course',
+      title: 'Test',
+      body: '',
+      roomNumber: '',
+      day: 5,
+      startMod: 0,
+      length: 15,
+      endMod: 15,
+    });
+  });
+
   describe('processSchedule', () => {
-    const schedules: { [key: string]: RawSchedule } = rawSchedules;
+    const schedules: Record<string, RawSchedule> = rawSchedules;
     const { groupByDay, sortByModThenLength } = schedules;
     const createOpenDay = (day: number) => [createOpenItem(0, 15, day)];
 
@@ -224,14 +240,14 @@ describe('schedule processing', () => {
     });
 
     it('groups schedule items into separate arrays by day', () => {
-      const [five, one, three] = groupByDay;
+      const [five, one, three] = groupByDay.map(convertToClassItem);
       expect(processSchedule(groupByDay)).toEqual([
         [one], createOpenDay(2), [three], createOpenDay(4), [five],
       ]);
     });
 
     it('sorts each day schedule by startMod then length', () => {
-      const [first, third, second] = sortByModThenLength;
+      const [first, third, second] = sortByModThenLength.map(convertToClassItem);
       expect(processSchedule(sortByModThenLength)).toEqual([
         [
           first,

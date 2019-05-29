@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export function getProfilePhoto(username: string) {
   return AsyncStorage.getItem(`${username}:profile-photo`);
