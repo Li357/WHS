@@ -1,20 +1,9 @@
-import fs from 'fs';
-import { resolve } from 'path';
-import { load } from 'react-native-cheerio';
-
 import {
   getLoginURL, getLoginError, getSchoolPictureFromHTML, processName, getUserScheduleFromHTML, getUserInfoFromHTML,
 } from '../../src/utils/process-info';
-import { LOGIN_URL, SCHOOL_PICTURE_BLANK, SCHOOL_PICTURE_SELECTOR } from '../../src/constants/fetch';
+import { LOGIN_URL, SCHOOL_PICTURE_BLANK } from '../../src/constants/fetch';
 import { processSchedule } from '../../src/utils/process-schedule';
-
-function open(file: string) {
-  return fs.promises.readFile(resolve('__tests__/info/', file), { encoding: 'utf8' });
-}
-const getStudent$ = async () => load(await open('./test-html/student.html'));
-const getError$ = async () => load(await open('./test-html/error.html'));
-const getNew$ = async () => load(await open('./test-html/new.html'));
-const getTeacher$ = async () => load(await open('./test-html/teacher.html'));
+import { getStudent$, getError$, getNew$, getTeacher$ } from '../utils/fetch';
 
 describe('processing user info', () => {
   describe('parseHTMLFromURL', () => {

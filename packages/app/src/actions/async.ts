@@ -1,4 +1,5 @@
 import { ThunkAction } from 'redux-thunk';
+import fetch from 'react-native-fetch-polyfill';
 
 import {
   AppState, SetUserCredentialsAction, SetUserInfoAction, SetUserScheduleAction, SetTeacherSchedulesAction,
@@ -10,6 +11,7 @@ import {
 import { getProfilePhoto } from '../utils/manage-photos';
 import { setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials } from './creators';
 import { LoginError } from '../utils/error';
+import { FETCH_TIMEOUT } from '../constants/fetch';
 
 export function fetchUserInfo(username: string, password: string) {
   return async function fetchUserInfoThunk(dispatch, getState) {
@@ -18,7 +20,7 @@ export function fetchUserInfo(username: string, password: string) {
     // if we are not doing a manual refresh, clear the current user
     const loginURL = getLoginURL(username, password);
     if (username !== user.username) {
-      await fetch(loginURL, { method: 'POST' });
+      await fetch(loginURL, { method: 'POST', timeout: FETCH_TIMEOUT });
     }
 
     const $ = await parseHTMLFromURL(loginURL, { method: 'POST' });
@@ -45,10 +47,12 @@ export function fetchUserInfo(username: string, password: string) {
   >;
 }
 
-export function fetchSchoolPicture() {
+export function fetchSchoolPicture(username: string = '', password: string = '') {
   return async function fetchSchoolPictureThunk(dispatch, getState) {
-    const { user: { username, password } } = getState();
-    const $ = await parseHTMLFromURL(getLoginURL(username, password));
+    const { user } = getState();
+    const $ = await parseHTMLFromURL(
+      getLoginURL(user.username || username, user.password || password), { method: 'POST' },
+    );
     const schoolPicture = getSchoolPictureFromHTML($);
     dispatch(setUserInfo({ schoolPicture }));
   } as ThunkAction<Promise<void>, AppState, undefined, SetUserInfoAction>;

@@ -13,5 +13,5 @@ declare module 'react-native-fetch-polyfill' {
   interface Timeout {
     timeout?: number;
   }
-  export default function fetchPolyfill(input: BodyInit_, init?: RequestInit & Timeout): Promise<Response>;
+  export default function fetchPolyfill(input?: string | Request, init?: RequestInit & Timeout): Promise<Response>;
 }

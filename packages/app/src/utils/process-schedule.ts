@@ -1,6 +1,6 @@
 import {
   ScheduleItem, ClassItem, CrossSectionedItem, CrossSectionedColumn,
-  RawSchedule, UserDaySchedule, RawClassItem, RawClassItemKeys,
+  RawSchedule, UserDaySchedule, RawClassItem,
 } from '../types/schedule';
 import { sortByProps, insert, getWithFallback, splice, excludeKeys } from './object';
 import { SCHEDULE_RESTRICTED_KEYS } from '../constants/fetch';

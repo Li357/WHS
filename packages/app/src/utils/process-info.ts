@@ -8,7 +8,7 @@ import {
   SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR,
 } from '../constants/fetch';
 import { UserInfo, UserInfoKeys } from '../types/store';
-import { Schedule, ClassItem, TeacherSchedule, RawClassItem, RawSchedule } from '../types/schedule';
+import { Schedule, TeacherSchedule, RawSchedule } from '../types/schedule';
 import { NetworkError } from './error';
 
 /**
@@ -16,12 +16,12 @@ import { NetworkError } from './error';
  * @param url to fetch HTML from
  * @param options to pass to `fetch`
  */
-export async function parseHTMLFromURL(url: BodyInit_, options?: RequestInit) {
+export async function parseHTMLFromURL(url: string, options?: RequestInit) {
   const response = await fetch(url, {
     timeout: FETCH_TIMEOUT,
     ...options,
   });
-  if (!response.ok) {
+  if (response.status !== 200) {
     throw new NetworkError('Fetch from URL was not successful!');
   }
   const html = await response.text();
