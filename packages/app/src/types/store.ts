@@ -76,17 +76,13 @@ export interface SetDayScheduleAction extends Action<DayActions.SET_DAY_SCHEDULE
   payload: DaySchedule;
 }
 
-export type FontThemeKeys = 'titleFont' | 'subtitleFont';
 export interface ThemeState {
   backgroundColor: string;
   foregroundColor: string;
-  textColor: string;
-  subtextColor: string;
   borderColor: string;
   accentColor: string;
-
-  titleFont: string;
-  subtitleFont: string;
+  textColor: string;
+  subtextColor: string;
 }
 
 export enum ThemeActions {

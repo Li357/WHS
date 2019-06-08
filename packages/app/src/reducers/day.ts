@@ -1,12 +1,5 @@
 import { DayState, DayAction, DayActions } from '../types/store';
-
-export const initialDayState: DayState = {
-  daySchedule: [],
-  isBreak: false,
-  isFinals: false,
-  hasAssembly: false,
-  lastStateUpdate: null,
-};
+import { initialDayState } from '../constants/store';
 
 export default function dayReducer(state: DayState = initialDayState, action: DayAction) {
   switch (action.type) {

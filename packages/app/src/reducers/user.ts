@@ -1,15 +1,5 @@
 import { UserAction, UserActions, UserState } from '../types/store';
-
-export const initialUserState: UserState = {
-  username: '',
-  password: '',
-  name: '',
-  schedule: [],
-  schoolPicture: '',
-  profilePhoto: '',
-  isTeacher: false,
-  teacherSchedules: [],
-};
+import { initialUserState } from '../constants/store';
 
 export default function userReducer(state: UserState = initialUserState, action: UserAction) {
   switch (action.type) {

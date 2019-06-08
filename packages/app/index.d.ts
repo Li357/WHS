@@ -15,3 +15,5 @@ declare module 'react-native-fetch-polyfill' {
   }
   export default function fetchPolyfill(input?: string | Request, init?: RequestInit & Timeout): Promise<Response>;
 }
+
+declare module '*.png';
