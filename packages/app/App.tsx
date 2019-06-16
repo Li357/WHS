@@ -1,11 +1,14 @@
 import React from 'react';
+import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
+import { createSwitchNavigator, createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { ThemeProvider } from 'styled-components';
 
-import Screen from './src/components/Screen';
 import Login from './src/screens/Login';
+import Dashboard from './src/screens/Dashboard';
+import Loading from './src/screens/Loading';
+import Drawer from './src/components/Drawer';
 import initializeStore from './src/utils/store';
 
 const { store, persistor } = initializeStore();
@@ -15,24 +18,40 @@ function renderApp(isRehydrated: boolean) {
     const { user: { username, password }, theme } = store.getState();
     const isLoggedIn = username.length > 0 && password.length > 0;
 
+    const Authorized = createDrawerNavigator(
+      {
+        Dashboard: { screen: Dashboard },
+      },
+      {
+        initialRouteName: 'Dashboard',
+        contentComponent: Drawer,
+      },
+    );
     const Navigator = createSwitchNavigator(
       {
         Login: { screen: Login },
-        // TODO: Drawer navigator
+        Authorized: { screen: Authorized },
       },
-      { initialRouteName: isLoggedIn ? 'Login' : 'Login' },
+      { initialRouteName: isLoggedIn ? 'Authorized' : 'Login' },
     );
-    const Container = createAppContainer(Navigator);
+    const AppContainer = createAppContainer(Navigator);
+
     return (
       <ThemeProvider theme={theme}>
-        <Screen>
-          <Container />
-        </Screen>
+        <>
+          <StatusBar barStyle={theme.statusBar} />
+          <AppContainer />
+        </>
       </ThemeProvider>
     );
   }
 
-  return null; // TODO: Loading screen
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <Loading />
+    </>
+  );
 }
 
 export default function App() {

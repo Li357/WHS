@@ -8,7 +8,7 @@ import {
   getLoginURL, parseHTMLFromURL, getUserScheduleFromHTML, getUserInfoFromHTML, getLoginError, getSchoolPictureFromHTML,
   fetchTeacherSchedules,
 } from '../utils/process-info';
-import { getProfilePhoto } from '../utils/manage-photos';
+import { getProfilePhoto, setProfilePhoto } from '../utils/manage-photos';
 import { setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials } from './creators';
 import { LoginError } from '../utils/error';
 import { FETCH_TIMEOUT } from '../constants/fetch';
@@ -33,6 +33,7 @@ export function fetchUserInfo(username: string, password: string) {
     const info = getUserInfoFromHTML($);
     // prevent profile photo erasure on manual refresh
     const profilePhoto = await getProfilePhoto(username) || info.schoolPicture;
+    await setProfilePhoto(username, profilePhoto);
     const refreshedTeacherSchedules = await fetchTeacherSchedules(user.teacherSchedules);
 
     dispatch(setUserInfo({ ...info, profilePhoto }));

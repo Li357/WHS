@@ -10,7 +10,8 @@ export const STUDENT_ID_SELECTOR = '.card:first-child > .card-block > .card-text
 
 export const SCHOOL_PICTURE_SELECTOR = '.profile-picture';
 export const SCHOOL_PICTURE_REGEX = /url\((.+)\)/;
-export const SCHOOL_PICTURE_BLANK = 'blank'; // TODO: Supply blank user url
+export const SCHOOL_PICTURE_BLANK = 'blank';
+export const SCHOOL_PICTURE_BLANK_SYMBOL = '@@blank-user';
 
 export const SCHEDULE_SELECTOR = 'body > script:not([src])';
 export const SCHEDULE_REGEX = /'(.+)';$/;

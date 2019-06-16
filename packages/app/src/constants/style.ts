@@ -8,7 +8,12 @@ export const SUBTEXT_FONT = Platform.select({ ios: 'SFProDisplay-Light', android
 export const SUBTEXT_SIZE = 20;
 
 export const SCREEN_PADDING_HORIZONTAL = '10%';
-export const SCREEN_PADDING_TOP = '10%';
+export const SCREEN_PADDING_TOP = '15%';
+
+export const HAMBURGER_WIDTH = '40px';
+export const HAMBURGER_HEIGHT = '30px';
+export const HAMBURGER_LINE_HEIGHT = '5px';
+export const HAMBURGER_LINE_BORDER_RADIUS = '2.5px';
 
 // Controls both input and button form elements
 export const FORM_HEIGHT = '50px';
@@ -20,3 +25,5 @@ export const INPUT_BORDER_WIDTH = '1px';
 
 export const LOGIN_HEADER_MARGIN = '15px'; // 2x form vertical margin
 export const LOGIN_IMAGE_SIZE = '25%'; // of window height
+
+export const PROFILE_HEIGHT = '40%';

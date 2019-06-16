@@ -4,7 +4,7 @@ import { load } from 'react-native-cheerio';
 import { processSchedule } from './process-schedule';
 import {
   HEADER_SELECTOR, STUDENT_OVERVIEW_SELECTOR, STUDENT_ID_SELECTOR,
-  SCHOOL_PICTURE_SELECTOR, SCHOOL_PICTURE_REGEX, SCHOOL_PICTURE_BLANK,
+  SCHOOL_PICTURE_SELECTOR, SCHOOL_PICTURE_REGEX, SCHOOL_PICTURE_BLANK, SCHOOL_PICTURE_BLANK_SYMBOL,
   SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR,
 } from '../constants/fetch';
 import { UserInfo, UserInfoKeys } from '../types/store';
@@ -44,7 +44,7 @@ export function getLoginURL(username: string, password: string) {
 export function getSchoolPictureFromHTML($: CheerioSelector) {
   const matches = $(SCHOOL_PICTURE_SELECTOR).css('background-image').match(SCHOOL_PICTURE_REGEX);
   if (matches === null || matches[1].includes(SCHOOL_PICTURE_BLANK)) {
-    return SCHOOL_PICTURE_BLANK;
+    return SCHOOL_PICTURE_BLANK_SYMBOL;
   }
   return matches[1];
 }

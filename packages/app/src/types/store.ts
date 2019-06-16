@@ -83,6 +83,7 @@ export interface ThemeState {
   accentColor: string;
   textColor: string;
   subtextColor: string;
+  statusBar: 'light-content' | 'dark-content';
 }
 
 export enum ThemeActions {

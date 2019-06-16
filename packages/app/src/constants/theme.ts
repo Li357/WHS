@@ -7,6 +7,7 @@ export const lightTheme: ThemeState = {
   subtextColor: '#7C7C7C',
   borderColor: '#C6C6C6',
   accentColor: '#EF4040',
+  statusBar: 'dark-content',
 };
 
 export const darkTheme: ThemeState = {
@@ -16,4 +17,5 @@ export const darkTheme: ThemeState = {
   subtextColor: '#FFFFFF',
   borderColor: '#FFFFFF',
   accentColor: '#EF4040',
+  statusBar: 'light-content',
 };

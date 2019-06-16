@@ -5,7 +5,7 @@ import styled from 'styled-components/native';
 import {
   SUBTEXT_SIZE, SUBTEXT_FONT,
   FORM_HEIGHT, FORM_BORDER_RADIUS, INPUT_PADDING_HORIZONTAL, INPUT_BORDER_WIDTH, FORM_MARGIN_VERTICAL,
-} from '../constants/style';
+} from '../../constants/style';
 
 interface InputProps {
   error: boolean;
@@ -17,7 +17,7 @@ const StyledInput = styled.TextInput<InputProps>`
   font-size: ${SUBTEXT_SIZE};
   border-color: ${({ theme, error }) => error ? theme.accentColor : theme.borderColor};
   border-width: ${INPUT_BORDER_WIDTH};
-  border-radius: ${FORM_BORDER_RADIUS}
+  border-radius: ${FORM_BORDER_RADIUS};
   background-color: ${({ theme }) => theme.foregroundColor};
   width: 100%;
   height: ${FORM_HEIGHT};
