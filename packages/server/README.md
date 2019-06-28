@@ -19,5 +19,6 @@ For v3:
 - `POST /auth/logout`
 
 Legacy:
+- < v2.0-b6: `GET /otherDates`
 - < v2.0-b6: `GET /specialDates`
 - \> v2.0-b6: `GET /api/specialDates`

@@ -5,6 +5,7 @@ import cors from 'cors';
 import { log, errorHandler, connectToMongoDB, attachDB, cleanUp } from './utils';
 import api from './api';
 import auth from './auth';
+import legacy from './legacy-api';
 
 const { MONGO_DB_NAME, MONGO_DB_URL, SECRET, NODE_ENV, PORT = 5000 } = process.env;
 if (MONGO_DB_URL === undefined || MONGO_DB_NAME === undefined || SECRET === undefined) {
@@ -30,6 +31,7 @@ if (MONGO_DB_URL === undefined || MONGO_DB_NAME === undefined || SECRET === unde
 
     app.use('/v3', api);
     app.use('/auth', auth);
+    app.use(legacy);
 
     app.get('*', (req, res) => {
       res.status(200).sendFile(path.resolve(__dirname, FRONTEND_PATH, 'index.html'));
