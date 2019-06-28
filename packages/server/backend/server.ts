@@ -20,7 +20,6 @@ if (MONGO_DB_URL === undefined || MONGO_DB_NAME === undefined) {
 
     app.use(attachDB(db));
     app.use(express.json());
-    app.use('/v3', api);
 
     if (NODE_ENV === 'production') {
       app.use(express.static(path.resolve(__dirname, FRONTEND_PATH)));
@@ -28,11 +27,13 @@ if (MONGO_DB_URL === undefined || MONGO_DB_NAME === undefined) {
       app.use(cors());
     }
 
-    app.get('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, FRONTEND_PATH, 'index.html'));
-    });
+    app.use('/v3', api);
 
+    app.get('*', (req, res) => {
+      res.status(200).sendFile(path.resolve(__dirname, FRONTEND_PATH, 'index.html'));
+    });
     app.use(errorHandler);
+
     app.listen(PORT, () => {
       log(`Server running on ${PORT}`);
     });

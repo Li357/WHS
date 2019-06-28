@@ -1,11 +1,10 @@
 import { MongoClient, Db } from 'mongodb';
 import { ErrorRequestHandler, Handler } from 'express';
 
-export function asyncMiddleware(fn: Handler) {
+export function asyncRoute(fn: Handler) {
   const middleware: Handler = async (req, res, next) => {
     try {
-      await fn(req, res, next);
-      next();
+      await fn(req, res, next); // assuming no errors occurred, the response is sent
     } catch (error) {
       next(error);
     }
@@ -38,7 +37,7 @@ export function log(message: string) {
 
 export const errorHandler: ErrorRequestHandler = (error, { method, originalUrl }, res, next) => {
   log(`ERROR during request, ${method} ${originalUrl}! Stacktrace:\n${error}`);
-  res.status(500);
+  res.status(500).end();
 };
 
 export function cleanUp(client: MongoClient) {

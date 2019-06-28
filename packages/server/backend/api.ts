@@ -1,11 +1,11 @@
 import { Router } from 'express';
 
 import { DatesQuery, DateSchema } from './types/api';
-import { asyncMiddleware, log } from './utils';
+import { asyncRoute, log } from './utils';
 
 const api = Router();
 
-api.get('/dates', asyncMiddleware(async ({ query, db }, res) => {
+api.get('/dates', asyncRoute(async ({ query, db }, res) => {
   const { type, year } = query as DatesQuery;
 
   const collection = db!.collection<DateSchema>('dates');
@@ -14,7 +14,7 @@ api.get('/dates', asyncMiddleware(async ({ query, db }, res) => {
   res.status(200).json(dates);
 }));
 
-api.post('/dates', asyncMiddleware(async ({ body, db }, res) => {
+api.post('/dates', asyncRoute(async ({ body, db }, res) => {
   const writeOperations = body as object[];
   const {
     insertedCount = 0,
