@@ -1,13 +1,7 @@
-import express from 'express';
-import path from 'path';
-import cors from 'cors';
+import { log, connectToMongoDB, cleanUp } from './utils';
+import initializeApp from './app';
 
-import { log, errorHandler, connectToMongoDB, attachDB, cleanUp } from './utils';
-import api from './api';
-import auth from './auth';
-import legacy from './legacy-api';
-
-const { MONGO_DB_NAME, MONGO_DB_URL, SECRET, NODE_ENV, PORT = 5000 } = process.env;
+const { MONGO_DB_NAME, MONGO_DB_URL, SECRET, PORT = 5000 } = process.env;
 if (MONGO_DB_URL === undefined || MONGO_DB_NAME === undefined || SECRET === undefined) {
   log('ERROR! Please set environment variables. See README.md.');
   process.exit(-1);
@@ -16,27 +10,7 @@ if (MONGO_DB_URL === undefined || MONGO_DB_NAME === undefined || SECRET === unde
 (async () => {
   try {
     const { client, db } = await connectToMongoDB(MONGO_DB_URL!, MONGO_DB_NAME!);
-
-    const FRONTEND_PATH = '../frontend'; // relative to ./dist/backend once built
-    const app = express();
-
-    app.use(attachDB(db));
-    app.use(express.json());
-
-    if (NODE_ENV === 'production') {
-      app.use(express.static(path.resolve(__dirname, FRONTEND_PATH)));
-    } else {
-      app.use(cors());
-    }
-
-    app.use('/v3', api);
-    app.use('/auth', auth);
-    app.use(legacy);
-
-    app.get('*', (req, res) => {
-      res.status(200).sendFile(path.resolve(__dirname, FRONTEND_PATH, 'index.html'));
-    });
-    app.use(errorHandler);
+    const app = initializeApp(db);
 
     app.listen(PORT, () => {
       log(`Server running on ${PORT}`);

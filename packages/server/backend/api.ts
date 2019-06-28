@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { DatesQuery, DateSchema } from './types/api';
-import { asyncRoute, log } from './utils';
+import { asyncRoute, log, requiresAuth } from './utils';
 
 const api = Router();
 
@@ -14,7 +14,7 @@ api.get('/dates', asyncRoute(async ({ query, db }, res) => {
   res.status(200).json(dates);
 }));
 
-api.post('/dates', asyncRoute(async ({ body, db }, res) => {
+api.post('/dates', requiresAuth((user) => user.admin), asyncRoute(async ({ body, db }, res) => {
   const writeOperations = body as object[];
   const {
     insertedCount = 0,

@@ -2,7 +2,7 @@ import { Router, CookieOptions } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { asyncRoute } from './utils';
+import { asyncRoute, requiresAuth } from './utils';
 import { LoginBody, UserSchema } from './types/api';
 
 const authRouter = Router();
@@ -43,7 +43,7 @@ authRouter.post('/login', asyncRoute(async ({ body, db }, res, next) => {
   });
 }));
 
-authRouter.post('/logout', (req, res) => {
+authRouter.post('/logout', requiresAuth((user) => user.admin), (req, res) => {
   res.clearCookie('payload', payloadCookieOptions);
   res.clearCookie('signature', signatureCookieOptions);
   res.status(200).end();
