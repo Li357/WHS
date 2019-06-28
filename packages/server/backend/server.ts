@@ -1,18 +1,32 @@
 import express from 'express';
 import path from 'path';
+import cors from 'cors';
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+import { mongodb, log, errorHandler } from './utils';
+
+const { MONGO_DB_NAME, MONGO_DB_URL, NODE_ENV, PORT = 5000 } = process.env;
+if (MONGO_DB_URL === undefined || MONGO_DB_NAME === undefined) {
+  throw new Error('Please set environment variables. See README.md.');
+}
+
 const FRONTEND_PATH = '../frontend'; // relative to ./dist/backend once built
+const app = express();
 
 app.use(express.json());
+app.use(mongodb(MONGO_DB_URL, MONGO_DB_NAME));
 
-app.use(express.static(path.resolve(__dirname, FRONTEND_PATH)));
+if (NODE_ENV === 'production') {
+  app.use(express.static(path.resolve(__dirname, FRONTEND_PATH)));
+} else {
+  app.use(cors());
+}
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, FRONTEND_PATH, 'index.html'));
 });
 
+app.use(errorHandler);
+
 app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+  log(`Server running on ${PORT}`);
 });
