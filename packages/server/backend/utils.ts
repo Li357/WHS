@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 import { ErrorRequestHandler, Handler } from 'express';
 
 export function asyncMiddleware(fn: Handler) {
@@ -13,12 +13,22 @@ export function asyncMiddleware(fn: Handler) {
   return middleware;
 }
 
-export function mongodb(url: string, name: string) {
-  const middleware: Handler = async (req, res, next) => {
-    const database = await MongoClient.connect(url, { useNewUrlParser: true });
-    req.db = database.db(name);
+export async function connectToMongoDB(url: string, name: string) {
+  log(`Connecting to database ${name}...`);
+  const client = await MongoClient.connect(url, { useNewUrlParser: true });
+  log(`Connected to database ${name}.`);
+  return {
+    client,
+    db: client.db(name),
   };
-  return asyncMiddleware(middleware);
+}
+
+export function attachDB(db: Db) {
+  const middleware: Handler = (req, res, next) => {
+    req.db = db;
+    next();
+  };
+  return middleware;
 }
 
 export function log(message: string) {
@@ -26,7 +36,16 @@ export function log(message: string) {
   console.log(`[${new Date()}]: ${message}`);
 }
 
-export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  log(`ERROR ${err}`);
+export const errorHandler: ErrorRequestHandler = (error, { method, originalUrl }, res, next) => {
+  log(`ERROR during request, ${method} ${originalUrl}! Stacktrace:\n${error}`);
   res.status(500);
 };
+
+export function cleanUp(client: MongoClient) {
+  return async function listener() {
+    log('Closing database connection...');
+    await client.close();
+    log('Closed database connection.');
+    process.exit(1);
+  };
+}

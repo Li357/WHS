@@ -5,6 +5,6 @@
   ],
   "compilerOptions": {
     "module": "commonjs",
-    "outDir": "dist/backend",
+    "outDir": "dist/backend"
   }
 }
