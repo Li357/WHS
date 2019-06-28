@@ -1,10 +1,15 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "backend/**/*.ts"
-  ],
   "compilerOptions": {
     "module": "commonjs",
-    "outDir": "dist/backend"
-  }
+    "outDir": "dist/backend",
+  },
+  "files": ["backend/types/shims-express.d.ts"],
+  "exclude": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+  ]
 }

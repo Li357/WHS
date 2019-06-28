@@ -1,5 +1,12 @@
 const path = require('path');
 
 module.exports = {
-  outputDir: path.resolve(__dirname, 'dist', 'frontend'),
+  chainWebpack: (config) => {
+    config
+      .plugin('fork-ts-checker')
+      .tap((args) => {
+        args[0].tsconfig = path.resolve(__dirname, 'tsconfig.frontend.json');
+        return args;
+      });
+  },
 };

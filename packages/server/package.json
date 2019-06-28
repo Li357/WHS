@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node dist/backend/server.js",
     "serve": "vue-cli-service serve",
-    "build:frontend": "vue-cli-service build",
+    "build:frontend": "vue-cli-service build --dest dist/frontend",
     "build:backend": "yarn tsc -p tsconfig.backend.json",
     "build": "yarn build:frontend && yarn build:backend",
     "lint:frontend": "vue-cli-service lint",
