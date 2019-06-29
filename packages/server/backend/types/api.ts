@@ -5,6 +5,11 @@ export interface DatesQuery {
   year?: string;
 }
 
+export interface DatesDbQuery {
+  type?: string;
+  year?: number;
+}
+
 export interface Schema {
   _id: ObjectId;
 }

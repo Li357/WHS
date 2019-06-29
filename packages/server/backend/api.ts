@@ -1,15 +1,22 @@
 import { Router } from 'express';
 
-import { DatesQuery, DateSchema } from './types/api';
+import { DatesQuery, DateSchema, DatesDbQuery } from './types/api';
 import { asyncRoute, log, requiresAuth } from './utils';
 
 const api = Router();
 
 api.get('/dates', asyncRoute(async ({ query, db }, res) => {
   const { type, year } = query as DatesQuery;
+  const dbQuery: DatesDbQuery = {};
+  if (type !== undefined) {
+    dbQuery.type = type;
+  }
+  if (year !== undefined) {
+    dbQuery.year = Number(year);
+  }
 
   const collection = db!.collection<DateSchema>('dates');
-  const dates = await collection.find({ type, year }).toArray();
+  const dates = await collection.find(dbQuery).toArray();
   log(`Processed GET /dates successfully with ${dates.length} dates.`);
   res.status(200).json(dates);
 }));

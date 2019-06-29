@@ -18,6 +18,10 @@ export function asyncRoute(fn: Handler) {
 export function requiresAuth(authFn: (user: UserSchema) => boolean) {
   const middleware: Handler = ({ cookies }, res, next) => {
     const { signature, payload } = cookies;
+    if (signature === undefined || payload === undefined) {
+      return res.status(401).end();
+    }
+
     const token = `${payload}.${signature}`;
     jwt.verify(token, process.env.SECRET!, (error, decoded) => {
       if (error) {
