@@ -1,3 +1,4 @@
+// tslint:disable-next-line: no-namespace
 declare namespace NodeJS {
   interface Global {
     __MONGO_URI__: string;

@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 /dist
-start.sh
+set-env.sh
 
 # local env files
 .env.local

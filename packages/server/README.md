@@ -7,7 +7,7 @@ To develop locally, install dependencies (`yarn`) then build (`yarn build`). Fin
 - `MONGO_DB_NAME`: name of the MongoDB database (likely `whs`)
 - `SECRET`: secret used to sign login JWTs
 
-Also execute `yarn start` to start the Express server in the script.
+Also execute `yarn start` to start the Express server in the script. These variables are also needed to run tests.
 
 ### Endpoints
 For v3:

@@ -16,9 +16,10 @@ export function asyncRoute(fn: Handler) {
 }
 
 export function requiresAuth(authFn: (user: UserSchema) => boolean) {
-  const middleware: Handler = ({ cookies }, res, next) => {
+  const middleware: Handler = ({ cookies, originalUrl }, res, next) => {
     const { signature, payload } = cookies;
     if (signature === undefined || payload === undefined) {
+      log(`Unauthenticated request to ${originalUrl}!`);
       return res.status(401).end();
     }
 
@@ -27,8 +28,10 @@ export function requiresAuth(authFn: (user: UserSchema) => boolean) {
       if (error) {
         return next(error);
       } else if (decoded && authFn(decoded as UserSchema)) {
+        log(`Authenticated request to ${originalUrl}!`);
         return next();
       }
+      log(`Unauthenticated request to ${originalUrl}!`);
       res.status(401).end();
     });
   };

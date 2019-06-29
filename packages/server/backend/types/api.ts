@@ -11,7 +11,7 @@ export interface DatesDbQuery {
 }
 
 export interface Schema {
-  _id: ObjectId;
+  _id: string;
 }
 
 export interface DateSchema extends Schema {

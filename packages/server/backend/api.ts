@@ -29,14 +29,14 @@ api.post('/dates', requiresAuth((user) => user.admin), asyncRoute(async ({ body,
     modifiedCount = 0,
     deletedCount = 0,
     upsertedCount = 0,
-    result = {},
-  } = await db!.collection<DateSchema>('dates').bulkWrite(writeOperations, { ordered: false });
+    result,
+  } = await db!.collection<DateSchema>('dates').bulkWrite(writeOperations);
 
   log(
     `Processed POST /dates successfully with ${insertedCount} inserted, ${matchedCount} matched, ` +
     `${modifiedCount} modified, ${deletedCount} deleted, and ${upsertedCount} upserted.`,
   );
-  res.status(200).json(result);
+  res.status(200).end();
 }));
 
 export default api;
