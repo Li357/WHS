@@ -5,18 +5,13 @@ export interface DatesQuery {
   year?: string;
 }
 
-export interface DatesDbQuery {
-  type?: string;
-  year?: number;
-}
-
 export interface Schema {
   _id: string;
 }
 
 export interface DateSchema extends Schema {
   type: string;
-  year: number;
+  year: string;
   date: string;
 }
 

@@ -2,7 +2,9 @@ import { Router } from 'express';
 import { format } from 'date-fns';
 
 import { asyncRoute } from './utils';
-import { DateTypeKey, Date, DateSchema, SettingsSchema, Settings } from './types/legacy-api';
+import { DateTypeKey, LegacyDate, LegacyDateSchema, LegacySettingsSchema, Settings } from './types/legacy-api';
+
+// Beware of spaghetti
 
 const legacyRouter = Router();
 
@@ -28,14 +30,14 @@ legacyRouter.get('/specialDates', asyncRoute(async ({ db }, res, next) => {
       type: String(i + 1),
       year: String(currentYear),
     })
-  )))).map((doc) => (doc ? doc.dates : []).map((dateObj: Date) => (
+  )))).map((doc) => (doc ? doc.dates : []).map((dateObj: LegacyDate) => (
     format(new Date(dateObj.date), 'MMMM D YYYY')
   )));
 
-  const { settings } = await db!.collection<DateSchema | SettingsSchema>('specialDates').findOne({
+  const { settings } = await db!.collection<LegacyDateSchema | LegacySettingsSchema>('specialDates').findOne({
     type: '5',
     year: String(currentYear),
-  }) as SettingsSchema;
+  }) as LegacySettingsSchema;
   (Object.keys(settings) as Array<keyof Settings>).forEach((key) => {
     settings[key] = format(new Date(settings[key]), 'MMMM D YYYY');
   });
@@ -70,7 +72,7 @@ legacyRouter.get('/api/specialDates', asyncRoute(async (
         // eslint-disable-next-line no-param-reassign
         datesDict[dateTypeKeys[type as DateTypeKey]] = [
           ...datesDict[dateTypeKeys[type as DateTypeKey]] || [],
-          ...dates.map((obj: Date) => obj.date),
+          ...dates.map((obj: LegacyDate) => obj.date),
         ];
         return datesDict;
       }, {});

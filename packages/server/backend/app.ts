@@ -3,6 +3,7 @@ import { Db } from 'mongodb';
 import cors from 'cors';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 import { attachDB, errorHandler } from './utils';
 import api from './api';
@@ -13,6 +14,7 @@ export default function initializeApp(db: Db) {
   const FRONTEND_PATH = '../frontend'; // relative to ./dist/backend once built
   const app = express();
 
+  app.use(helmet());
   app.use(cookieParser());
   app.use(attachDB(db));
   app.use(express.json());

@@ -1,18 +1,18 @@
 import { Router } from 'express';
 
-import { DatesQuery, DateSchema, DatesDbQuery } from './types/api';
+import { DatesQuery, DateSchema } from './types/api';
 import { asyncRoute, log, requiresAuth } from './utils';
 
 const api = Router();
 
 api.get('/dates', asyncRoute(async ({ query, db }, res) => {
   const { type, year } = query as DatesQuery;
-  const dbQuery: DatesDbQuery = {};
+  const dbQuery: DatesQuery = {};
   if (type !== undefined) {
     dbQuery.type = type;
   }
   if (year !== undefined) {
-    dbQuery.year = Number(year);
+    dbQuery.year = year;
   }
 
   const collection = db!.collection<DateSchema>('dates');
@@ -29,7 +29,6 @@ api.post('/dates', requiresAuth((user) => user.admin), asyncRoute(async ({ body,
     modifiedCount = 0,
     deletedCount = 0,
     upsertedCount = 0,
-    result,
   } = await db!.collection<DateSchema>('dates').bulkWrite(writeOperations);
 
   log(

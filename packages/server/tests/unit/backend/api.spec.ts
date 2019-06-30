@@ -12,8 +12,8 @@ describe('dates API', () => {
   const str = JSON.stringify;
 
   const mockDates = [
-    { _id: new ObjectId().toHexString(), type: 'assembly', year: 2018, date: '2018-02-01T22:19:03.002Z' },
-    { _id: new ObjectId().toHexString(), type: 'no-school', year: 2019, date: '2019-11-04T13:22:43.005Z' },
+    { _id: new ObjectId().toHexString(), type: 'assembly', year: '2018', date: '2018-02-01T22:19:03.002Z' },
+    { _id: new ObjectId().toHexString(), type: 'no-school', year: '2019', date: '2019-11-04T13:22:43.005Z' },
   ];
 
   const passwords = ['12345', '67890'];
@@ -94,7 +94,7 @@ describe('dates API', () => {
       const mockDateToInsert = {
         _id: new ObjectId().toHexString(),
         type: 'assembly',
-        year: 2018,
+        year: '2018',
         date: '2018-12-05T22:19:03.002Z',
       };
 
@@ -106,7 +106,7 @@ describe('dates API', () => {
           {
             updateOne: {
               filter: { _id: mockDates[0]._id },
-              update: { $set: { year: 2019 } },
+              update: { $set: { year: '2019' } },
             },
           },
           { deleteOne: { filter: { _id: mockDates[1]._id } } },
@@ -117,7 +117,7 @@ describe('dates API', () => {
       const datesCollection = db.collection<DateSchema>('dates');
       const dates = await datesCollection.find().toArray();
       expect(dates).toEqual([
-        { ...mockDates[0], year: 2019 },
+        { ...mockDates[0], year: '2019' },
         mockDateToInsert,
       ]);
     });

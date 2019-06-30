@@ -1,6 +1,6 @@
 export type DateTypeKey = '1' | '2' | '3' | '4';
 
-export interface Date {
+export interface LegacyDate {
   date: string;
   comment: string;
 }
@@ -12,13 +12,13 @@ export interface Settings {
   lastDay: string;
 }
 
-export interface DateSchema {
+export interface LegacyDateSchema {
   type: DateTypeKey;
   year: string;
   dates: Date[];
 }
 
-export interface SettingsSchema {
+export interface LegacySettingsSchema {
   type: 5;
   year: string;
   settings: Settings;
