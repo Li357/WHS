@@ -1,3 +1,5 @@
+import { Schema } from './api';
+
 export type DateTypeKey = '1' | '2' | '3' | '4';
 
 export interface LegacyDate {
@@ -12,14 +14,18 @@ export interface Settings {
   lastDay: string;
 }
 
-export interface LegacyDateSchema {
+export interface LegacyDateSchema extends Schema {
   type: DateTypeKey;
   year: string;
-  dates: Date[];
+  dates: LegacyDate[];
 }
 
-export interface LegacySettingsSchema {
-  type: 5;
+export interface LegacyOtherDateSchema extends Schema {
+  [yearRange: string]: object | string;
+}
+
+export interface LegacySettingsSchema extends Schema {
+  type: '5';
   year: string;
   settings: Settings;
 }
