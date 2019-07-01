@@ -1,4 +1,4 @@
-import { Schema } from './api';
+import { Schema } from '../../shared/types/api';
 
 export type DateTypeKey = '1' | '2' | '3' | '4';
 

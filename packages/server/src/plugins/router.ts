@@ -6,6 +6,7 @@ import DateList from '../components/DateList.vue';
 import Login from '../views/Login.vue';
 import NotFound from '../views/NotFound.vue';
 import { getCookie } from '../utils';
+import { UserSchema } from '../../shared/types/api';
 
 Vue.use(Router);
 
@@ -46,7 +47,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
     const [, decoded] = payload.split('.');
-    const user = JSON.parse(atob(decoded));
+    const user: UserSchema = JSON.parse(atob(decoded));
     if (user.admin) {
       return next();
     }

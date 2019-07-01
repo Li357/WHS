@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import { asyncRoute, requiresAuth, log } from './utils';
-import { LoginBody, UserSchema } from './types/api';
+import { LoginBody, UserSchema } from '../shared/types/api';
 
 const authRouter = Router();
 

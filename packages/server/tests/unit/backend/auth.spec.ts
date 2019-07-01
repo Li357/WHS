@@ -3,7 +3,7 @@ import request, { SuperTest, Test } from 'supertest';
 import bcrypt from 'bcrypt';
 
 import initializeApp from '../../../backend/app';
-import { UserSchema } from '../../../backend/types/api';
+import { UserSchema } from '../../../shared/types/api';
 
 describe('auth API', () => {
   let connection: MongoClient;

@@ -13,6 +13,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
+import { LoginBody } from '../../shared/types/api';
+
 @Component({ name: 'login' })
 export default class Home extends Vue {
   private username = '';
@@ -27,13 +29,15 @@ export default class Home extends Vue {
   private async login() {
     try {
       this.loading = true;
+
+      const credentials: LoginBody = {
+        username: this.username,
+        password: this.password,
+      };
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: this.username,
-          password: this.password,
-        }),
+        body: JSON.stringify(credentials),
       });
       if (!response.ok) {
         if (response.status === 401) {

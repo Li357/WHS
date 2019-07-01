@@ -15,6 +15,7 @@
   },
   "exclude": [
     "backend/**/*.ts",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "shared/**/*.ts"
   ]
 }

@@ -14,7 +14,7 @@
             <el-submenu v-for="year in years" :key="year" :index="`${year}`">
               <template slot="title">{{ year }} - {{ year + 1 }}</template>
               <el-menu-item
-                v-for="(displayName, type) in dateTypes"
+                v-for="(displayName, type) in dateTypeNames"
                 :key="type" :index="`${year}/${type}`"
                 @click="$router.push(`/dashboard/${year}/${type}`)"
               >{{ displayName }}</el-menu-item>
@@ -31,24 +31,21 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
-import { range } from '../utils';
+import { range, dateTypeNames } from '../utils';
 
 @Component({ name: 'dashboard' })
 export default class Dashboard extends Vue {
   @Prop(String) private readonly startYear!: string;
   @Prop(String) private readonly dateType!: string;
-  private years = range(Number(this.startYear) - 2, Number(this.startYear) + 2);
 
-  private dateTypes = {
-    'assembly': 'Assembly Dates',
-    'no-school': 'No School Dates',
-    'early-dismissal': 'Early Dismissal Dates',
-    'late-start': 'Late Start Dates',
-    'semester-one-start': 'Semester One Start',
-    'semester-one-end': 'Semester One End',
-    'semester-two-start': 'Semester Two Start',
-    'semester-two-end': 'Semester Two End',
-  };
+  private dateTypeNames = dateTypeNames;
+
+  get years() {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
+    const currentYearStart = currentMonth < 5 ? currentYear - 1 : currentYear;
+    return range(currentYearStart - 2, currentYearStart + 3);
+  }
 
   private async logout() {
     try {
@@ -73,7 +70,7 @@ export default class Dashboard extends Vue {
 
   &-container
     display flex
-  
+
   &-header
     display flex
     align-items center
@@ -84,7 +81,7 @@ export default class Dashboard extends Vue {
 
   &-navbar
     background-color rgba(0, 0, 0, .04)
-    
+
     &-list
       background-color unset
 </style>

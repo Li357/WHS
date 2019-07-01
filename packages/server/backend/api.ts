@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { DatesQuery, DateSchema } from './types/api';
+import { DatesQuery, DateSchema } from '../shared/types/api';
 import { asyncRoute, log, requiresAuth } from './utils';
 
 const api = Router();

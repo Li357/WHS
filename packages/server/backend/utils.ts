@@ -2,7 +2,7 @@ import { MongoClient, Db } from 'mongodb';
 import { ErrorRequestHandler, Handler } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { UserSchema } from './types/api';
+import { UserSchema } from '../shared/types/api';
 
 export function asyncRoute(fn: Handler) {
   const middleware: Handler = async (req, res, next) => {

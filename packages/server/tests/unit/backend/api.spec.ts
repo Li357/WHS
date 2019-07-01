@@ -3,7 +3,7 @@ import { MongoClient, Db, ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
 
 import initializeApp from '../../../backend/app';
-import { DateSchema, UserSchema } from '../../../backend/types/api';
+import { DateSchema, UserSchema } from '../../../shared/types/api';
 
 describe('dates API', () => {
   let connection: MongoClient;
