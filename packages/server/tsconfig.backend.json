@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "target": "es2015",
     "module": "commonjs",
     "outDir": "dist/backend",
   },
@@ -9,7 +10,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "tests/unit/frontend/**/*.ts",
-    "tests/unit/frontend/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
   ]
 }

@@ -15,6 +15,6 @@
   },
   "exclude": [
     "backend/**/*.ts",
-    "tests/unit/backend/**/*.ts"
+    "tests/**/*.ts"
   ]
 }
