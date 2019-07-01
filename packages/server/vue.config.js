@@ -1,6 +1,13 @@
 const path = require('path');
 
 module.exports = {
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+      },
+    },
+  },
   chainWebpack: (config) => {
     config
       .plugin('fork-ts-checker')
@@ -8,5 +15,8 @@ module.exports = {
         args[0].tsconfig = path.resolve(__dirname, 'tsconfig.frontend.json');
         return args;
       });
+  },
+  configureWebpack: {
+    devtool: 'source-map',
   },
 };

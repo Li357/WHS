@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import Dashboard from '../views/Dashboard.vue';
+import DateList from '../components/DateList.vue';
 import Login from '../views/Login.vue';
 import NotFound from '../views/NotFound.vue';
 import { getCookie } from '../utils';
@@ -14,6 +15,12 @@ const routes = [
     name: 'dashboard',
     component: Dashboard,
     meta: { admin: true },
+    props: true,
+    children: [{
+      path: ':dateType',
+      component: DateList,
+      props: true,
+    }],
   },
   { path: '/login', name: 'login', component: Login },
   { path: '*', name: 'not-found', component: NotFound },
@@ -21,7 +28,6 @@ const routes = [
 
 const router = new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes,
 });
 
@@ -30,7 +36,7 @@ router.beforeEach(async (to, from, next) => {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth();
     const currentYearStart = currentMonth < 5 ? currentYear - 1 : currentYear;
-    return next(`/dashboard/${currentYearStart}`);
+    return next(`/dashboard/${currentYearStart}/assembly`);
   }
 
   if (to.matched.some(({ meta }) => meta.admin)) {

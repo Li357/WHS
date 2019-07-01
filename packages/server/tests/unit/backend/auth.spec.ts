@@ -1,6 +1,5 @@
 import { MongoClient, Db, ObjectId } from 'mongodb';
 import request, { SuperTest, Test } from 'supertest';
-import { Express } from 'express';
 import bcrypt from 'bcrypt';
 
 import initializeApp from '../../../backend/app';
@@ -28,31 +27,31 @@ describe('auth API', () => {
     await usersCollection.insertMany(mockUsers);
   });
 
-  describe('POST /auth/login', () => {
+  describe('POST /api/auth/login', () => {
     it('should return 400 if either credential is undefined', async () => {
-      const res = await api.post('/auth/login');
+      const res = await api.post('/api/auth/login');
       expect(res.status).toBe(400);
       expect(res.text).toBe('');
     });
 
     it('should return 401 if the username does not exist', async () => {
-      const res = await api.post('/auth/login').send({ username: 'Jeff', password: '' });
+      const res = await api.post('/api/auth/login').send({ username: 'Jeff', password: '' });
       expect(res.status).toBe(401);
       expect(res.text).toBe('');
     });
 
     it('should return 401 if the password is incorrect', async () => {
-      const bob = await api.post('/auth/login').send({ username: 'Bob', password: '' });
+      const bob = await api.post('/api/auth/login').send({ username: 'Bob', password: '' });
       expect(bob.status).toBe(401);
       expect(bob.text).toBe('');
 
-      const john = await api.post('/auth/login').send({ username: 'John', password: '' });
+      const john = await api.post('/api/auth/login').send({ username: 'John', password: '' });
       expect(john.status).toBe(401);
       expect(john.text).toBe('');
     });
 
     it('should return cookies and 200 if credentials correct', async () => {
-      const bob = await api.post('/auth/login').send({ username: 'Bob', password: passwords[0] });
+      const bob = await api.post('/api/auth/login').send({ username: 'Bob', password: passwords[0] });
       const [payload, signature] = bob.get('Set-Cookie');
       expect(bob.status).toBe(200);
       expect(payload.includes('Max-Age=86400')).toBe(true);
@@ -65,17 +64,17 @@ describe('auth API', () => {
     });
   });
 
-  describe('POST /auth/logout', () => {
+  describe('POST /api/auth/logout', () => {
     it('should return 401 if no user logged in', async () => {
-      const res = await api.post('/auth/logout');
+      const res = await api.post('/api/auth/logout');
       expect(res.status).toBe(401);
       expect(res.text).toBe('');
     });
 
     it('should clear cookies and return 200 if user is logged in', async () => {
-      const john = await api.post('/auth/login').send({ username: 'John', password: passwords[1] });
+      const john = await api.post('/api/auth/login').send({ username: 'John', password: passwords[1] });
       const cookies = john.get('Set-Cookie'); // https://github.com/visionmedia/supertest/issues/336
-      const res = await api.post('/auth/logout').set('Cookie', cookies);
+      const res = await api.post('/api/auth/logout').set('Cookie', cookies);
       expect(res.status).toBe(200);
       const [payload, signature] = res.get('Set-Cookie');
       expect(payload.includes('payload=;')).toBe(true);

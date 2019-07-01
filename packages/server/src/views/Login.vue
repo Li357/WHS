@@ -18,14 +18,16 @@ export default class Home extends Vue {
   private username = '';
   private password = '';
   private error = '';
+  private loading = false;
 
   get canLogin() {
-    return this.username.length > 0 && this.password.length > 0;
+    return this.username.length > 0 && this.password.length > 0 && !this.loading;
   }
 
   private async login() {
     try {
-      const response = await fetch('/auth/login', {
+      this.loading = true;
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -33,19 +35,17 @@ export default class Home extends Vue {
           password: this.password,
         }),
       });
-      if (!response.ok && response.status !== 401) {
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Your username or password was incorrect.');
+        }
         throw new Error('Please check your internet connection.');
       }
-
-      const user = await response.json();
-      if (user.auth) {
-        return this.$router.push('/');
-      }
-
-      throw new Error('Your username or password was incorrect.');
+      this.$router.push('/');
     } catch ({ message }) {
       this.error = message;
     }
+    this.loading = false;
   }
 }
 </script>
@@ -60,7 +60,7 @@ export default class Home extends Vue {
     min-width 300px
     max-width 400px
 
-  &-input, &-button
+  &-input, &-button, & .el-alert--error
     margin-bottom 10px
 
   &-button

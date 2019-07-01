@@ -5,3 +5,7 @@ export function getCookie(name: string) {
   }
   return null;
 }
+
+export function range(start: number, end: number) {
+  return Array(end - start).fill(undefined).map((_, i) => i + start);
+}

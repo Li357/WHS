@@ -8,6 +8,7 @@
 <style lang="stylus" scoped>
 .not-found
   font-size 10em
+  font-weight bold
   display flex
   flex-direction column
   justify-content center
