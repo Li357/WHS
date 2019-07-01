@@ -25,8 +25,8 @@ export default function initializeApp(db: Db) {
     app.use(cors());
   }
 
-  app.use('/v3', api);
-  app.use('/auth', auth);
+  app.use('/api/v3', api);
+  app.use('/api/auth', auth);
   app.use(legacy);
 
   app.get('*', (req, res) => {
