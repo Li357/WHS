@@ -16,8 +16,8 @@ if (MONGO_DB_URL === undefined || MONGO_DB_NAME === undefined || SECRET === unde
       log(`Server running on ${PORT}`);
     });
 
-    process.on('SIGINT', cleanUp(client));
-    process.on('SIGTERM', cleanUp(client));
+    process.on('SIGINT', await cleanUp(client));
+    process.on('SIGTERM', await cleanUp(client));
   } catch (error) {
     log(`ERROR while connecting to database! Stacktrace:\n${error}`);
     process.exit(1);
