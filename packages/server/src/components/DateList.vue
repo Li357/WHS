@@ -5,13 +5,21 @@
         {{ startYear }} - {{ Number(startYear) + 1 }} {{ dateTypeNames[dateType] }}
         <div>
           <el-button
-            class="date-list-add" type="primary" icon="el-icon-plus"
+            type="primary" icon="el-icon-plus"
             @click="addingDates = true" round
           >Add Date</el-button>
           <el-button
             type="danger" icon="el-icon-check"
             @click="saveDates" :disabled="savingDates" round
           >Save Dates</el-button>
+          <el-button
+            class="mobile" type="primary" icon="el-icon-plus"
+            @click="addingDates = true" round
+          ></el-button>
+          <el-button
+            class="mobile" type="danger" icon="el-icon-check"
+            @click="saveDates" :disabled="savingDates" round
+          ></el-button>
         </div>
       </el-header>
       <el-table :data="dateStrings" empty-text="No dates" v-loading="savingDates || loadingDates">
@@ -108,10 +116,31 @@ export default class DateList extends Vue {
 
 <style lang="stylus" scoped>
 .date-list
-  width 100%
+  width 80%
+
+  @media screen and (max-width: 900px)
+    width 100%
 
   &-header
     display flex
     align-items center
     justify-content space-between
+
+    @media screen and (max-width: 575px)
+      flex-direction column
+      margin 10px
+
+    & .mobile
+      display none
+
+    @media screen and (max-width: 340px)
+      & > div
+        display flex
+        flex-direction row
+
+        & *
+          display none
+
+      & .mobile
+        display block
 </style>

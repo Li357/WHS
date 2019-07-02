@@ -2,11 +2,15 @@
   <div class="dashboard">
     <el-container class="dashboard-container">
       <el-header class="dashboard-header">
+        <i
+          :class="['dashboard-hamburger', drawerOpen ? 'el-icon-close' : 'el-icon-s-unfold']"
+          @click="drawerOpen = !drawerOpen"
+        ></i>
         Dashboard
         <el-button class="dashboard-logout" type="text" @click="logout">Log out</el-button>
       </el-header>
       <el-container>
-        <el-aside class="dashboard-navbar" width="20%">
+        <el-aside :class="['dashboard-navbar', { open: drawerOpen }]" width="20%">
           <el-menu
             class="dashboard-navbar-list" unique-opened
             :default-active="`${startYear}/${dateType}`"
@@ -16,7 +20,7 @@
               <el-menu-item
                 v-for="(displayName, type) in dateTypeNames"
                 :key="type" :index="`${year}/${type}`"
-                @click="$router.push(`/dashboard/${year}/${type}`)"
+                @click="select(year, type)"
               >{{ displayName }}</el-menu-item>
             </el-submenu>
           </el-menu>
@@ -38,6 +42,7 @@ import API from '../api-wrapper';
 export default class Dashboard extends Vue {
   @Prop(String) private readonly startYear!: string;
   @Prop(String) private readonly dateType!: string;
+  private drawerOpen = false;
 
   private dateTypeNames = dateTypeNames;
 
@@ -46,6 +51,11 @@ export default class Dashboard extends Vue {
     const currentMonth = new Date().getMonth();
     const currentYearStart = currentMonth < 5 ? currentYear - 1 : currentYear;
     return range(currentYearStart - 2, currentYearStart + 3);
+  }
+
+  private select(year, type) {
+    this.$router.push(`/dashboard/${year}/${type}`);
+    this.drawerOpen = false;
   }
 
   private async logout() {
@@ -63,6 +73,8 @@ export default class Dashboard extends Vue {
 </script>
 
 <style lang="stylus" scoped>
+$breakpoint = 900px
+
 .dashboard
   display flex
 
@@ -80,6 +92,24 @@ export default class Dashboard extends Vue {
   &-navbar
     background-color rgba(0, 0, 0, .04)
 
+    @media screen and (max-width: $breakpoint)
+      width 0 !important
+      position absolute
+      background-color white
+      left 0
+      z-index 3000
+
+      &.open
+        width 100% !important
+
     &-list
       background-color unset
+
+  &-hamburger
+    display none
+
+    @media screen and (max-width: $breakpoint)
+      display block
+      z-index 3001
+      position relative
 </style>
