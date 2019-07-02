@@ -40,8 +40,15 @@ router.beforeEach(async (to, from, next) => {
     return next(`/dashboard/${currentYearStart}/assembly`);
   }
 
+  const payload = getCookie('payload');
+  if (to.fullPath === '/login') {
+    if (payload) {
+      return next('/');
+    }
+    next();
+  }
+
   if (to.matched.some(({ meta }) => meta.admin)) {
-    const payload = getCookie('payload');
     if (!payload) {
       return next('/login');
     }
