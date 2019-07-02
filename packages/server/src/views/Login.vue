@@ -13,7 +13,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import { LoginBody } from '../../shared/types/api';
+import API from '../api-wrapper';
 
 @Component({ name: 'login' })
 export default class Home extends Vue {
@@ -27,24 +27,9 @@ export default class Home extends Vue {
   }
 
   private async login() {
+    this.loading = true;
     try {
-      this.loading = true;
-
-      const credentials: LoginBody = {
-        username: this.username,
-        password: this.password,
-      };
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
-      });
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Your username or password was incorrect.');
-        }
-        throw new Error('Please check your internet connection.');
-      }
+      await API.login(this.username, this.password);
       this.$router.push('/');
     } catch ({ message }) {
       this.error = message;

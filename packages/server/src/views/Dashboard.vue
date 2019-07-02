@@ -32,6 +32,7 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
 import { range, dateTypeNames } from '../utils';
+import API from '../api-wrapper';
 
 @Component({ name: 'dashboard' })
 export default class Dashboard extends Vue {
@@ -49,10 +50,7 @@ export default class Dashboard extends Vue {
 
   private async logout() {
     try {
-      const response = await fetch('/api/auth/logout', { method: 'POST' });
-      if (!response.ok) {
-        throw new Error('There was a problem logging out.');
-      }
+      await API.logout();
       this.$router.push('/login');
     } catch ({ message }) {
       this.$notify({

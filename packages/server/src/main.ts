@@ -1,3 +1,6 @@
+import './plugins/class-components';
+
+// tslint:disable-next-line: ordered-imports
 import Vue from 'vue';
 
 import App from './App.vue';
