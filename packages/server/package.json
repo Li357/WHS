@@ -6,7 +6,7 @@
     "start": "node dist/backend/server.js",
     "serve": "vue-cli-service serve",
     "build:frontend": "vue-cli-service build --dest dist/frontend",
-    "build:backend": "yarn tsc -p tsconfig.backend.json",
+    "build:backend": "yarn tsc -p tsconfig.backend.json && rm -rf dist/shared && rm -rf dist/backend/types",
     "build": "yarn build:frontend && yarn build:backend",
     "lint:frontend": "vue-cli-service lint",
     "lint:backend": "yarn tslint -p tsconfig.backend.json",
