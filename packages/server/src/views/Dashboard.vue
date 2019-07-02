@@ -53,7 +53,7 @@ export default class Dashboard extends Vue {
     return range(currentYearStart - 2, currentYearStart + 3);
   }
 
-  private select(year, type) {
+  private select(year: string, type: string) {
     this.$router.push(`/dashboard/${year}/${type}`);
     this.drawerOpen = false;
   }
