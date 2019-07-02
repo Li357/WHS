@@ -10,7 +10,7 @@
           >Add Date</el-button>
           <el-button
             type="danger" icon="el-icon-check"
-            @click="saveDates" :disabled="savingDates" round
+            @click="saveDates(startYear, dateType)" :disabled="savingDates" round
           >Save Dates</el-button>
           <el-button
             class="mobile" type="primary" icon="el-icon-plus"
@@ -18,7 +18,7 @@
           ></el-button>
           <el-button
             class="mobile" type="danger" icon="el-icon-check"
-            @click="saveDates" :disabled="savingDates" round
+            @click="saveDates(startYear, dateType)" :disabled="savingDates" round
           ></el-button>
         </div>
       </el-header>
@@ -27,15 +27,19 @@
         <el-table-column prop="comment" label="Comment"></el-table-column>
         <el-table-column align="right">
           <template slot-scope="scope">
+            <span v-if="!scope.row.saved" class="date-list-unsaved">Unsaved</span>
             <el-button
               type="danger" size="mini" icon="el-icon-delete"
-              @click="removeDate(scope.$index)"
+              @click="removeDate(scope.row.type, scope.row.year, scope.row.date)"
             >Delete</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-container>
-    <add-date-modal :adding-date="addingDates" @add="addDate" @close="addingDates = false"></add-date-modal>
+    <add-date-modal
+      :adding-dates="addingDates" :start-year="startYear" :date-type="dateType"
+      @add="addDates" @close="addingDates = false"
+    ></add-date-modal>
   </div>
 </template>
 
@@ -46,7 +50,8 @@ import { Component, Prop } from 'vue-property-decorator';
 import { format } from 'date-fns';
 
 import AddDateModal from './AddDateModal.vue';
-import { DateSchema, DateSchemaWithoutID, DateType } from '../../shared/types/api';
+import { DateType, DateSchemaWithoutID, DateSchema } from '../../shared/types/api';
+import { ClientDate } from '../types/DateList';
 import { dateTypeNames } from '../utils';
 import API from '../api-wrapper';
 
@@ -60,28 +65,44 @@ export default class DateList extends Vue {
   private addingDates = false;
   private savingDates = false;
   private loadingDates = true;
-  private dates: DateSchema[] = [];
+  private dates: ClientDate[] = [];
 
   private dateTypeNames = dateTypeNames;
+  private existingDates: { [key: string]: boolean } = {};
 
   public mounted() {
     this.fetchDates(this.dateType, this.startYear);
   }
 
   public async beforeRouteUpdate({ params: toParams }: Route, from: Route, next: () => void) {
-    await this.saveDates();
+    await this.saveDates(this.startYear, this.dateType);
     next();
-    this.fetchDates(toParams.dateType, toParams.startYear);
+    this.fetchDates(toParams.dateType as DateType, toParams.startYear);
   }
 
   get dateStrings() {
-    return this.dates.map(({ date }) => format(date, 'MMMM D, YYYY'));
+    return this.dates.map(({ date, ...rest }) => ({
+      ...rest,
+      date: format(date, 'MMMM D, YYYY'),
+    }));
   }
 
-  private async fetchDates(dateType: string, startYear: string) {
+  private rowClassName(scope: { row: ClientDate }) {
+    if (!scope.row._id) {
+      return 'unsaved';
+    }
+    return '';
+  }
+
+  private async fetchDates(dateType: DateType, startYear: string) {
     this.loadingDates = true;
     try {
-      this.dates = await API.getDates(startYear, dateType);
+      const dates = await API.getDates(startYear, dateType);
+      this.dates = dates.map((date) => ({ ...date, saved: true }));
+      this.existingDates = this.dates.reduce((obj: { [key: string]: boolean }, { date }) => {
+        obj[date] = true;
+        return obj;
+      }, {});
     } catch ({ message }) {
       this.$notify({
         title: 'Error',
@@ -92,13 +113,46 @@ export default class DateList extends Vue {
   }
 
   private addDates(dates: DateSchemaWithoutID[]) {
-    API.addDates(dates);
+    const { filtered, duplicate } = dates.reduce((
+      obj: {
+        duplicate: DateSchemaWithoutID[],
+        filtered: DateSchemaWithoutID[],
+      },
+      dateObj,
+    ) => {
+      if (this.existingDates[dateObj.date]) {
+        obj.duplicate.push(dateObj);
+      } else {
+        this.existingDates[dateObj.date] = true;
+        obj.filtered.push(dateObj);
+      }
+      return obj;
+    }, { filtered: [], duplicate: [] });
+    if (duplicate.length > 0) {
+      const datesString = duplicate.map(({ date }) => format(date, 'MMMM D, YYYY')).join(', ');
+      this.$notify({
+        title: 'Info',
+        message: `Duplicate date(s): ${datesString} were not added.`,
+      });
+    }
+
+    API.addDates(filtered);
+    this.dates.push(...filtered.map((date) => ({ ...date, saved: false })));
+    this.$notify({
+      title: 'Success',
+      message: 'Date(s) added! Please click Save Dates to commit changes.',
+    });
   }
 
-  private async saveDates() {
+  private async saveDates(startYear: string, dateType: DateType) {
     this.savingDates = true;
     try {
       await API.commitDateChanges();
+      this.dates = this.dates.map((date) => ({ ...date, saved: true }));
+      this.$notify({
+        title: 'Success',
+        message: `${startYear} - ${Number(startYear) + 1} ${this.dateTypeNames[dateType]} saved!`,
+      });
     } catch ({ message }) {
       this.$notify({
         title: 'Error',
@@ -108,8 +162,16 @@ export default class DateList extends Vue {
     this.savingDates = false;
   }
 
-  private removeDate(id: string) {
-    API.removeDate(id);
+  private removeDate(type: DateType, year: string, date: string) {
+    const isoString = new Date(date).toISOString();
+    API.removeDate(type, year, isoString);
+    this.dates = this.dates.filter((dateObj) => (
+      !(dateObj.type === type && dateObj.year === year && dateObj.date === isoString)
+    ));
+    this.$notify({
+      title: 'Success',
+      message: 'Date removed! Please click Save Dates to commit changes.',
+    });
   }
 }
 </script>
@@ -138,9 +200,14 @@ export default class DateList extends Vue {
         display flex
         flex-direction row
 
-        & *
+        & > *
           display none
 
       & .mobile
         display block
+
+  &-unsaved
+    font-weight bold
+    color: red
+    margin 0 10px
 </style>

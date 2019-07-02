@@ -1,4 +1,4 @@
-import { LoginBody, DateSchemaWithoutID } from '../shared/types/api';
+import { LoginBody, DateSchemaWithoutID, DateType, DateSchema } from '../shared/types/api';
 
 class API {
   private AUTH_API = '/api/auth';
@@ -32,7 +32,7 @@ class API {
     }
   }
 
-  public async getDates(year: string, type: string) {
+  public async getDates(year: string, type: string): Promise<DateSchema[]> {
     const response = await fetch(`${this.DATES_API}/dates?year=${year}&type=${type}`);
     if (!response.ok) {
       throw new Error('There was a problem getting dates.');
@@ -42,11 +42,11 @@ class API {
 
   public addDates(dates: DateSchemaWithoutID[]) {
     const insertions = dates.map((date) => ({ insertOne: { document: date } }));
-    this.changes = [...this.changes, ...insertions];
+    this.changes.push(...insertions);
   }
 
-  public removeDate(id: string) {
-    const deletion = { deleteOne: { filter: { _id: id } } };
+  public removeDate(type: DateType, year: string, date: string) {
+    const deletion = { deleteOne: { filter: { type, year, date } } };
     this.changes.push(deletion);
   }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="add-date-dialog">
     <el-dialog
-      :visible="addingDate"
+      :visible="addingDates"
       @close="$emit('close')"
       width="40%"
     >
@@ -40,6 +40,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+import { eachDay } from 'date-fns';
 
 import { DateSchemaWithoutID, DateType } from '../../shared/types/api';
 
@@ -47,19 +48,25 @@ import { DateSchemaWithoutID, DateType } from '../../shared/types/api';
 export default class AddDateModal extends Vue {
   @Prop(String) private readonly startYear!: string;
   @Prop(String) private readonly dateType!: DateType;
-  @Prop(Boolean) private readonly addingDate!: boolean;
+  @Prop(Boolean) private readonly addingDates!: boolean;
   @Prop(Function) private readonly add!: (dates: DateSchemaWithoutID[]) => void;
-  private dates: Date[] | null = null;
+  private dates: [Date, Date] | Date | null = null;
   private comment = '';
 
   private addDates() {
-    const documents: DateSchemaWithoutID[] = this.dates!.map((date) => ({
+    let dates = [this.dates!];
+    if (Array.isArray(this.dates!)) {
+      dates = eachDay(...this.dates!);
+    }
+
+    const documents: DateSchemaWithoutID[] = (dates as Date[]).map((date: Date) => ({
       type: this.dateType,
       year: this.startYear,
       date: date.toISOString(),
       comment: this.comment,
     }));
     this.$emit('add', documents);
+    this.$emit('close');
     this.dates = null;
     this.comment = '';
   }
