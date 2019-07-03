@@ -26,7 +26,7 @@ const routes = [
       },
       {
         // https://github.com/pillarjs/path-to-regexp/issues/95
-        path: ':dateType(semester-one-start|semester-one-end|semester-two-start|semester-two-end)',
+        path: ':settingType(semester-one-start|semester-one-end|semester-two-start|semester-two-end)',
         component: YearSetting,
         props: true,
       },

@@ -6,7 +6,7 @@
       width="40%"
     >
       <div slot="title" class="add-date-header">
-        Add Date
+        Add {{ startYear }} - {{ Number(startYear) + 1 }} {{ dateTypeNames[dateType] }}
         <span class="add-date-header-description">Pick a single date or range to add</span>
       </div>
       <div class="add-date-container add-date-dialog-row">
@@ -43,6 +43,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import { eachDay } from 'date-fns';
 
 import { DateSchemaWithoutID, DateType } from '../../shared/types/api';
+import { dateTypeNames } from '../utils';
 
 @Component({ name: 'add-date-modal' })
 export default class AddDateModal extends Vue {
@@ -52,6 +53,8 @@ export default class AddDateModal extends Vue {
   @Prop(Function) private readonly add!: (dates: DateSchemaWithoutID[]) => void;
   private dates: [Date, Date] | Date | null = null;
   private comment = '';
+
+  private dateTypeNames = dateTypeNames;
 
   private addDates() {
     let dates = [this.dates!];

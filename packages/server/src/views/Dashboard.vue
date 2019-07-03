@@ -13,7 +13,7 @@
         <el-aside :class="['dashboard-navbar', { open: drawerOpen }]" width="20%">
           <el-menu
             class="dashboard-navbar-list" unique-opened
-            :default-active="`${startYear}/${dateType}`"
+            :default-active="`${startYear}/${dateType || settingType}`"
           >
             <el-submenu v-for="year in years" :key="year" :index="`${year}`">
               <template slot="title">{{ year }} - {{ year + 1 }}</template>
@@ -35,13 +35,15 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
+import { DateType, YearSettingType } from '../../shared/types/api';
 import { range, dateTypeNames } from '../utils';
 import API from '../api-wrapper';
 
 @Component({ name: 'dashboard' })
 export default class Dashboard extends Vue {
   @Prop(String) private readonly startYear!: string;
-  @Prop(String) private readonly dateType!: string;
+  @Prop(String) private readonly dateType!: DateType;
+  @Prop(String) private readonly settingType!: YearSettingType;
   private drawerOpen = false;
 
   private dateTypeNames = dateTypeNames;
@@ -100,6 +102,7 @@ $breakpoint = 900px
       z-index 3000
 
       &.open
+        height 100%
         width 100% !important
 
     &-list

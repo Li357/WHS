@@ -6,23 +6,23 @@
         <div>
           <el-button
             type="primary" icon="el-icon-plus"
-            @click="addingDates = true" round
+            @click="addingDates = true" :disabled="loading" round
           >Add Date</el-button>
           <el-button
             type="danger" icon="el-icon-check"
-            @click="saveDates(startYear, dateType)" :disabled="savingDates" round
+            @click="saveDates(startYear, dateType)" :disabled="loading" round
           >Save Dates</el-button>
           <el-button
             class="mobile" type="primary" icon="el-icon-plus"
-            @click="addingDates = true" round
+            @click="addingDates = true" :disabled="loading" round
           ></el-button>
           <el-button
             class="mobile" type="danger" icon="el-icon-check"
-            @click="saveDates(startYear, dateType)" :disabled="savingDates" round
+            @click="saveDates(startYear, dateType)" :disabled="loading" round
           ></el-button>
         </div>
       </el-header>
-      <el-table :data="dateStrings" empty-text="No dates" v-loading="savingDates || loadingDates">
+      <el-table :data="datesDisplay" empty-text="No dates" v-loading="loading">
         <el-table-column prop="date" label="Date"></el-table-column>
         <el-table-column prop="comment" label="Comment"></el-table-column>
         <el-table-column align="right">
@@ -50,7 +50,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import { format } from 'date-fns';
 
 import AddDateModal from './AddDateModal.vue';
-import { DateType, DateSchemaWithoutID, DateSchema } from '../../shared/types/api';
+import { DateListType, DateSchemaWithoutID, DateSchema } from '../../shared/types/api';
 import { ClientDate } from '../types/DateList';
 import { dateTypeNames } from '../utils';
 import API from '../api-wrapper';
@@ -61,7 +61,7 @@ import API from '../api-wrapper';
 })
 export default class DateList extends Vue {
   @Prop(String) private readonly startYear!: string;
-  @Prop(String) private readonly dateType!: DateType;
+  @Prop(String) private readonly dateType!: DateListType;
   private addingDates = false;
   private savingDates = false;
   private loadingDates = true;
@@ -70,31 +70,35 @@ export default class DateList extends Vue {
   private dateTypeNames = dateTypeNames;
   private existingDates: { [key: string]: boolean } = {};
 
-  public mounted() {
-    this.fetchDates(this.dateType, this.startYear);
+  get loading() {
+    return this.addingDates || this.savingDates || this.loadingDates;
+  }
+
+  public beforeRouteEnter(to: Route, from: Route, next: (cb: (vm: DateList) => void) => void) {
+    next((vm: DateList) => {
+      vm.fetchDates(vm.startYear, vm.dateType);
+    });
   }
 
   public async beforeRouteUpdate({ params: toParams }: Route, from: Route, next: () => void) {
     await this.saveDates(this.startYear, this.dateType);
     next();
-    this.fetchDates(toParams.dateType as DateType, toParams.startYear);
+    this.fetchDates(toParams.startYear, toParams.dateType as DateListType);
   }
 
-  get dateStrings() {
+  public async beforeRouteLeave(to: Route, from: Route, next: () => void) {
+    await this.saveDates(this.startYear, this.dateType);
+    next();
+  }
+
+  get datesDisplay() {
     return this.dates.map(({ date, ...rest }) => ({
       ...rest,
       date: format(date, 'MMMM D, YYYY'),
     }));
   }
 
-  private rowClassName(scope: { row: ClientDate }) {
-    if (!scope.row._id) {
-      return 'unsaved';
-    }
-    return '';
-  }
-
-  private async fetchDates(dateType: DateType, startYear: string) {
+  private async fetchDates(startYear: string, dateType: DateListType) {
     this.loadingDates = true;
     try {
       const dates = await API.getDates(startYear, dateType);
@@ -144,15 +148,22 @@ export default class DateList extends Vue {
     });
   }
 
-  private async saveDates(startYear: string, dateType: DateType) {
+  private async saveDates(startYear: string, dateType: DateListType) {
     this.savingDates = true;
     try {
-      await API.commitDateChanges();
-      this.dates = this.dates.map((date) => ({ ...date, saved: true }));
-      this.$notify({
-        title: 'Success',
-        message: `${startYear} - ${Number(startYear) + 1} ${this.dateTypeNames[dateType]} saved!`,
-      });
+      const hasChanges = await API.commitDateChanges();
+      if (hasChanges) {
+        this.dates = this.dates.map((date) => ({ ...date, saved: true }));
+        this.$notify({
+          title: 'Success',
+          message: `${startYear} - ${Number(startYear) + 1} ${this.dateTypeNames[dateType]} saved!`,
+        });
+      } else {
+        this.$notify({
+          title: 'Info',
+          message: 'No dates to save.',
+        });
+      }
     } catch ({ message }) {
       this.$notify({
         title: 'Error',
@@ -162,7 +173,7 @@ export default class DateList extends Vue {
     this.savingDates = false;
   }
 
-  private removeDate(type: DateType, year: string, date: string) {
+  private removeDate(type: DateListType, year: string, date: string) {
     const isoString = new Date(date).toISOString();
     API.removeDate(type, year, isoString);
     this.dates = this.dates.filter((dateObj) => (

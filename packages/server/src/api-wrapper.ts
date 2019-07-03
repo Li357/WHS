@@ -1,4 +1,4 @@
-import { LoginBody, DateSchemaWithoutID, DateType, DateSchema } from '../shared/types/api';
+import { LoginBody, DateSchemaWithoutID, DateType, DateSchema, YearSettingType } from '../shared/types/api';
 
 class API {
   private AUTH_API = '/api/auth';
@@ -50,8 +50,20 @@ class API {
     this.changes.push(deletion);
   }
 
+  public editSetting(type: YearSettingType, year: string, setting: DateSchemaWithoutID) {
+    const update = {
+      updateOne: {
+        filter: { type, year },
+        update: { $set: setting },
+        upsert: true,
+      },
+    };
+    this.changes.push(update);
+  }
+
   public async commitDateChanges() {
-    if (this.changes.length > 0) {
+    const hasChanges = this.changes.length > 0;
+    if (hasChanges) {
       const response = await fetch(`${this.DATES_API}/dates`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -63,7 +75,9 @@ class API {
         }
         throw new Error('There was a problem saving your changes.');
       }
+      this.changes = [];
     }
+    return hasChanges;
   }
 }
 

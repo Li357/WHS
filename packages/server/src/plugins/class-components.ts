@@ -1,3 +1,7 @@
 import Component from 'vue-class-component';
 
-Component.registerHooks(['beforeRouteUpdate']);
+Component.registerHooks([
+  'beforeRouteEnter',
+  'beforeRouteUpdate',
+  'beforeRouteLeave',
+]);
