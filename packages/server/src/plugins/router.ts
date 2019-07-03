@@ -3,6 +3,7 @@ import Router from 'vue-router';
 
 import Dashboard from '../views/Dashboard.vue';
 import DateList from '../components/DateList.vue';
+import YearSetting from '../components/YearSetting.vue';
 import Login from '../views/Login.vue';
 import NotFound from '../views/NotFound.vue';
 import { getCookie } from '../utils';
@@ -12,16 +13,24 @@ Vue.use(Router);
 
 const routes = [
   {
-    path: '/dashboard/:startYear',
+    path: '/dashboard/:startYear([0-9]{4})',
     name: 'dashboard',
     component: Dashboard,
     meta: { admin: true },
     props: true,
-    children: [{
-      path: ':dateType',
-      component: DateList,
-      props: true,
-    }],
+    children: [
+      {
+        path: ':dateType(assembly|no-school|early-dismissal|late-start)',
+        component: DateList,
+        props: true,
+      },
+      {
+        // https://github.com/pillarjs/path-to-regexp/issues/95
+        path: ':dateType(semester-one-start|semester-one-end|semester-two-start|semester-two-end)',
+        component: YearSetting,
+        props: true,
+      },
+    ],
   },
   { path: '/login', name: 'login', component: Login },
   { path: '*', name: 'not-found', component: NotFound },
