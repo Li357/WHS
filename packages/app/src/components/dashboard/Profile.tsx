@@ -10,6 +10,7 @@ import { SCHOOL_PICTURE_BLANK_SYMBOL } from '../../constants/fetch';
 import { PROFILE_INFO_MARGIN_LEFT, PROFILE_PHOTO_SIZE, PROFILE_PHOTO_BORDER_RADIUS } from '../../constants/style';
 import BlankUser from '../../../assets/images/blank-user.png';
 import Subtext from '../common/Subtext';
+import BadgeButton from './BadgeButton';
 
 const ProfileContainer = styled.View`
   width: 100%;
@@ -57,6 +58,7 @@ export default function Profile({ info, onPress }: ProfileProps) {
           <Text adjustsFontSizeToFit={true} numberOfLines={1}>{name}</Text>
           <Subtext>{classOf}</Subtext>
         </View>
+        <BadgeButton onPress={onPress}>DETAILS</BadgeButton>
       </RightContainer>
     </ProfileContainer>
   );

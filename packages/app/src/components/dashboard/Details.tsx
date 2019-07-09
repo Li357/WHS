@@ -1,12 +1,17 @@
 import React from 'react';
+import { View } from 'react-native';
 import styled from 'styled-components/native';
 
 import { UserInfo } from '../../types/store';
 import Detail from './Detail';
+import BadgeButton from './BadgeButton';
+import { PROFILE_PHOTO_SIZE } from '../../constants/style';
 
 const DetailsContainer = styled.View`
+  justify-content: space-between;
   align-items: stretch;
   width: 100%;
+  height: ${PROFILE_PHOTO_SIZE};
 `;
 
 interface DetailProps {
@@ -18,10 +23,13 @@ export default function Details({ info, onPress }: DetailProps) {
   const { dean, counselor, homeroom, id } = info;
   return (
     <DetailsContainer>
-      <Detail name="Dean" value={dean!} />
-      <Detail name="Counselor" value={counselor!} />
-      <Detail name="Homeroom" value={homeroom!} />
-      <Detail name="ID" value={id!} />
+      <View>
+        <Detail name="Dean" value={dean!} />
+        <Detail name="Counselor" value={counselor!} />
+        <Detail name="Homeroom" value={homeroom!} />
+        <Detail name="ID" value={id!} />
+      </View>
+      <BadgeButton onPress={onPress}>BACK</BadgeButton>
     </DetailsContainer>
   );
 }
