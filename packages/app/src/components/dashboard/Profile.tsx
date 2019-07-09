@@ -7,17 +7,20 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Text from '../common/Text';
 import { UserInfo } from '../../types/store';
 import { SCHOOL_PICTURE_BLANK_SYMBOL } from '../../constants/fetch';
-import { PROFILE_INFO_MARGIN_LEFT, PROFILE_PHOTO_SIZE, PROFILE_PHOTO_BORDER_RADIUS } from '../../constants/style';
+import {
+  PROFILE_INFO_MARGIN_LEFT,
+  PROFILE_PHOTO_SIZE, PROFILE_PHOTO_BORDER_RADIUS,
+  PROFILE_MARGIN_BOTTOM,
+} from '../../constants/style';
 import BlankUser from '../../../assets/images/blank-user.png';
 import Subtext from '../common/Subtext';
 import BadgeButton from './BadgeButton';
 
 const ProfileContainer = styled.View`
   width: 100%;
-  display: flex;
   flex-direction: row;
   align-items: stretch;
-  justify-content: space-between;
+  margin-bottom: ${PROFILE_MARGIN_BOTTOM};
 `;
 
 const ProfileImage = styled.Image`
@@ -27,6 +30,7 @@ const ProfileImage = styled.Image`
 `;
 
 const RightContainer = styled.View`
+  height: ${PROFILE_PHOTO_SIZE};
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: space-between;

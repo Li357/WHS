@@ -32,6 +32,7 @@ export const LOGIN_IMAGE_SIZE = '25%'; // of window height
 export const PROFILE_INFO_MARGIN_LEFT = '7%';
 export const PROFILE_PHOTO_SIZE = wp('35%');
 export const PROFILE_PHOTO_BORDER_RADIUS = PROFILE_PHOTO_SIZE / 2;
+export const PROFILE_MARGIN_BOTTOM = '5%';
 
 export const BADGE_BUTTON_HEIGHT = '20px';
 export const BADGE_BUTTON_RADIUS = '10px';

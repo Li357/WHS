@@ -21,13 +21,14 @@ interface DetailProps {
 
 export default function Details({ info, onPress }: DetailProps) {
   const { dean, counselor, homeroom, id } = info;
+  // TODO: Handle when details are larger than sanctioned height
   return (
     <DetailsContainer>
       <View>
         <Detail name="Dean" value={dean!} />
         <Detail name="Counselor" value={counselor!} />
         <Detail name="Homeroom" value={homeroom!} />
-        <Detail name="ID" value={id!} />
+        <Detail name="Student ID" value={id!} />
       </View>
       <BadgeButton onPress={onPress}>BACK</BadgeButton>
     </DetailsContainer>

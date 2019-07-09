@@ -4,7 +4,11 @@ import styled from 'styled-components/native';
 import Subtext from '../common/Subtext';
 import { TEXT_FONT } from '../../constants/style';
 
-const BoldText = styled(Subtext)`
+const DetailText = styled(Subtext)`
+  color: ${({ theme }) => theme.textColor};
+`;
+
+const BoldText = styled(DetailText)`
   font-family: ${TEXT_FONT};
 `;
 
@@ -18,10 +22,11 @@ interface DetailProps {
 }
 
 export default function Detail({ name, value }: DetailProps) {
+  // Differing font sizes for certain details does not look good
   return (
     <DetailContainer>
-      <BoldText>{`${name} `}</BoldText>
-      <Subtext>{value}</Subtext>
+      <BoldText adjustsFontSizeToFit={false}>{`${name} `}</BoldText>
+      <DetailText adjustsFontSizeToFit={false}>{value}</DetailText>
     </DetailContainer>
   );
 }
