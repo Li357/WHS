@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableWithoutFeedbackProps } from 'react-native';
+import { TouchableOpacityProps } from 'react-native';
 import styled from 'styled-components/native';
 
 import { FORM_HEIGHT, FORM_BORDER_RADIUS, FORM_MARGIN_VERTICAL } from '../../constants/style';
@@ -23,7 +23,7 @@ interface ButtonProps {
   children: string;
 }
 
-export default function Button({ children, ...props }: ButtonProps & TouchableWithoutFeedbackProps) {
+export default function Button({ children, ...props }: ButtonProps & TouchableOpacityProps) {
   return (
     <ButtonContainer {...props}>
       <Label>{children}</Label>

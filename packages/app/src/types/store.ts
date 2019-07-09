@@ -11,10 +11,10 @@ export interface UserState {
   schoolPicture: string;
   profilePhoto: string;
   isTeacher: boolean;
+  classOf: string;
   teacherSchedules: TeacherSchedule[];
 
   /** Student-specific properties */
-  classOf?: string;
   homeroom?: string;
   counselor?: string;
   dean?: string;

@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { NavigationScreenConfigProps } from 'react-navigation';
+import { NavigationScreenProps, NavigationParams } from 'react-navigation';
 
 import Text from './Text';
 import {
+  NAVBAR_MARGIN_TOP, NAVBAR_MARGIN_BOTTOM,
   HAMBURGER_WIDTH, HAMBURGER_HEIGHT,
   HAMBURGER_LINE_HEIGHT, HAMBURGER_LINE_BORDER_RADIUS,
 } from '../../constants/style';
@@ -14,6 +15,7 @@ const NavbarContainer = styled.View`
   align-items: center;
   justify-content: space-between;
   background-color: ${({ theme }) => theme.backgroundColor};
+  margin: ${NAVBAR_MARGIN_TOP} 0 ${NAVBAR_MARGIN_BOTTOM} 0;
 `;
 
 const HamburgerContainer = styled.TouchableOpacity`
@@ -41,7 +43,7 @@ interface NavbarProps {
   title: string;
 }
 
-export default function Navbar(props: NavbarProps & NavigationScreenConfigProps) {
+export default function Navbar(props: NavbarProps & NavigationScreenProps<NavigationParams, any>) {
   return (
     <NavbarContainer>
       <HamburgerContainer onPress={props.navigation.openDrawer}>
