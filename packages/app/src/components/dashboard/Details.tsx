@@ -5,12 +5,13 @@ import styled from 'styled-components/native';
 import { UserInfo } from '../../types/store';
 import Detail from './Detail';
 import BadgeButton from './BadgeButton';
-import { PROFILE_PHOTO_SIZE } from '../../constants/style';
+import { PROFILE_PHOTO_SIZE, PROFILE_MARGIN_BOTTOM } from '../../constants/style';
 
 const DetailsContainer = styled.View`
   justify-content: space-between;
   align-items: stretch;
   width: 100%;
+  margin-bottom: ${PROFILE_MARGIN_BOTTOM};
   height: ${PROFILE_PHOTO_SIZE};
 `;
 

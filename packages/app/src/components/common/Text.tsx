@@ -20,7 +20,7 @@ export default function Text(props: StyledTextProps & TextProps) {
     <StyledText
       adjustsFontSizeToFit={true}
       numberOfLines={1}
-      minimumFontScale={0.5}
+      minimumFontScale={0.75}
       {...props}
     >
       {props.children}

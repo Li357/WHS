@@ -20,7 +20,7 @@ export default function Subtext(props: SubtextProps & TextProps) {
     <StyledSubtext
       adjustsFontSizeToFit={true}
       numberOfLines={1}
-      minimumFontScale={0.5}
+      minimumFontScale={0.75}
       {...props}
     >
       {props.children}

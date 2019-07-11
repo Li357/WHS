@@ -13,6 +13,7 @@ import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE } from '../constants/style';
 import WHS from '../../assets/images/WHS.png';
 
 const LoginScreen = styled(Screen)`
+  align-items: center;
   justify-content: center;
 `;
 

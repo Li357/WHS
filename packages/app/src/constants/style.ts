@@ -15,8 +15,8 @@ export const NAVBAR_MARGIN_BOTTOM = hp2px('5%');
 
 export const HAMBURGER_WIDTH = '40px';
 export const HAMBURGER_HEIGHT = '30px';
-export const HAMBURGER_LINE_HEIGHT = '5px';
-export const HAMBURGER_LINE_BORDER_RADIUS = '2.5px';
+export const HAMBURGER_LINE_HEIGHT = '4px';
+export const HAMBURGER_LINE_BORDER_RADIUS = '2px';
 
 // Controls both input and button form elements
 export const FORM_HEIGHT = '50px';
@@ -32,10 +32,15 @@ export const LOGIN_IMAGE_SIZE = '25%'; // of window height
 export const PROFILE_INFO_MARGIN_LEFT = '7%';
 export const PROFILE_PHOTO_SIZE = wp('35%');
 export const PROFILE_PHOTO_BORDER_RADIUS = PROFILE_PHOTO_SIZE / 2;
-export const PROFILE_MARGIN_BOTTOM = '5%';
+export const PROFILE_MARGIN_BOTTOM = hp2px('3%');
 
 export const BADGE_BUTTON_HEIGHT = '20px';
 export const BADGE_BUTTON_RADIUS = '10px';
 export const BADGE_BUTTON_MARGIN_VERTICAL = '5px';
 export const BADGE_BUTTON_PADDING_HORIZONTAL = '10px';
 export const BADGE_BUTTON_TEXT_SIZE = 10;
+
+export const CARD_MARGIN_BOTTOM = '20px';
+export const CARD_PADDING = '20px';
+export const CARD_PADDING_TOP = '40px';
+export const CARD_BORDER_RADIUS = '25px';

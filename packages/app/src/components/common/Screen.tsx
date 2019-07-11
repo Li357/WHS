@@ -4,7 +4,6 @@ import { SCREEN_MARGIN_HORIZONTAL } from '../../constants/style';
 
 export default styled.View`
   flex: 1;
-  align-items: center;
   background-color: ${({ theme }) => theme.backgroundColor};
   margin: 0 ${SCREEN_MARGIN_HORIZONTAL};
 `;

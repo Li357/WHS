@@ -14,8 +14,7 @@ const NavbarContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: ${({ theme }) => theme.backgroundColor};
-  margin: ${NAVBAR_MARGIN_TOP} 0 ${NAVBAR_MARGIN_BOTTOM} 0;
+  padding: ${NAVBAR_MARGIN_TOP} 0 ${NAVBAR_MARGIN_BOTTOM} 0;
 `;
 
 const HamburgerContainer = styled.TouchableOpacity`

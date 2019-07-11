@@ -5,6 +5,7 @@ import styled from 'styled-components/native';
 import Screen from '../components/common/Screen';
 
 const LoadingScreen = styled(Screen)`
+  align-items: center;
   justify-content: center;
   background-color: #ffffff;
 `;
