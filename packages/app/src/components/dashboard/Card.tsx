@@ -8,7 +8,7 @@ const CardContainer = styled.View`
   margin-bottom: ${CARD_MARGIN_BOTTOM};
   padding: ${CARD_PADDING_TOP} ${CARD_PADDING} ${CARD_PADDING};
   align-items: stretch;
-  border: 1px solid ${({ theme }) => theme.borderColor};
+  background-color: ${({ theme }) => theme.foregroundColor};
   border-radius: ${CARD_BORDER_RADIUS};
 `;
 

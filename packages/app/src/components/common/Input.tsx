@@ -15,7 +15,7 @@ const StyledInput = styled.TextInput<InputProps>`
   color: ${({ theme }) => theme.textColor};
   font-family: ${SUBTEXT_FONT};
   font-size: ${SUBTEXT_SIZE};
-  border-color: ${({ theme, error }) => error ? theme.accentColor : theme.borderColor};
+  border-color: ${({ theme, error }) => error ? theme.accentColor : 'transparent'};
   border-width: ${INPUT_BORDER_WIDTH};
   border-radius: ${FORM_BORDER_RADIUS};
   background-color: ${({ theme }) => theme.foregroundColor};
