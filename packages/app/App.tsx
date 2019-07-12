@@ -8,7 +8,7 @@ import { ThemeProvider } from 'styled-components';
 import Login from './src/screens/Login';
 import Dashboard from './src/screens/Dashboard';
 import Loading from './src/screens/Loading';
-import Drawer from './src/components/Drawer';
+import Drawer from './src/components/drawer/Drawer';
 import initializeStore from './src/utils/store';
 
 const { store, persistor } = initializeStore();

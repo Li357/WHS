@@ -51,7 +51,7 @@ export default function Profile({ info, onPress }: ProfileProps) {
   const { name, classOf, profilePhoto, schoolPicture } = info;
 
   const photoSource = profilePhoto === SCHOOL_PICTURE_BLANK_SYMBOL ? BlankUser : BlankUser; // { uri: profilePhoto };
-
+  console.log(photoSource);
   return (
     <ProfileContainer>
       <PhotoUpload containerStyle={photoContainerStyle}>
