@@ -1,6 +1,6 @@
 import * as creators from '../../src/actions/creators';
 import { UserActions, DayActions, MiscellaneousActions, ThemeActions, Theme } from '../../src/types/store';
-import { Schedule, DaySchedule } from '../../src/types/schedule';
+import { Schedule, DaySchedule, TeacherSchedule } from '../../src/types/schedule';
 
 describe('action creators', () => {
   it('should create action to set user credentials', () => {
@@ -37,7 +37,11 @@ describe('action creators', () => {
   });
 
   it('should create action to set teacher schedules', () => {
-    const payload: Schedule[] = [];
+    const payload: TeacherSchedule[] = [{
+      url: 'https://example.com',
+      name: 'Bob Johnson',
+      schedule: [],
+    }];
     const expectedAction = {
       type: UserActions.SET_TEACHER_SCHEDULES,
       payload,
@@ -46,7 +50,11 @@ describe('action creators', () => {
   });
 
   it('should create action to add teacher schedule', () => {
-    const payload: Schedule = [];
+    const payload: TeacherSchedule = {
+      url: 'https://example.com',
+      name: 'Bob Johnson',
+      schedule: [],
+    };
     const expectedAction = {
       type: UserActions.ADD_TEACHER_SCHEDULE,
       payload,

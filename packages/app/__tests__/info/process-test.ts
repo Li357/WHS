@@ -1,7 +1,7 @@
 import {
   getLoginURL, getLoginError, getSchoolPictureFromHTML, processName, getUserScheduleFromHTML, getUserInfoFromHTML,
 } from '../../src/utils/process-info';
-import { LOGIN_URL, SCHOOL_PICTURE_BLANK } from '../../src/constants/fetch';
+import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL } from '../../src/constants/fetch';
 import { processSchedule } from '../../src/utils/process-schedule';
 import { getStudent$, getError$, getNew$, getTeacher$ } from '../utils/fetch';
 
@@ -26,7 +26,7 @@ describe('processing user info', () => {
     });
 
     it('should return path to blank user if it does not', async () => {
-      expect(getSchoolPictureFromHTML(await getNew$())).toEqual(SCHOOL_PICTURE_BLANK);
+      expect(getSchoolPictureFromHTML(await getNew$())).toEqual(SCHOOL_PICTURE_BLANK_SYMBOL);
     });
   });
 
@@ -68,8 +68,8 @@ describe('processing user info', () => {
     it('should handle new user (missing staff, picture)', async () => {
       expect(getUserInfoFromHTML(await getNew$())).toEqual({
         name: 'Andrew Li',
-        schoolPicture: SCHOOL_PICTURE_BLANK,
-        profilePhoto: SCHOOL_PICTURE_BLANK,
+        schoolPicture: SCHOOL_PICTURE_BLANK_SYMBOL,
+        profilePhoto: SCHOOL_PICTURE_BLANK_SYMBOL,
         isTeacher: false,
         classOf: 'Class of 2021',
         id: '99999',

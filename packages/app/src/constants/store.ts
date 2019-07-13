@@ -1,5 +1,7 @@
 import { DayState, UserState } from '../types/store';
 
+export const MAX_TEACHER_SCHEDULES = 50;
+
 export const initialDayState: DayState = {
   daySchedule: [],
   isBreak: false,
@@ -12,6 +14,7 @@ export const initialUserState: UserState = {
   username: '',
   password: '',
   name: '',
+  classOf: '',
   schedule: [],
   schoolPicture: '',
   profilePhoto: '',

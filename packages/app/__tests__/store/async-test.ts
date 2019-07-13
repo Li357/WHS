@@ -7,9 +7,8 @@ import { LOGIN_URL } from '../../src/constants/fetch';
 import { fetchMock, open, TEST_HTML_DIR } from '../utils/fetch';
 import { fetchUserInfo, fetchSchoolPicture } from '../../src/actions/async';
 import { processSchedule } from '../../src/utils/process-schedule';
-import { initialUserState } from '../../src/reducers/user';
-import { initialDayState } from '../../src/reducers/day';
-import { lightTheme } from '../../src/reducers/theme';
+import { initialUserState, initialDayState } from '../../src/constants/store';
+import { lightTheme } from '../../src/constants/theme';
 import { LoginError, NetworkError } from '../../src/utils/error';
 
 const initialAppState: AppState = {

@@ -1,6 +1,8 @@
-import userReducer, { initialUserState } from '../../src/reducers/user';
-import dayReducer, { initialDayState } from '../../src/reducers/day';
-import themeReducer, { lightTheme, darkTheme } from '../../src/reducers/theme';
+import userReducer from '../../src/reducers/user';
+import dayReducer from '../../src/reducers/day';
+import themeReducer from '../../src/reducers/theme';
+import { initialUserState, initialDayState } from '../../src/constants/store';
+import { lightTheme, darkTheme } from '../../src/constants/theme';
 import rootReducer from '../../src/reducers/root';
 import * as creators from '../../src/actions/creators';
 import { MiscellaneousActions, OtherAction, AppState, Theme } from '../../src/types/store';
@@ -24,6 +26,7 @@ describe('reducers', () => {
   }]);
   const dummyTeacherSchedule: TeacherSchedule = {
     url: 'https://example.com',
+    name: 'Bob Johnson',
     schedule: dummySchedule,
   };
   const dummyDaySchedule: DaySchedule = [['8:00', '8:15', ModNumber.HOMEROOM]];
