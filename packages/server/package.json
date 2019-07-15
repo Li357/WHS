@@ -1,7 +1,8 @@
 {
   "name": "whs-server",
-  "version": "0.1.0",
+  "version": "3.0.0",
   "private": true,
+  "types": "index.d.ts",
   "scripts": {
     "start": "node dist/backend/server.js",
     "serve": "vue-cli-service serve",
