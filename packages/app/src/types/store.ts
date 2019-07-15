@@ -1,7 +1,6 @@
 import { Action } from 'redux';
 
 import { Schedule, DaySchedule, TeacherSchedule } from './schedule';
-import { Omit } from './util';
 
 export interface UserState {
   username: string;
@@ -99,6 +98,25 @@ export interface SetThemeAction extends Action<ThemeActions.SET_THEME> {
   payload: Theme;
 }
 
+export interface DatesState {
+  assembly: Date[];
+  noSchool: Date[];
+  earlyDismissal: Date[];
+  lateStart: Date[];
+  semesterOneStart: Date | null;
+  semesterOneEnd: Date | null;
+  semesterTwoStart: Date | null;
+  semesterTwoEnd: Date | null;
+}
+
+export enum DatesActions {
+  SET_DATES = 'SET_DATES',
+}
+
+export interface SetDatesAction extends Action<DatesActions.SET_DATES> {
+  payload: Partial<DatesState>;
+}
+
 export enum MiscellaneousActions {
   LOG_OUT = 'LOG_OUT',
   OTHER = '',
@@ -112,11 +130,13 @@ export type UserAction =
   | AddTeacherScheduleAction | OtherAction;
 export type DayAction = SetDayInfoAction | SetDayScheduleAction | OtherAction;
 export type ThemeAction = SetThemeAction | OtherAction;
+export type DatesAction = SetDatesAction;
 export type MiscellaneousAction = LogOutAction | OtherAction;
 
 export interface AppState {
   user: UserState;
   day: DayState;
+  dates: DatesState;
   theme: ThemeState;
 }
-export type AppAction = UserAction | DayAction | ThemeAction | MiscellaneousAction;
+export type AppAction = UserAction | DayAction | ThemeAction | DatesAction | MiscellaneousAction;
