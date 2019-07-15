@@ -1,7 +1,4 @@
-# WHS
-
-A schedule & mod information app for [WHS](http://whs.westside66.org/). Created
-with [React Native](https://facebook.github.io/react-native/) by Andrew Li. © 2017-Present Andrew Li, MIT License.
+# WHS App
 
 ### Rewrite v3 Roadmap:
 
@@ -12,7 +9,5 @@ with [React Native](https://facebook.github.io/react-native/) by Andrew Li. © 2
 - [ ] Remove bloat of MomentJS & Lodash
   - [ ] Reimplement schedule querying & processing algorithms to be less sloppy
   - [ ] Fix teacher schedules with many consecutive mods
-- [ ] Fix lingering UI bugs
-  - [ ] Flickering of dashboard
-  - [ ] Edge cases on formatting on schedule viewer
 - [ ] Dark mode!
+- [ ] UI Redesign

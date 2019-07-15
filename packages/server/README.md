@@ -1,5 +1,5 @@
 # WHS Server
-Administrator backend for the [WHS App](https://github.com/Li357/WHS) built with TypeScript, Vue, Express, and MongoDB.
+Administrator backend built with TypeScript, Vue, Express, and MongoDB.
 
 To develop locally, install dependencies (`yarn`) then build (`yarn build`). Finally, create a `start.sh` script at the root and export the following env vars:
 
