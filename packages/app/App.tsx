@@ -2,14 +2,19 @@ import React from 'react';
 import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { createSwitchNavigator, createAppContainer, createDrawerNavigator } from 'react-navigation';
+import {
+  createSwitchNavigator, createAppContainer, createDrawerNavigator,
+  NavigationRouteConfigMap,
+} from 'react-navigation';
 import { ThemeProvider } from 'styled-components';
 
 import Login from './src/screens/Login';
 import Dashboard from './src/screens/Dashboard';
+import Schedule from './src/screens/Schedule';
 import Loading from './src/screens/Loading';
 import Drawer from './src/components/drawer/Drawer';
 import initializeStore from './src/utils/store';
+import { MAX_TEACHER_SCHEDULES } from './src/constants/store';
 
 const { store, persistor } = initializeStore();
 
@@ -20,7 +25,17 @@ function renderApp(isRehydrated: boolean) {
 
     const Authorized = createDrawerNavigator(
       {
-        Dashboard: { screen: Dashboard },
+        Dashboard: {
+          screen: Dashboard,
+          navigationOptions: { drawerIcon: 'dashboard' },
+        },
+        Schedule: {
+          screen: Schedule,
+          navigationOptions: {
+            drawerIcon: 'schedule',
+            drawerLabel: 'My Schedule',
+          },
+        },
       },
       {
         initialRouteName: 'Dashboard',

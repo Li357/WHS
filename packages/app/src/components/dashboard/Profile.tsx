@@ -2,7 +2,6 @@ import React from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import PhotoUpload from 'react-native-photo-upload';
-import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 import Text from '../common/Text';
 import { UserInfo } from '../../types/store';
@@ -51,7 +50,7 @@ export default function Profile({ info, onPress }: ProfileProps) {
   const { name, classOf, profilePhoto, schoolPicture } = info;
 
   const photoSource = profilePhoto === SCHOOL_PICTURE_BLANK_SYMBOL ? BlankUser : BlankUser; // { uri: profilePhoto };
-  console.log(photoSource);
+
   return (
     <ProfileContainer>
       <PhotoUpload containerStyle={photoContainerStyle}>

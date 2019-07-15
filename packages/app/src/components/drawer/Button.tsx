@@ -11,7 +11,7 @@ import {
 import Subtext from '../common/Subtext';
 import { AppState, ThemeState } from '../../types/store';
 
-const ButtonContainer = styled.View<{ active: boolean }>`
+const ButtonContainer = styled.TouchableOpacity<{ active: boolean }>`
   flex-direction: row;
   border-radius: ${FORM_BORDER_RADIUS};
   background-color: ${({ theme, active }) => active ? theme.accentColor : theme.foregroundColor};
@@ -28,13 +28,13 @@ const Label = styled(Subtext)<{ active: boolean }>`
   color: ${({ theme, active }) => active ? theme.backgroundColor : theme.subtextColor};
 `;
 
-interface ButtonProps {
+export interface ButtonProps {
   children: string;
   icon?: string;
-  active: boolean;
+  active?: boolean;
 }
 
-export default function Button({ children, active, icon, ...props }: ButtonProps & TouchableOpacityProps) {
+export default function Button({ children, icon, active = false, ...props }: ButtonProps & TouchableOpacityProps) {
   const theme = useSelector<AppState, ThemeState>((state) => state.theme);
   const iconColor = active ? theme.backgroundColor : theme.subtextColor;
 
