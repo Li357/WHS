@@ -36,19 +36,20 @@ const RightContainer = styled.View`
   margin-left: ${PROFILE_INFO_MARGIN_LEFT};
 `;
 
-interface ProfileProps {
-  info: UserInfo;
-  onPress: () => void;
-}
-
 const photoContainerStyle = {
   flexBasis: PROFILE_PHOTO_SIZE,
   height: PROFILE_PHOTO_SIZE,
 };
 
-export default function Profile({ info, onPress }: ProfileProps) {
-  const { name, classOf, profilePhoto, schoolPicture } = info;
+interface ProfileProps {
+  userInfo: UserInfo;
+  onPress: () => void;
+}
 
+export default function Profile({ userInfo, onPress }: ProfileProps) {
+  const { name, classOf, profilePhoto, schoolPicture } = userInfo;
+
+  // TODO: Finish AsyncStorage and profile picture integration
   const photoSource = profilePhoto === SCHOOL_PICTURE_BLANK_SYMBOL ? BlankUser : BlankUser; // { uri: profilePhoto };
 
   return (

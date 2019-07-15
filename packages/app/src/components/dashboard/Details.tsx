@@ -16,12 +16,12 @@ const DetailsContainer = styled.View`
 `;
 
 interface DetailProps {
-  info: UserInfo;
+  userInfo: UserInfo;
   onPress: () => void;
 }
 
-export default function Details({ info, onPress }: DetailProps) {
-  const { dean, counselor, homeroom, id } = info;
+export default function Details({ userInfo, onPress }: DetailProps) {
+  const { dean, counselor, homeroom, id } = userInfo;
   // TODO: Handle when details are larger than sanctioned height
   return (
     <DetailsContainer>

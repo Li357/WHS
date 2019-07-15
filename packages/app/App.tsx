@@ -14,43 +14,46 @@ import Schedule from './src/screens/Schedule';
 import Loading from './src/screens/Loading';
 import Drawer from './src/components/drawer/Drawer';
 import initializeStore from './src/utils/store';
-import { MAX_TEACHER_SCHEDULES } from './src/constants/store';
 
 const { store, persistor } = initializeStore();
 
+function createNavigationContainer(isLoggedIn: boolean) {
+  const Authorized = createDrawerNavigator({
+    Dashboard: {
+      screen: Dashboard,
+      navigationOptions: { drawerIcon: 'dashboard' },
+    },
+    Schedule: {
+      screen: Schedule,
+      navigationOptions: {
+        drawerIcon: 'schedule',
+        drawerLabel: 'My Schedule',
+      },
+    },
+  }, {
+    initialRouteName: 'Dashboard',
+    contentComponent: Drawer,
+  });
+  const Navigator = createSwitchNavigator({
+    Login: { screen: Login },
+    Authorized: { screen: Authorized },
+  }, { initialRouteName: isLoggedIn ? 'Authorized' : 'Login' });
+  return createAppContainer(Navigator);
+}
+
+function updateDayInfoIfNeeded(lastUpdate: Date | null, today: number) {
+  
+}
+
 function renderApp(isRehydrated: boolean) {
   if (isRehydrated) {
-    const { user: { username, password }, theme } = store.getState();
+    const { user: { username, password }, theme, day: { lastStateUpdate } } = store.getState();
     const isLoggedIn = username.length > 0 && password.length > 0;
+    const now = new Date();
+    
+    updateDayInfoIfNeeded(lastStateUpdate, now.getDay());
 
-    const Authorized = createDrawerNavigator(
-      {
-        Dashboard: {
-          screen: Dashboard,
-          navigationOptions: { drawerIcon: 'dashboard' },
-        },
-        Schedule: {
-          screen: Schedule,
-          navigationOptions: {
-            drawerIcon: 'schedule',
-            drawerLabel: 'My Schedule',
-          },
-        },
-      },
-      {
-        initialRouteName: 'Dashboard',
-        contentComponent: Drawer,
-      },
-    );
-    const Navigator = createSwitchNavigator(
-      {
-        Login: { screen: Login },
-        Authorized: { screen: Authorized },
-      },
-      { initialRouteName: isLoggedIn ? 'Authorized' : 'Login' },
-    );
-    const AppContainer = createAppContainer(Navigator);
-
+    const AppContainer = createNavigationContainer(isLoggedIn);
     return (
       <ThemeProvider theme={theme}>
         <>

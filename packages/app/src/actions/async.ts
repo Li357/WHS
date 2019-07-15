@@ -2,7 +2,9 @@ import { ThunkAction } from 'redux-thunk';
 import fetch from 'react-native-fetch-polyfill';
 
 import {
-  AppState, SetUserCredentialsAction, SetUserInfoAction, SetUserScheduleAction, SetTeacherSchedulesAction,
+  AppState,
+  SetUserCredentialsAction, SetUserInfoAction, SetUserScheduleAction, SetTeacherSchedulesAction,
+  SetDayInfoAction,
 } from '../types/store';
 import {
   getLoginURL, parseHTMLFromURL, getUserScheduleFromHTML, getUserInfoFromHTML, getLoginError, getSchoolPictureFromHTML,
@@ -14,7 +16,12 @@ import { LoginError } from '../utils/error';
 import { FETCH_TIMEOUT } from '../constants/fetch';
 
 export function fetchUserInfo(username: string, password: string) {
-  return async function fetchUserInfoThunk(dispatch, getState) {
+  const fetchUserInfoThunk: ThunkAction<
+    Promise<void>,
+    AppState,
+    undefined,
+    SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction
+  > = async (dispatch, getState) => {
     const { user } = getState();
     // FIXME: two fetches are needed to clear the current user when another logs in
     // if we are not doing a manual refresh, clear the current user
@@ -40,21 +47,35 @@ export function fetchUserInfo(username: string, password: string) {
     dispatch(setUserSchedule(schedule));
     dispatch(setTeacherSchedules(refreshedTeacherSchedules));
     dispatch(setUserCredentials({ username, password }));
-  } as ThunkAction<
-    Promise<void>,
-    AppState,
-    undefined,
-    SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction
-  >;
+  };
+  return fetchUserInfoThunk;
 }
 
 export function fetchSchoolPicture(username: string = '', password: string = '') {
-  return async function fetchSchoolPictureThunk(dispatch, getState) {
+  const fetchSchoolPictureThunk: ThunkAction<
+    Promise<void>,
+    AppState,
+    undefined,
+    SetUserInfoAction
+  > = async (dispatch, getState) => {
     const { user } = getState();
     const $ = await parseHTMLFromURL(
       getLoginURL(user.username || username, user.password || password), { method: 'POST' },
     );
     const schoolPicture = getSchoolPictureFromHTML($);
     dispatch(setUserInfo({ schoolPicture }));
-  } as ThunkAction<Promise<void>, AppState, undefined, SetUserInfoAction>;
+  };
+  return fetchSchoolPictureThunk;
+}
+
+export function fetchDates(year: number, type: ) {
+  const fetchDatesThunk: ThunkAction<
+    Promise<void>,
+    AppState,
+    undefined,
+    SetDayInfoAction
+  > = async (dispatch, getState) => {
+
+  }
+  return fetchDatesThunk;
 }

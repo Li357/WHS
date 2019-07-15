@@ -2,6 +2,11 @@ import { RawClassItemKeys } from '../types/schedule';
 
 export const SCHOOL_WEBSITE = 'https://westside-web.azurewebsites.net';
 export const LOGIN_URL = `${SCHOOL_WEBSITE}/account/login`;
+const API_VERSION = 'v3';
+export const SERVER_URL = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:5000'
+  : 'https://whs-server.herokuapp.com'; // TODO: More dynamic system for production server
+export const DATES_URL = `${SERVER_URL}/api/${API_VERSION}/dates`;
 export const FETCH_TIMEOUT = 5000;
 
 export const HEADER_SELECTOR = '.header-title';

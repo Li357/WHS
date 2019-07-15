@@ -63,5 +63,7 @@ export enum ModNumber {
   PASSING_PERIOD = 17,
   ASSEMBLY = 18,
   FINALS = 19,
+
+  UNKNOWN = 20,
 }
 export type DaySchedule = Array<[string, string, ModNumber]>;
