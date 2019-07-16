@@ -4,10 +4,10 @@ import {
   UserActions, UserState, UserInfoKeys,
   SetUserInfoAction, SetUserScheduleAction, SetUserCredentialsAction,
   SetTeacherSchedulesAction, AddTeacherScheduleAction,
-  DayState, DayActions, DayInfoKeys, SetDayInfoAction, SetDayScheduleAction,
+  DayActions, SetDayScheduleAction,
   Theme, SetThemeAction, ThemeActions,
   DatesState,
-  MiscellaneousActions, LogOutAction, OtherAction, DatesActions,
+  MiscellaneousActions, LogOutAction, OtherAction, DatesActions, UpdateDayStateAction,
 } from '../types/store';
 import { Schedule, DaySchedule, TeacherSchedule } from '../types/schedule';
 
@@ -36,8 +36,8 @@ export const addTeacherSchedule = (payload: TeacherSchedule): AddTeacherSchedule
   payload,
 });
 
-export const setDayInfo = (payload: Partial<Pick<DayState, DayInfoKeys>>): SetDayInfoAction => ({
-  type: DayActions.SET_DAY_INFO,
+export const updateDayState = (payload: Date | null): UpdateDayStateAction => ({
+  type: DayActions.UPDATE_DAY_STATE,
   payload,
 });
 

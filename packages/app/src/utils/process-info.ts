@@ -1,13 +1,14 @@
 import fetch from 'react-native-fetch-polyfill';
 import { load } from 'react-native-cheerio';
+import { DateType, DateSchema } from 'whs-server';
 
 import { processSchedule } from './process-schedule';
 import {
   HEADER_SELECTOR, STUDENT_OVERVIEW_SELECTOR, STUDENT_ID_SELECTOR,
   SCHOOL_PICTURE_SELECTOR, SCHOOL_PICTURE_REGEX, SCHOOL_PICTURE_BLANK_FLAG, SCHOOL_PICTURE_BLANK_SYMBOL,
-  SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR,
+  SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR, DATES_URL,
 } from '../constants/fetch';
-import { UserInfo, UserInfoKeys } from '../types/store';
+import { UserInfo, UserInfoKeys, UserState, UserOverviewMap, UserOverviewKeys } from '../types/store';
 import { Schedule, TeacherSchedule, RawSchedule } from '../types/schedule';
 import { NetworkError } from './error';
 
@@ -21,7 +22,7 @@ export async function parseHTMLFromURL(url: string, options?: RequestInit) {
     timeout: FETCH_TIMEOUT,
     ...options,
   });
-  if (response.status !== 200) {
+  if (!response.ok) {
     throw new NetworkError('Fetch from URL was not successful!');
   }
   const html = await response.text();
@@ -76,9 +77,9 @@ export function getUserInfoFromHTML($: CheerioSelector): UserInfo {
 
   if (!isTeacher) {
     const studentOverviewInfo = $(STUDENT_OVERVIEW_SELECTOR).get()
-      .reduce((infoMap: Partial<UserInfo>, currentInfo: CheerioElement) => {
+      .reduce((infoMap: UserOverviewMap, currentInfo: CheerioElement) => {
         const [staffRole, staffName] = $(currentInfo).text().split(': ').map((str) => str.trim());
-        const infoKey = staffRole.toLowerCase() as UserInfoKeys;
+        const infoKey = staffRole.toLowerCase() as UserOverviewKeys;
         infoMap[infoKey] = staffName;
         return infoMap;
       }, {});
@@ -115,10 +116,23 @@ export function getLoginError($: CheerioSelector) {
  * Refreshes a given collection of teacher schedules
  * @param teacherSchedules old teacher schedules to refresh
  */
-export async function fetchTeacherSchedules(teacherSchedules: TeacherSchedule[]): Promise<TeacherSchedule[]> {
+export async function getTeacherSchedules(teacherSchedules: TeacherSchedule[]): Promise<TeacherSchedule[]> {
   const parsedPages = await Promise.all(teacherSchedules.map(({ url }) => parseHTMLFromURL(url)));
   return parsedPages.map(($, index) => ({
     ...teacherSchedules[index],
     schedule: getUserScheduleFromHTML($),
   }));
+}
+
+/**
+ * Gets dates from server of specified type and year
+ * @param type date type to get
+ * @param year year of dates to get
+ */
+export async function getDates(type: DateType, year: number): Promise<DateSchema[]> {
+  const response = await fetch(`${DATES_URL}?type=${type}&year=${year}`);
+  if (!response.ok) {
+    throw new NetworkError('Fetch for dates was not successful!');
+  }
+  return response.json();
 }

@@ -1,9 +1,10 @@
 import userReducer from '../../src/reducers/user';
 import dayReducer from '../../src/reducers/day';
 import themeReducer from '../../src/reducers/theme';
-import { initialUserState, initialDayState } from '../../src/constants/store';
-import { lightTheme, darkTheme } from '../../src/constants/theme';
 import rootReducer from '../../src/reducers/root';
+import datesReducer from '../../src/reducers/dates';
+import { initialUserState, initialDayState, initialDatesState } from '../../src/constants/store';
+import { lightTheme, darkTheme } from '../../src/constants/theme';
 import * as creators from '../../src/actions/creators';
 import { MiscellaneousActions, OtherAction, AppState, Theme } from '../../src/types/store';
 import { DaySchedule, ModNumber, Schedule, TeacherSchedule } from '../../src/types/schedule';
@@ -114,11 +115,8 @@ describe('reducers', () => {
       expect(dayReducer(initialDayState, creators.other())).toEqual(initialDayState);
     });
 
-    it('should handle SET_DAY_INFO', () => {
-      const update = {
-        isBreak: false,
-        hasAssembly: true,
-      };
+    it('should handle UPDATE_DAY_STATE', () => {
+      const update = new Date();
       const expectedState = {
         ...initialDayState,
         ...update,
@@ -126,7 +124,7 @@ describe('reducers', () => {
 
       expect(dayReducer(
         initialDayState,
-        creators.setDayInfo(update),
+        creators.updateDayState(update),
       )).toEqual(expectedState);
     });
 
@@ -156,11 +154,27 @@ describe('reducers', () => {
     });
   });
 
+  describe('dates', () => {
+    const dummyDates = { ...initialDatesState, noSchool: [new Date()] };
+
+    it('should return initial state', () => {
+      expect(datesReducer(undefined, dummyAction)).toEqual(initialDatesState);
+      expect(datesReducer(initialDatesState, dummyAction)).toEqual(initialDatesState);
+      expect(datesReducer(dummyDates, creators.other())).toEqual(dummyDates);
+    });
+
+    it('should handle SET_DATES', () => {
+      expect(datesReducer(initialDatesState, creators.setDates(dummyDates))).toEqual(dummyDates);
+      expect(datesReducer(dummyDates, creators.setDates(dummyDates))).toEqual(dummyDates);
+    });
+  });
+
   describe('root', () => {
     const initialAppState: AppState = {
       user: initialUserState,
       day: initialDayState,
       theme: lightTheme,
+      dates: initialDatesState,
     };
 
     it('should return initial state', () => {
@@ -178,13 +192,14 @@ describe('reducers', () => {
           schedule: dummySchedule,
         },
         day: {
-          daySchedule: dummyDaySchedule,
-          isBreak: false,
-          isFinals: true,
-          hasAssembly: false,
+          schedule: dummyDaySchedule,
           lastStateUpdate: new Date(),
         },
         theme: darkTheme,
+        dates: {
+          ...initialDatesState,
+          noSchool: [new Date()],
+        },
       };
       expect(rootReducer(dummyAppState, creators.logOut())).toEqual(initialAppState);
     });

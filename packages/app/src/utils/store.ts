@@ -1,32 +1,85 @@
 import { applyMiddleware, createStore, Middleware } from 'redux';
 import { persistStore, persistReducer, createTransform } from 'redux-persist';
+import { PersistPartial } from 'redux-persist/es/persistReducer';
 import AsyncStorage from '@react-native-community/async-storage';
-import thunk from 'redux-thunk';
+import thunk, { ThunkDispatch } from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import { AppState, AppAction, UserState, DayState, SerializedDayState } from '../types/store';
+import {
+  AppState, AppAction,
+  UserState,
+  DatesState, DayState, SerializedDatesState, SerializedDayState,
+} from '../types/store';
 import rootReducer from '../reducers/root';
 
 // Do not persist the profile-photo, it will be manually rehydrated
 const profilePhotoTransform = createTransform<UserState, UserState>(
-  (inboundState) => inboundState,
-  (outboundState) => ({
-    ...outboundState,
+  (inboundState) => ({
+    ...inboundState,
     profilePhoto: '',
   }),
+  (outboundState) => outboundState,
   { whitelist: ['user'] },
 );
 
-const dateTransform = createTransform<SerializedDayState, DayState>(
-  ({ lastStateUpdate, ...rest }) => ({
-    ...rest,
-    lastStateUpdate: lastStateUpdate !== null ? new Date(lastStateUpdate) : null,
-  }),
-  ({ lastStateUpdate, ...rest }) => ({
-    ...rest,
-    lastStateUpdate: lastStateUpdate !== null ? lastStateUpdate.toUTCString() : null,
-  }),
-  { whitelist: ['day'] },
+// Converts dates from Dates to ISO strings and vice-versa
+const dateTransform = createTransform<
+  DatesState | DayState,
+  SerializedDatesState | SerializedDayState
+>(
+  (inboundState, key) => {
+    if (key === 'day') {
+      const { schedule, lastStateUpdate } = inboundState as DayState;
+      return {
+        schedule,
+        lastStateUpdate: lastStateUpdate !== null ? lastStateUpdate.toUTCString() : null,
+      };
+    }
+
+    const dates = inboundState as DatesState;
+    const mappedDates = (Object.keys(dates) as Array<keyof DatesState>).reduce((
+      map: { [K in keyof DatesState]?: string | string[] | null },
+      dateType: keyof DatesState,
+    ) => {
+      const dateOrDates = dates[dateType];
+      if (dateOrDates === null) {
+        map[dateType] = dateOrDates;
+      } else {
+        map[dateType] = Array.isArray(dateOrDates)
+          ? dateOrDates.map((date) => date.toISOString())
+          : dateOrDates.toISOString();
+      }
+      return map;
+    }, {}) as SerializedDatesState;
+    return mappedDates;
+  },
+  (outboundState, key) => {
+    if (key === 'day') {
+      const { schedule, lastStateUpdate } = outboundState as SerializedDayState;
+      return {
+        schedule,
+        lastStateUpdate: lastStateUpdate !== null ? new Date(lastStateUpdate) : null,
+      };
+    }
+
+    const dates = outboundState as SerializedDatesState;
+    const mappedDates = (Object.keys(dates) as Array<keyof SerializedDatesState>).reduce((
+      map: { [K in keyof DatesState]?: Date | Date[] | null },
+      dateType: keyof DatesState,
+    ) => {
+      const dateOrDates = dates[dateType];
+      if (dateOrDates === null) {
+        map[dateType] = dateOrDates;
+      } else {
+        map[dateType] = Array.isArray(dateOrDates)
+          ? dateOrDates.map((date) => new Date(date))
+          : new Date(dateOrDates);
+      }
+      return map;
+    }, {}) as DatesState;
+    return mappedDates;
+  },
+  { whitelist: ['day', 'dates'] },
 );
 
 export default function initializeStore() {
@@ -42,7 +95,12 @@ export default function initializeStore() {
   if (process.env.NODE_ENV === 'development') {
     middleware.push(createLogger());
   }
-  const store = createStore(
+  const store = createStore<
+    AppState & PersistPartial,
+    AppAction,
+    { dispatch: ThunkDispatch<AppState, undefined, AppAction> },
+    {}
+  >(
     persistedReducer,
     applyMiddleware(...middleware),
   );

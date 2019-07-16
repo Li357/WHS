@@ -2,6 +2,8 @@ import { Action } from 'redux';
 
 import { Schedule, DaySchedule, TeacherSchedule } from './schedule';
 
+export type UserOverviewKeys = 'homeroom' | 'counselor' | 'dean' | 'id';
+export type UserOverviewMap = { [K in UserOverviewKeys]: string };
 export interface UserState {
   username: string;
   password: string;
@@ -32,9 +34,7 @@ export interface SetUserCredentialsAction extends Action<UserActions.SET_USER_CR
   payload: Pick<UserState, 'username' | 'password'>;
 }
 
-export type UserInfoKeys =
-  | 'name' | 'schoolPicture' | 'profilePhoto' | 'isTeacher'
-  | 'classOf' | 'homeroom' | 'counselor' | 'dean' | 'id';
+export type UserInfoKeys = | 'name' | 'schoolPicture' | 'profilePhoto' | 'isTeacher' | 'classOf' | UserOverviewKeys;
 export type UserInfo = Pick<UserState, UserInfoKeys>;
 export interface SetUserInfoAction extends Action<UserActions.SET_USER_INFO> {
   payload: Partial<UserInfo>;
@@ -53,22 +53,21 @@ export interface AddTeacherScheduleAction extends Action<UserActions.ADD_TEACHER
 }
 
 export interface DayState {
-  daySchedule: DaySchedule;
-  isBreak: boolean;
-  isFinals: boolean;
-  hasAssembly: boolean;
+  schedule: DaySchedule;
   lastStateUpdate: Date | null;
 }
-export type SerializedDayState = Omit<DayState, 'lastStateUpdate'> & { lastStateUpdate: string | null };
+export interface SerializedDayState {
+  schedule: DaySchedule;
+  lastStateUpdate: string | null;
+}
 
 export enum DayActions {
-  SET_DAY_INFO = 'SET_DAY_INFO',
+  UPDATE_DAY_STATE = 'UPDATE_DAY_STATE',
   SET_DAY_SCHEDULE = 'SET_DAY_SCHEDULE',
 }
 
-export type DayInfoKeys = 'isBreak' | 'isFinals' | 'hasAssembly' | 'lastStateUpdate';
-export interface SetDayInfoAction extends Action<DayActions.SET_DAY_INFO> {
-  payload: Partial<Pick<DayState, DayInfoKeys>>;
+export interface UpdateDayStateAction extends Action<DayActions.UPDATE_DAY_STATE> {
+  payload: Date | null;
 }
 
 export interface SetDayScheduleAction extends Action<DayActions.SET_DAY_SCHEDULE> {
@@ -108,6 +107,16 @@ export interface DatesState {
   semesterTwoStart: Date | null;
   semesterTwoEnd: Date | null;
 }
+export interface SerializedDatesState {
+  assembly: string[];
+  noSchool: string[];
+  earlyDismissal: string[];
+  lateStart: string[];
+  semesterOneStart: string | null;
+  semesterOneEnd: string | null;
+  semesterTwoStart: string | null;
+  semesterTwoEnd: string | null;
+}
 
 export enum DatesActions {
   SET_DATES = 'SET_DATES',
@@ -128,9 +137,9 @@ export interface OtherAction extends Action<MiscellaneousActions.OTHER> {} /* ha
 export type UserAction =
   | SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction
   | AddTeacherScheduleAction | OtherAction;
-export type DayAction = SetDayInfoAction | SetDayScheduleAction | OtherAction;
+export type DayAction = UpdateDayStateAction | SetDayScheduleAction | OtherAction;
 export type ThemeAction = SetThemeAction | OtherAction;
-export type DatesAction = SetDatesAction;
+export type DatesAction = SetDatesAction | OtherAction;
 export type MiscellaneousAction = LogOutAction | OtherAction;
 
 export interface AppState {

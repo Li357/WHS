@@ -7,7 +7,7 @@ import { LOGIN_URL } from '../../src/constants/fetch';
 import { fetchMock, open, TEST_HTML_DIR } from '../utils/fetch';
 import { fetchUserInfo, fetchSchoolPicture } from '../../src/actions/async';
 import { processSchedule } from '../../src/utils/process-schedule';
-import { initialUserState, initialDayState } from '../../src/constants/store';
+import { initialUserState, initialDayState, initialDatesState } from '../../src/constants/store';
 import { lightTheme } from '../../src/constants/theme';
 import { LoginError, NetworkError } from '../../src/utils/error';
 
@@ -15,6 +15,7 @@ const initialAppState: AppState = {
   user: initialUserState,
   day: initialDayState,
   theme: lightTheme,
+  dates: initialDatesState,
 };
 const mockStore = configureMockStore<AppState, ThunkDispatch<AppState, undefined, AppAction>>([thunk]);
 fetchMock.config.fetch = fetch;
@@ -99,5 +100,9 @@ describe('async actions', () => {
       await store.dispatch(fetchSchoolPicture('Li357', '12345'));
       expect(store.getActions()).toEqual(expectedActions);
     });
+  });
+
+  describe('fetchDates', () => {
+    it.todo('fetches dates and sets store');
   });
 });

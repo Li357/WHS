@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components/native';
 import { NavigationScreenProps } from 'react-navigation';
 
@@ -7,10 +7,12 @@ import Screen from '../components/common/Screen';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import Text from '../components/common/Text';
-import { fetchUserInfo } from '../actions/async';
-import { AppState, AppAction } from '../types/store';
+import { fetchUserInfo, fetchDates } from '../actions/async';
+import { AppState, AppAction, DatesState } from '../types/store';
 import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE } from '../constants/style';
 import WHS from '../../assets/images/WHS.png';
+import { getScheduleOnDate } from '../utils/query-schedule';
+import { setDaySchedule, updateDayState } from '../actions/creators';
 
 const LoginScreen = styled(Screen)`
   align-items: center;
@@ -30,18 +32,25 @@ export default memo(function Login(props: NavigationScreenProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dates = useSelector<AppState, DatesState>((state) => state.dates);
   const dispatch = useDispatch<AppState, AppAction>();
 
   const handleLogin = async () => {
     setLoading(true);
     try {
       await dispatch(fetchUserInfo(username, password));
+      await dispatch(fetchDates());
+
+      const now = new Date();
+      dispatch(updateDayState(now));
+      dispatch(setDaySchedule(getScheduleOnDate(now, dates)));
+
       props.navigation.navigate('Dashboard');
     } catch (error) {
-      setError(true);
       // TODO: Handle specific errors
+      setError(true);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const canLogin = username.length > 0 && password.length > 0 && !loading;

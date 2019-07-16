@@ -1,5 +1,3 @@
-import { Omit } from './util';
-
 interface RawClassItemData {
   courseId: string;
 }

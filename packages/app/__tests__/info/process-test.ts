@@ -124,7 +124,11 @@ describe('processing user info', () => {
     });
   });
 
-  describe('fetchTeacherSchedules', () => {
-    it.todo('should fetch specified teacher schedules');
+  describe('getTeacherSchedules', () => {
+    it.todo('should get specified teacher schedules');
+  });
+
+  describe('getDates', () => {
+    it.todo('should get dates based on type and year');
   });
 });

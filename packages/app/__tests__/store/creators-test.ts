@@ -1,6 +1,9 @@
 import * as creators from '../../src/actions/creators';
-import { UserActions, DayActions, MiscellaneousActions, ThemeActions, Theme } from '../../src/types/store';
+import {
+  UserActions, DayActions, MiscellaneousActions, ThemeActions, Theme, DatesActions,
+} from '../../src/types/store';
 import { Schedule, DaySchedule, TeacherSchedule } from '../../src/types/schedule';
+import { initialDatesState } from '../../src/constants/store';
 
 describe('action creators', () => {
   it('should create action to set user credentials', () => {
@@ -63,15 +66,12 @@ describe('action creators', () => {
   });
 
   it('should create action to set day info', () => {
-    const payload = {
-      isBreak: true,
-      isSummer: true,
-    };
+    const payload = new Date();
     const expectedAction = {
-      type: DayActions.SET_DAY_INFO,
+      type: DayActions.UPDATE_DAY_STATE,
       payload,
     };
-    expect(creators.setDayInfo(payload)).toEqual(expectedAction);
+    expect(creators.updateDayState(payload)).toEqual(expectedAction);
   });
 
   it('should create action to set day schedule', () => {
@@ -90,6 +90,15 @@ describe('action creators', () => {
       payload,
     };
     expect(creators.setTheme(payload)).toEqual(expectedAction);
+  });
+
+  it('should create action to set dates', () => {
+    const payload = { ...initialDatesState, noSchool: [new Date()] };
+    const expectedAction = {
+      type: DatesActions.SET_DATES,
+      payload,
+    };
+    expect(creators.setDates(payload)).toEqual(expectedAction);
   });
 
   it('should create action to log out', () => {

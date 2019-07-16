@@ -1,7 +1,8 @@
-import { isAfter, isBefore, toDate, isWithinInterval } from 'date-fns';
+import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays } from 'date-fns';
 
-import { DayState, DayInfoKeys } from '../types/store';
 import { DaySchedule, ModNumber } from '../types/schedule';
+import { DatesState } from '../types/store';
+import * as SCHEDULES from '../constants/schedules';
 
 /* Schedule Querying */
 
@@ -60,12 +61,53 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): ModNumber {
 }
 
 /**
- * Gets 
- * @param date 
- * @param dayInfo 
+ * Checks if a certain date exists in array of dates by day
+ * @param queryDate certain date to check
+ * @param dates array to check if `queryDate` is in
  */
-export function getDayScheduleOnDate(date: Date, dayInfo: Pick<DayState, DayInfoKeys>) {
-  
+export function containsDate(queryDate: Date, dates: Date[]) {
+  return dates.some((date) => isSameDay(date, queryDate));
+}
+
+/**
+ * Gets day schedule on a certain date
+ * @param queryDate certain date to query
+ * @param dates map of special dates from server
+ */
+export function getScheduleOnDate(queryDate: Date, dates: DatesState) {
+  const { semesterOneEnd, semesterTwoEnd } = dates;
+  if (semesterOneEnd !== null && semesterTwoEnd !== null) {
+    const semesterOneFinalsOne = subDays(semesterOneEnd, 1);
+    const semesterTwoFinalsOne = subDays(semesterTwoEnd, 1);
+
+    const isSemesterOneFinals = isSameDay(semesterOneFinalsOne, queryDate) || isSameDay(semesterOneEnd, queryDate);
+    const isSemesterTwoFinals = isSameDay(semesterTwoFinalsOne, queryDate) || isSameDay(semesterTwoEnd, queryDate);
+    if (isSemesterOneFinals || isSemesterTwoFinals) {
+      return SCHEDULES.FINALS;
+    }
+  }
+
+  // TODO: Check for summer
+  if (containsDate(queryDate, dates.noSchool)) {
+    return SCHEDULES.BREAK;
+  }
+
+  if (containsDate(queryDate, dates.earlyDismissal)) {
+    return SCHEDULES.EARLY_DISMISSAL;
+  }
+
+  if (containsDate(queryDate, dates.assembly)) {
+    return SCHEDULES.ASSEMBLY;
+  }
+
+  if (queryDate.getDay() === 3) {
+    const isLateStart = containsDate(queryDate, dates.lateStart);
+    if (isLateStart) {
+      return SCHEDULES.LATE_START_WEDNESDAY;
+    }
+    return SCHEDULES.WEDNESDAY;
+  }
+  return SCHEDULES.REGULAR;
 }
 
 /**

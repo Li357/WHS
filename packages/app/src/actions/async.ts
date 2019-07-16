@@ -4,16 +4,17 @@ import fetch from 'react-native-fetch-polyfill';
 import {
   AppState,
   SetUserCredentialsAction, SetUserInfoAction, SetUserScheduleAction, SetTeacherSchedulesAction,
-  SetDayInfoAction,
+  SetDatesAction,
 } from '../types/store';
 import {
   getLoginURL, parseHTMLFromURL, getUserScheduleFromHTML, getUserInfoFromHTML, getLoginError, getSchoolPictureFromHTML,
-  fetchTeacherSchedules,
+  getTeacherSchedules,
+  getDates,
 } from '../utils/process-info';
 import { getProfilePhoto, setProfilePhoto } from '../utils/manage-photos';
-import { setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials } from './creators';
+import { setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials, setDates } from './creators';
 import { LoginError } from '../utils/error';
-import { FETCH_TIMEOUT } from '../constants/fetch';
+import { FETCH_TIMEOUT, DATE_TYPES, SETTING_TYPES } from '../constants/fetch';
 
 export function fetchUserInfo(username: string, password: string) {
   const fetchUserInfoThunk: ThunkAction<
@@ -41,7 +42,7 @@ export function fetchUserInfo(username: string, password: string) {
     // prevent profile photo erasure on manual refresh
     const profilePhoto = await getProfilePhoto(username) || info.schoolPicture;
     await setProfilePhoto(username, profilePhoto);
-    const refreshedTeacherSchedules = await fetchTeacherSchedules(user.teacherSchedules);
+    const refreshedTeacherSchedules = await getTeacherSchedules(user.teacherSchedules);
 
     dispatch(setUserInfo({ ...info, profilePhoto }));
     dispatch(setUserSchedule(schedule));
@@ -68,14 +69,43 @@ export function fetchSchoolPicture(username: string = '', password: string = '')
   return fetchSchoolPictureThunk;
 }
 
-export function fetchDates(year: number, type: ) {
+export function fetchDates(year?: number) {
   const fetchDatesThunk: ThunkAction<
     Promise<void>,
     AppState,
     undefined,
-    SetDayInfoAction
-  > = async (dispatch, getState) => {
+    SetDatesAction
+  > = async (dispatch) => {
+    if (!year) {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+      year = currentMonth < 5 ? currentYear - 1 : currentYear;
+    }
 
-  }
+    const [
+      assembly, noSchool, earlyDismissal, lateStart,
+    ] = await Promise.all(DATE_TYPES.map(async (type) => {
+      const dates = await getDates(type, year!);
+      return dates.map((dateObj) => new Date(dateObj.date));
+    }));
+    const [
+      semesterOneStart, semesterOneEnd, semesterTwoStart, semesterTwoEnd,
+    ] = await Promise.all(SETTING_TYPES.map(async (type) => {
+      const [setting] = await getDates(type, year!);
+      return setting ? new Date(setting.date) : null;
+    }));
+
+    dispatch(setDates({
+      assembly,
+      noSchool,
+      earlyDismissal,
+      lateStart,
+      semesterOneStart,
+      semesterOneEnd,
+      semesterTwoStart,
+      semesterTwoEnd,
+    }));
+  };
   return fetchDatesThunk;
 }
