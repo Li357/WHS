@@ -119,7 +119,7 @@ describe('reducers', () => {
       const update = new Date();
       const expectedState = {
         ...initialDayState,
-        ...update,
+        lastStateUpdate: update,
       };
 
       expect(dayReducer(
@@ -131,7 +131,7 @@ describe('reducers', () => {
     it('should handle SET_DAY_SCHEDULE', () => {
       const expectedState = {
         ...initialDayState,
-        daySchedule: dummyDaySchedule,
+        schedule: dummyDaySchedule,
       };
 
       expect(dayReducer(

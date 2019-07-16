@@ -9,7 +9,7 @@ import * as SCHEDULES from '../constants/schedules';
  * @param time `h:mm` time string to convert to date (i.e. `8:00`)
  * @param date current day to construct day from to ensure only time comparison
  */
-function convertTimeToDate(time: string, date: Date) {
+export function convertTimeToDate(time: string, date: Date) {
   const [hours, minutes] = time.split(':').map(Number);
   const converted = toDate(date);
   converted.setHours(hours, minutes, 0, 0);

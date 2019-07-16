@@ -65,7 +65,7 @@ describe('action creators', () => {
     expect(creators.addTeacherSchedule(payload)).toEqual(expectedAction);
   });
 
-  it('should create action to set day info', () => {
+  it('should create action to set day schedule last update', () => {
     const payload = new Date();
     const expectedAction = {
       type: DayActions.UPDATE_DAY_STATE,
