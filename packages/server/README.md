@@ -9,6 +9,10 @@ To develop locally, install dependencies (`yarn`) then build (`yarn build`). Fin
 
 Also execute `yarn start` to start the Express server in the script. These variables are also needed to run tests.
 
+### TODO:
+
+- Fix legacy endpoints to utilize up-to-date MongoDB collections for v2 support
+
 ### Endpoints
 For v3:
 - `GET /v3/dates` with query params:
