@@ -24,7 +24,7 @@ export function convertTimeToDate(time: string, date: Date) {
  */
 export function getModAtTime(date: Date, daySchedule: DaySchedule): ModNumber {
   const dayStart = convertTimeToDate(daySchedule[0][0], date);
-  const dayEnd = convertTimeToDate(daySchedule.slice(-1)[0][0], date);
+  const dayEnd = convertTimeToDate(daySchedule.slice(-1)[0][1], date);
   if (isBefore(date, dayStart)) {
     return ModNumber.BEFORE_SCHOOL;
   } else if (isAfter(date, dayEnd)) {

@@ -1,6 +1,8 @@
-import { isSameMinute } from 'date-fns';
+import { isSameMinute, addMinutes } from 'date-fns';
 
-import { isHalfMod, containsDate, getScheduleOnDate, convertTimeToDate, getModAtTime } from '../../src/utils/query-schedule';
+import {
+  isHalfMod, containsDate, getScheduleOnDate, convertTimeToDate, getModAtTime,
+} from '../../src/utils/query-schedule';
 import { DatesState } from '../../src/types/store';
 import * as SCHEDULES from '../../src/constants/schedules';
 import { ModNumber } from '../../src/types/schedule';
@@ -30,9 +32,44 @@ describe('schedule querying', () => {
       });
     });
 
-    it.todo('should return AFTER_SCHOOL');
+    it('should return AFTER_SCHOOL', () => {
+      [SCHEDULES.REGULAR, SCHEDULES.LATE_START, SCHEDULES.ASSEMBLY].forEach((schedule) => {
+        expect(getModAtTime(new Date(2019, 10, 1, 15, 15), schedule)).toBe(ModNumber.AFTER_SCHOOL);
+      });
 
-    it.todo('should return PASSING_PERIOD');
+      [SCHEDULES.WEDNESDAY, SCHEDULES.LATE_START_WEDNESDAY].forEach((schedule) => {
+        expect(getModAtTime(new Date(2019, 10, 1, 14, 55), schedule)).toBe(ModNumber.AFTER_SCHOOL);
+      });
+
+      expect(getModAtTime(new Date(2019, 10, 1, 13, 15), SCHEDULES.EARLY_DISMISSAL)).toBe(ModNumber.AFTER_SCHOOL);
+      expect(getModAtTime(new Date(2019, 10, 1, 12, 30), SCHEDULES.FINALS)).toBe(ModNumber.AFTER_SCHOOL);
+    });
+
+    it('should return PASSING_PERIOD', () => {
+      for (const schedule of Object.values(SCHEDULES)) {
+        // Don't check after school
+        const returnsPassingPeriod = schedule.slice(0, -1).every((triplet) => {
+          const endTime = triplet[1];
+          // 2 minutes after the end of a mod should be passing period
+          const date = addMinutes(convertTimeToDate(endTime, new Date()), 2);
+          return getModAtTime(date, schedule) === ModNumber.PASSING_PERIOD;
+        });
+        expect(returnsPassingPeriod).toBe(true);
+      }
+    });
+
+    it('should return corresponding mod', () => {
+      for (const schedule of Object.values(SCHEDULES)) {
+        const returnsMod = schedule.every(([startTime, endTime, modNumber]) => {
+          const [start, end] = [startTime, endTime].map((time) => (
+            Number(convertTimeToDate(time, new Date()))
+          ));
+          const middle = new Date((start + end) / 2);
+          return getModAtTime(middle, schedule) === modNumber;
+        });
+        expect(returnsMod).toBe(true);
+      }
+    });
   });
 
   describe('containsDate', () => {
