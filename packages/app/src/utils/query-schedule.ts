@@ -4,8 +4,6 @@ import { DaySchedule, ModNumber } from '../types/schedule';
 import { DatesState } from '../types/store';
 import * as SCHEDULES from '../constants/schedules';
 
-/* Schedule Querying */
-
 /**
  * Converts a `h:mm` time (from a day schedule timpair) to a date for comparison
  * @param time `h:mm` time string to convert to date (i.e. `8:00`)
@@ -100,11 +98,15 @@ export function getScheduleOnDate(queryDate: Date, dates: DatesState) {
     return SCHEDULES.ASSEMBLY;
   }
 
-  if (queryDate.getDay() === 3) {
-    const isLateStart = containsDate(queryDate, dates.lateStart);
-    if (isLateStart) {
+  const day = queryDate.getDay();
+  if (containsDate(queryDate, dates.lateStart)) {
+    if (day === 3) {
       return SCHEDULES.LATE_START_WEDNESDAY;
     }
+    return SCHEDULES.LATE_START;
+  }
+
+  if (day === 3) {
     return SCHEDULES.WEDNESDAY;
   }
   return SCHEDULES.REGULAR;
