@@ -8,7 +8,7 @@ import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import Text from '../components/common/Text';
 import { fetchUserInfo, fetchDates } from '../actions/async';
-import { AppState, AppAction, DatesState } from '../types/store';
+import { AppState } from '../types/store';
 import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE } from '../constants/style';
 import WHS from '../../assets/images/WHS.png';
 import { getScheduleOnDate } from '../utils/query-schedule';
@@ -32,8 +32,8 @@ export default memo(function Login(props: NavigationScreenProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const dates = useSelector<AppState, DatesState>((state) => state.dates);
-  const dispatch = useDispatch<AppState, AppAction>();
+  const dates = useSelector((state: AppState) => state.dates);
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     setLoading(true);

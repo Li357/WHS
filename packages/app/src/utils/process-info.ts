@@ -8,7 +8,7 @@ import {
   SCHOOL_PICTURE_SELECTOR, SCHOOL_PICTURE_REGEX, SCHOOL_PICTURE_BLANK_FLAG, SCHOOL_PICTURE_BLANK_SYMBOL,
   SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR, DATES_URL,
 } from '../constants/fetch';
-import { UserInfo, UserInfoKeys, UserState, UserOverviewMap, UserOverviewKeys } from '../types/store';
+import { UserInfo, UserOverviewMap, UserOverviewKeys } from '../types/store';
 import { Schedule, TeacherSchedule, RawSchedule } from '../types/schedule';
 import { NetworkError } from './error';
 

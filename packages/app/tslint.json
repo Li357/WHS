@@ -1,39 +1,34 @@
 {
-  "extends": ["tslint:latest", "tslint-react"],
+  "defaultSeverity": "error",
+  "extends": ["tslint:latest", "tslint-react", "tslint-react-hooks", "tslint-etc"],
   "rules": {
-    "quotemark": {
-      "options": ["single", "jsx-double", "avoid-template", "avoid-escape"],
-      "severity": "error"
-    },
+    "quotemark": [true, "single", "jsx-double", "avoid-template", "avoid-escape"],
     "object-literal-sort-keys": false,
-    "interface-name": {
-      "options": ["never-prefix"],
-      "severity": "error"
-    },
-    "ordered-imports": {
-      "options": {
-        "import-sources-order": "any",
-        "named-imports-order": "any",
-        "grouped-imports": true,
-        "groups": [
-          {
-            "name": "packages",
-            "match": "^[^\\.]+$",
-            "order": 10
-          },
-          {
-            "name": "relative imports",
-            "match": "^\\.",
-            "order": 20
-          }
-        ]
-      },
-      "severity": "error"
-    },
+    "interface-name": [true, "never-prefix"],
+    "ordered-imports": [true, {
+      "import-sources-order": "any",
+      "named-imports-order": "any",
+      "grouped-imports": true,
+      "groups": [
+        {
+          "name": "packages",
+          "match": "^[^\\.]+$",
+          "order": 10
+        },
+        {
+          "name": "relative imports",
+          "match": "^\\.",
+          "order": 20
+        }
+      ]
+    }],
     "no-submodule-imports": false,
     "no-implicit-dependencies": [true, "dev"],
     "arrow-parens": true,
     "max-classes-per-file": false,
-    "member-ordering": false
+    "member-ordering": false,
+    "no-unused-declaration": true,
+    "throw-error": true,
+    "react-hooks-nesting": true
   }
 }

@@ -9,7 +9,7 @@ import {
   SMALLTEXT_SIZE, BUTTON_MARGIN_VERTICAL,
 } from '../../constants/style';
 import Subtext from '../common/Subtext';
-import { AppState, ThemeState } from '../../types/store';
+import { AppState } from '../../types/store';
 
 const ButtonContainer = styled.TouchableOpacity<{ active: boolean }>`
   flex-direction: row;
@@ -35,7 +35,7 @@ export interface ButtonProps {
 }
 
 export default function Button({ children, icon, active = false, ...props }: ButtonProps & TouchableOpacityProps) {
-  const theme = useSelector<AppState, ThemeState>((state) => state.theme);
+  const theme = useSelector((state: AppState) => state.theme);
   const iconColor = active ? theme.backgroundColor : theme.subtextColor;
 
   return (

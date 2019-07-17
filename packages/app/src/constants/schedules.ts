@@ -108,7 +108,7 @@ export const ASSEMBLY: DaySchedule = [
 ];
 
 export const FINALS: DaySchedule = [
-  ['8:00', '8:05', ModNumber.FINALS],
+  ['8:00', '8:05', ModNumber.HOMEROOM],
   ['8:10', '9:10', ModNumber.FINALS],
   ['9:15', '10:15', ModNumber.FINALS],
   ['10:20', '11:20', ModNumber.FINALS],

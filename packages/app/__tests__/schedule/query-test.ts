@@ -19,40 +19,54 @@ describe('schedule querying', () => {
   });
 
   describe('getModAtTime', () => {
-    it('should return BEFORE_SCHOOL', () => {
+    it('should return BEFORE_SCHOOL and HOMEROOM', () => {
       [
-        SCHEDULES.REGULAR, SCHEDULES.WEDNESDAY,
+        SCHEDULES.REGULAR,
         SCHEDULES.EARLY_DISMISSAL, SCHEDULES.ASSEMBLY, SCHEDULES.FINALS,
       ].forEach((schedule) => {
-        expect(getModAtTime(new Date(2019, 10, 1, 7, 55), schedule)).toBe(ModNumber.BEFORE_SCHOOL);
+        expect(getModAtTime(new Date(2019, 10, 1, 7, 55), schedule)).toStrictEqual({
+          current: ModNumber.BEFORE_SCHOOL, next: ModNumber.HOMEROOM,
+        });
       });
 
-      [SCHEDULES.LATE_START, SCHEDULES.LATE_START_WEDNESDAY].forEach((schedule) => {
-        expect(getModAtTime(new Date(2019, 10, 1, 9, 55), schedule)).toBe(ModNumber.BEFORE_SCHOOL);
+      expect(getModAtTime(new Date(2019, 10, 1, 7, 55), SCHEDULES.WEDNESDAY)).toStrictEqual({
+        current: ModNumber.BEFORE_SCHOOL, next: ModNumber.ONE,
+      });
+      expect(getModAtTime(new Date(2019, 10, 1, 9, 55), SCHEDULES.LATE_START_WEDNESDAY)).toStrictEqual({
+        current: ModNumber.BEFORE_SCHOOL, next: ModNumber.ONE,
       });
     });
 
-    it('should return AFTER_SCHOOL', () => {
+    it('should return AFTER_SCHOOL and null', () => {
       [SCHEDULES.REGULAR, SCHEDULES.LATE_START, SCHEDULES.ASSEMBLY].forEach((schedule) => {
-        expect(getModAtTime(new Date(2019, 10, 1, 15, 15), schedule)).toBe(ModNumber.AFTER_SCHOOL);
+        expect(getModAtTime(new Date(2019, 10, 1, 15, 15), schedule)).toStrictEqual({
+          current: ModNumber.AFTER_SCHOOL, next: null,
+        });
       });
 
       [SCHEDULES.WEDNESDAY, SCHEDULES.LATE_START_WEDNESDAY].forEach((schedule) => {
-        expect(getModAtTime(new Date(2019, 10, 1, 14, 55), schedule)).toBe(ModNumber.AFTER_SCHOOL);
+        expect(getModAtTime(new Date(2019, 10, 1, 14, 55), schedule)).toStrictEqual({
+          current: ModNumber.AFTER_SCHOOL, next: null,
+        });
       });
 
-      expect(getModAtTime(new Date(2019, 10, 1, 13, 15), SCHEDULES.EARLY_DISMISSAL)).toBe(ModNumber.AFTER_SCHOOL);
-      expect(getModAtTime(new Date(2019, 10, 1, 12, 30), SCHEDULES.FINALS)).toBe(ModNumber.AFTER_SCHOOL);
+      expect(getModAtTime(new Date(2019, 10, 1, 13, 15), SCHEDULES.EARLY_DISMISSAL)).toStrictEqual({
+        current: ModNumber.AFTER_SCHOOL, next: null,
+      });
+      expect(getModAtTime(new Date(2019, 10, 1, 12, 30), SCHEDULES.FINALS)).toStrictEqual({
+        current: ModNumber.AFTER_SCHOOL, next: null,
+      });
     });
 
     it('should return PASSING_PERIOD', () => {
       for (const schedule of Object.values(SCHEDULES)) {
         // Don't check after school
-        const returnsPassingPeriod = schedule.slice(0, -1).every((triplet) => {
+        const returnsPassingPeriod = schedule.slice(0, -1).every((triplet, index) => {
           const endTime = triplet[1];
           // 2 minutes after the end of a mod should be passing period
-          const date = addMinutes(convertTimeToDate(endTime, new Date()), 2);
-          return getModAtTime(date, schedule) === ModNumber.PASSING_PERIOD;
+          const date = addMinutes(convertTimeToDate(endTime), 2);
+          const { current, next } = getModAtTime(date, schedule);
+          return current === ModNumber.PASSING_PERIOD && next === schedule[index + 1][2];
         });
         expect(returnsPassingPeriod).toBe(true);
       }
@@ -60,16 +74,26 @@ describe('schedule querying', () => {
 
     it('should return corresponding mod', () => {
       for (const schedule of Object.values(SCHEDULES)) {
-        const returnsMod = schedule.every(([startTime, endTime, modNumber]) => {
+        const returnsMod = schedule.every(([startTime, endTime, modNumber], index) => {
           const [start, end] = [startTime, endTime].map((time) => (
-            Number(convertTimeToDate(time, new Date()))
+            Number(convertTimeToDate(time))
           ));
           const middle = new Date((start + end) / 2);
-          return getModAtTime(middle, schedule) === modNumber;
+          const { current, next } = getModAtTime(middle, schedule);
+          const lastPair = index === schedule.length;
+          return current === modNumber && next === (lastPair ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD);
         });
         expect(returnsMod).toBe(true);
       }
     });
+  });
+
+  describe('getClassAtMod', () => {
+    it.todo('');
+  });
+
+  describe('getScheduleInfoAtTime', () => {
+    it.todo('');
   });
 
   describe('containsDate', () => {
@@ -161,6 +185,10 @@ describe('schedule querying', () => {
       const schedule = getSchedule(new Date(2019, 8, 19));
       expect(schedule).toBe(SCHEDULES.REGULAR);
     });
+  });
+
+  describe('getCountdown', () => {
+    it.todo('');
   });
 
   describe('isHalfMod', () => {

@@ -65,3 +65,10 @@ export enum ModNumber {
   UNKNOWN = 20,
 }
 export type DaySchedule = Array<[string, string, ModNumber]>;
+
+export interface ScheduleInfo {
+  current: ModNumber;
+  currentClass: ScheduleItem | null;
+  next: ModNumber | null;
+  nextClass: ScheduleItem | null;
+}

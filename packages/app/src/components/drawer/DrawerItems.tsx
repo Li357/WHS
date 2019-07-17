@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DrawerItemsProps } from 'react-navigation';
 import { useSelector } from 'react-redux';
+import { createSelector } from 'reselect';
 
 import Button from './Button';
 import ButtonGroup from './ButtonGroup';
@@ -13,8 +14,8 @@ export default function DrawerItems({
   onItemPress, onSchedulePress,
   descriptors, navigation,
 }: DrawerItemsProps) {
-  const mySchedule = useSelector<AppState, Schedule>(({ user }) => user.schedule);
-  const teacherSchedules = useSelector<AppState, TeacherSchedule[]>(({ user }) => user.teacherSchedules);
+  const mySchedule = useSelector(({ user }: AppState) => user.schedule);
+  const teacherSchedules = useSelector(({ user }: AppState) => user.teacherSchedules);
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const updateIndex = (index: number, schedule: TeacherSchedule | Schedule) => () => {
