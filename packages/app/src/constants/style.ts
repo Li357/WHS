@@ -11,6 +11,7 @@ export const SUBTEXT_FONT = Platform.select({ ios: 'SFProDisplay-Medium', androi
 export const SUBTEXT_SIZE = 20;
 export const SMALLTEXT_FONT = SUBTEXT_FONT;
 export const SMALLTEXT_SIZE = 15;
+export const BORDER_WIDTH = '1px';
 
 export const SCREEN_MARGIN_HORIZONTAL = wp2px('10%');
 
@@ -32,7 +33,7 @@ export const FORM_BORDER_RADIUS = BORDER_RADIUS;
 export const FORM_MARGIN_VERTICAL = '7.5px';
 export const FORM_PADDING_HORIZONTAL = '20px';
 
-export const INPUT_BORDER_WIDTH = '1px';
+export const INPUT_BORDER_WIDTH = BORDER_WIDTH;
 
 export const BUTTON_MARGIN_VERTICAL = FORM_MARGIN_VERTICAL;
 
@@ -54,3 +55,4 @@ export const CARD_MARGIN_BOTTOM = '20px';
 export const CARD_PADDING = '20px';
 export const CARD_PADDING_TOP = '40px';
 export const CARD_BORDER_RADIUS = BORDER_RADIUS;
+export const CARD_BORDER_WIDTH = BORDER_WIDTH;

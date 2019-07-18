@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components/native';
 
 import { getCountdown, getScheduleInfoAtTime } from '../../utils/query-schedule';
 import { getDashboardInfo } from '../../utils/dashboard-info';
-import Card from './Card';
-import Text from '../common/Text';
-import Subtext from '../common/Subtext';
+import InfoCard from './InfoCard';
+import CrossSectionedCard from './CrossSectionedCard';
 import { DaySchedule, Schedule } from '../../types/schedule';
-
-const Description = styled(Subtext)`
-  color: ${({ theme }) => theme.textColor};
-`;
 
 interface InfoProps {
   daySchedule: DaySchedule;
@@ -41,15 +35,9 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   }, [scheduleInfo, daySchedule, userSchedule, countdown, dashboardInfo]);
 
   const cards = dashboardInfo.map((getter, index) => {
-    const { title, subtitle, name } = getter(countdown, scheduleInfo);
-    // TODO: Finish case for cross-sectioned classes
-    return (
-      <Card key={index}>
-        <Text numberOfLines={2}>{title}</Text>
-        {subtitle && <Description>{subtitle}</Description>}
-        {name && <Subtext>{name}</Subtext>}
-      </Card>
-    );
+    const { crossSectioned, ...info } = getter(countdown, scheduleInfo);
+    const Card = crossSectioned ? CrossSectionedCard : InfoCard;
+    return (<Card key={index} {...info} />);
   });
   return (<>{cards}</>);
 }

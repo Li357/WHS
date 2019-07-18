@@ -4,6 +4,7 @@ export interface DashboardInfo {
   title: string;
   subtitle?: string;
   name?: string;
+  crossSectioned?: boolean;
 }
 
 export type DashboardInfoGetter = (timeLeft: number, scheduleInfo: ScheduleInfo) => DashboardInfo;

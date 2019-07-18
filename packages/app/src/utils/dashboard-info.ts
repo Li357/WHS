@@ -10,7 +10,7 @@ function createTimeLeftInfo(name: string) {
 }
 
 function afterSchoolInfo() {
-  return { title: "You're done for the day!" };
+  return { title: 'You\'re done for the day!' };
 }
 
 function createModInfo(name: string, selector: (scheduleInfo: ScheduleInfo) => ModNumber) {
@@ -26,11 +26,12 @@ function createModInfo(name: string, selector: (scheduleInfo: ScheduleInfo) => M
 function createClassInfo(name: string, selector: (ScheduleInfo: ScheduleInfo) => ScheduleItem) {
   return function classInfo(timeLeft: number, scheduleInfo: ScheduleInfo) {
     const scheduleItem = selector(scheduleInfo);
-    // Just to fix type errors
     const asClassItem = scheduleItem as ClassItem;
-    const asCrossSection = scheduleItem as CrossSectionedItem;
-    const title = asCrossSection.columns ? 'Cross Sectioned' : asClassItem.title;
-    return { title, name: `${name} class` };
+    const asCrossSectioned = scheduleItem as CrossSectionedItem;
+
+    const crossSectioned = asCrossSectioned.columns !== undefined;
+    const title = crossSectioned ? asClassItem.title : 'Cross Sectioned';
+    return { title, name: `${name} class`, crossSectioned };
   };
 }
 
@@ -39,9 +40,9 @@ const currentClassInfo = createClassInfo('current', (info) => info.currentClass!
 const nextModInfo = createModInfo('next', (info) => info.next!);
 const nextClassInfo = createClassInfo('next', (info) => info.nextClass!);
 
-const beforeSchoolInfo = createTimeLeftInfo('before school starts');
+const beforeSchoolInfo = createTimeLeftInfo('until school starts');
 const passingPeriodLeftInfo = createTimeLeftInfo('until passing period ends');
-const modLeftInfo = createTimeLeftInfo('util mod ends');
+const modLeftInfo = createTimeLeftInfo('until mod ends');
 
 // TODO: add until day ends info
 function dayEndsInfo() {
