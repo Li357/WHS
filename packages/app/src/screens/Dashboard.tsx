@@ -1,27 +1,52 @@
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import authorizedRoute from '../components/common/authorizedRoute';
 import Profile from '../components/dashboard/Profile';
 import Details from '../components/dashboard/Details';
 import Info from '../components/dashboard/Info';
 import { AppState } from '../types/store';
+import { setUserInfo } from '../actions/creators';
+import { setProfilePhoto, removeProfilePhoto } from '../utils/manage-photos';
 
 export default authorizedRoute('', function Dashboard() {
   const [showingDetails, setShowingDetails] = useState(false);
   const userInfo = useSelector((state: AppState) => state.user);
   const daySchedule = useSelector(({ day }: AppState) => day.schedule);
+  const dispatch = useDispatch();
 
   const toggleDetails = () => {
     setShowingDetails(!showingDetails);
   };
 
-  const Header = showingDetails && !userInfo.isTeacher ? Details : Profile;
+  const selectPhoto = async (newPhoto: string, base64: boolean = true) => {
+    if (newPhoto.length > 0) {
+      try {
+        const { username } = userInfo;
+        const profilePhoto = base64 ? `data:image/jpeg;base64,${newPhoto}` : newPhoto;
+        await setProfilePhoto(username, profilePhoto);
+        dispatch(setUserInfo({ profilePhoto }));
+      } catch (error) {
+        // TODO: Report error
+      }
+    }
+  }
+
+  const resetPhoto = async () => {
+    const { username, schoolPicture } = userInfo;
+    await selectPhoto(schoolPicture, false);
+    await removeProfilePhoto(username);
+  }
+
+  const DetailsHeader = (<Details userInfo={userInfo} onPress={toggleDetails} />);
+  const ProfileHeader = (
+    <Profile userInfo={userInfo} onPress={toggleDetails} onPhotoSelect={selectPhoto} onPhotoReset={resetPhoto} />
+  );
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <Header userInfo={userInfo} onPress={toggleDetails} />
+      {showingDetails && !userInfo.isTeacher ? DetailsHeader : ProfileHeader}
       <Info daySchedule={daySchedule} userSchedule={userInfo.schedule} />
     </ScrollView>
   );

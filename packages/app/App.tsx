@@ -49,8 +49,11 @@ export default class App extends Component<{}, AppComponentState> {
   }
 
   private silentlyUpdateData = async () => {
-    await store.dispatch(fetchSchoolPicture());
-    await store.dispatch(fetchDates());
+    try {
+      await store.dispatch(fetchSchoolPicture());
+      await store.dispatch(fetchDates());
+    // tslint:disable-next-line: no-empty
+    } catch {}
   }
 
   private createNavigationContainer = (isLoggedIn: boolean) => {
@@ -82,8 +85,8 @@ export default class App extends Component<{}, AppComponentState> {
     const isLoggedIn = username.length > 0 && password.length > 0;
 
     if (isLoggedIn) {
-      // await this.silentlyUpdateData();
-      // await this.rehydrateProfilePhoto();
+      await this.silentlyUpdateData();
+      await this.rehydrateProfilePhoto();
       await this.updateDayScheduleIfNeeded();
     }
     this.setState({ rehydrated: true });

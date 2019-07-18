@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import PhotoUpload from 'react-native-photo-upload';
@@ -44,17 +44,31 @@ const photoContainerStyle = {
 interface ProfileProps {
   userInfo: UserInfo;
   onPress: () => void;
+  onPhotoReset: () => void;
+  onPhotoSelect: (newPhoto: string) => void;
 }
 
-export default function Profile({ userInfo, onPress }: ProfileProps) {
-  const { name, classOf, profilePhoto, schoolPicture } = userInfo;
+export default memo(function Profile({ userInfo, onPress, onPhotoReset, onPhotoSelect }: ProfileProps) {
+  const { name, classOf, profilePhoto } = userInfo;
 
-  // TODO: Finish AsyncStorage and profile picture integration
-  const photoSource = profilePhoto === SCHOOL_PICTURE_BLANK_SYMBOL ? BlankUser : BlankUser; // { uri: profilePhoto };
+  // shows blank user if user does not have school picture yet
+  const photoSource = profilePhoto === SCHOOL_PICTURE_BLANK_SYMBOL ? BlankUser : { uri: profilePhoto };
+  const customButtons = [{ name: 'RESET', title: 'Reset Photo' }];
+
+  const photoResetHandler = (buttonName: string) => {
+    if (buttonName === 'RESET') {
+      onPhotoReset();
+    }
+  };
 
   return (
     <ProfileContainer>
-      <PhotoUpload containerStyle={photoContainerStyle}>
+      <PhotoUpload
+        containerStyle={photoContainerStyle}
+        imagePickerProps={{ customButtons }}
+        onTapCustomButton={photoResetHandler}
+        onPhotoSelect={onPhotoSelect}
+      >
         <ProfileImage source={photoSource} />
       </PhotoUpload>
       <RightContainer>
@@ -66,4 +80,4 @@ export default function Profile({ userInfo, onPress }: ProfileProps) {
       </RightContainer>
     </ProfileContainer>
   );
-}
+});
