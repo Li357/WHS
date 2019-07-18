@@ -28,7 +28,7 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
   if (isBefore(date, dayStart)) {
     return { current: ModNumber.BEFORE_SCHOOL, next: daySchedule[0][2] };
   } else if (isAfter(date, dayEnd)) {
-    return { current: ModNumber.AFTER_SCHOOL, next: null };
+    return { current: ModNumber.AFTER_SCHOOL, next: ModNumber.AFTER_SCHOOL };
   }
 
   for (let i = 0; i < daySchedule.length; i++) {
@@ -40,7 +40,7 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
       end: modEnd,
     });
     if (isThisMod) {
-      const nextMod = i === daySchedule.length ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD;
+      const nextMod = modNumber === ModNumber.FOURTEEN ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD;
       return { current: modNumber, next: nextMod };
     }
 
@@ -67,7 +67,8 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
  */
 export function getClassAtMod(modNumber: ModNumber, schedule: Schedule, day: number) {
   const classSchedule = schedule[day];
-  return classSchedule.find(({ startMod, endMod }) => startMod <= modNumber && endMod >= modNumber) || null;
+  const mod = getModFromModNumber(modNumber);
+  return classSchedule.find(({ startMod, endMod }) => startMod <= mod && endMod > mod) || null;
 }
 
 /**
@@ -83,9 +84,10 @@ export function getScheduleInfoAtTime(date: Date, daySchedule: DaySchedule, sche
   // no need to check if current is passing period
   const isNextPassingPeriod = next === ModNumber.PASSING_PERIOD;
   // DO NOT use find and add one since mod numbers may not be continuous
+
   const nextClassMod = isNextPassingPeriod
     ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2]
-    : next!; // will not be null since FOURTEEN has a special case in getDashboardInfo
+    : next;
   // TODO: Handle final assembly mod here and in getDashboardInfo
 
   const day = date.getDay();
@@ -155,13 +157,15 @@ export function getScheduleOnDate(queryDate: Date, dates: DatesState) {
  * @param daySchedule day schedule to compute against
  */
 export function getCountdown(date: Date, { current, next }: ScheduleInfo, daySchedule: DaySchedule) {
+  if (current === ModNumber.AFTER_SCHOOL) {
+    return 0;
+  }
+
   switch (next) {
     case ModNumber.PASSING_PERIOD:
     case ModNumber.AFTER_SCHOOL:
       const [, currentEnd] = daySchedule.find((triplet) => triplet[2] === current)!;
       return differenceInSeconds(convertTimeToDate(currentEnd, date), date);
-    case null:
-      return 0;
     default:
       const [nextStart] = daySchedule.find((triplet) => triplet[2] === next)!;
       return differenceInSeconds(convertTimeToDate(nextStart, date), date);
@@ -174,4 +178,34 @@ export function getCountdown(date: Date, { current, next }: ScheduleInfo, daySch
  */
 export function isHalfMod(modNumber: ModNumber) {
   return modNumber >= ModNumber.FOUR && modNumber <= ModNumber.ELEVEN;
+}
+
+/**
+ * Transforms ModNumber (from HOMEROOM to all FINALS) into actual mod display string
+ * @param modNumber mod number to transform
+ */
+export function getModNameFromModNumber(modNumber: ModNumber) {
+  // TODO: Handle finals
+  switch (modNumber) {
+    case ModNumber.HOMEROOM:
+      return 'Homeroom';
+    case ModNumber.ONE:
+    case ModNumber.TWO:
+    case ModNumber.THREE:
+      return modNumber.toString();
+    case ModNumber.ASSEMBLY:
+      return 'Assembly';
+    default:
+      return (modNumber - 1).toString();
+  }
+}
+
+/**
+ * Transforms ModNumber (from HOMEROOM to all FINALS) into actual mod numbers in the user's schedule
+ * @param modNumber mod number to transform
+ */
+// FIXME: Once assembly/finals interpolation is setup, this indexing will need to be changed
+// TODO: Maybe just use ModNumbers in the schedule to prevent conversion?
+export function getModFromModNumber(modNumber: ModNumber) {
+  return modNumber - (modNumber > ModNumber.ASSEMBLY ? 1 : 0);
 }

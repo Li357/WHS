@@ -21,34 +21,38 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
 
   const dayEnd = daySchedule.slice(-1)[0][1];
   const [endCountdown, setEndCountdown] = useState(() => (
-    differenceInSeconds(convertTimeToDate(dayEnd), now)
+    Math.max(-1, differenceInSeconds(convertTimeToDate(dayEnd), now))
   ));
+  const [finished, setFinished] = useState(endCountdown === 0);
 
   useEffect(() => {
-    const id: NodeJS.Timeout = setTimeout(() => {
-      if (countdown === 0) {
-        if (endCountdown === 0) {
-          return clearTimeout(id);
+    if (!finished) {
+      // updating countdown causes timeout to be reset, i.e. an interval
+      const id: NodeJS.Timeout = setTimeout(() => {
+        if (countdown === 0) {
+          const future = new Date();
+          const nextScheduleInfo = getScheduleInfoAtTime(future, daySchedule, userSchedule);
+          // Recompute to stay consistent with other countdowns
+          const untilDayEnd = differenceInSeconds(convertTimeToDate(dayEnd), future);
+
+          return batch(() => {
+            setDashboardInfo(getDashboardInfo(nextScheduleInfo));
+            setScheduleInfo(nextScheduleInfo);
+            if (endCountdown > 0) {
+              setCountdown(getCountdown(future, nextScheduleInfo, daySchedule));
+              setEndCountdown(untilDayEnd);
+              return;
+            }
+            setFinished(true);
+          });
         }
-
-        const future = new Date();
-        const nextScheduleInfo = getScheduleInfoAtTime(future, daySchedule, userSchedule);
-        // Recompute to stay consistent with other countdowns
-        const untilDayEnd = differenceInSeconds(convertTimeToDate(dayEnd), future);
-
-        return batch(() => {
-          setDashboardInfo(getDashboardInfo(nextScheduleInfo));
-          setScheduleInfo(nextScheduleInfo);
-          setCountdown(getCountdown(future, nextScheduleInfo, daySchedule));
-          setEndCountdown(untilDayEnd);
+        batch(() => {
+          setCountdown((prev) => prev - 1);
+          setEndCountdown((prev) => prev - 1);
         });
-      }
-      batch(() => {
-        setCountdown((prev) => prev - 1);
-        setEndCountdown((prev) => prev - 1);
-      });
-    }, 1000);
-    return () => clearTimeout(id);
+      }, 1000);
+      return () => clearTimeout(id);
+    }
   }, [scheduleInfo, daySchedule, userSchedule, countdown, endCountdown, dashboardInfo]);
 
   const cards = dashboardInfo.map((getter, index) => {

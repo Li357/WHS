@@ -61,14 +61,12 @@ export enum ModNumber {
   PASSING_PERIOD = 17,
   BEFORE_SCHOOL = 18,
   AFTER_SCHOOL = 19,
-
-  UNKNOWN = 20,
 }
 export type DaySchedule = Array<[string, string, ModNumber]>;
 
 export interface ScheduleInfo {
   current: ModNumber;
   currentClass: ScheduleItem | null;
-  next: ModNumber | null;
+  next: ModNumber;
   nextClass: ScheduleItem | null;
 }

@@ -80,7 +80,7 @@ describe('schedule querying', () => {
           ));
           const middle = new Date((start + end) / 2);
           const { current, next } = getModAtTime(middle, schedule);
-          const lastPair = index === schedule.length;
+          const lastPair = modNumber === ModNumber.FOURTEEN;
           return current === modNumber && next === (lastPair ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD);
         });
         expect(returnsMod).toBe(true);
@@ -209,5 +209,13 @@ describe('schedule querying', () => {
     it('returns false for finals', () => {
       expect(isHalfMod(ModNumber.FINALS)).toBe(false);
     });
+  });
+
+  describe('getModNameFromModNumber', () => {
+    it.todo('');
+  });
+
+  describe('getModFromModNumber', () => {
+    it.todo('');
   });
 });

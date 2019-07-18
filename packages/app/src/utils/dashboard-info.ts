@@ -1,7 +1,7 @@
 import { ScheduleInfo, ModNumber, ScheduleItem, CrossSectionedItem, ClassItem } from '../types/schedule';
 import { DashboardInfoGetter } from '../types/dashboard-info';
 import { formatDuration } from './duration';
-import { isHalfMod } from './query-schedule';
+import { isHalfMod, getModNameFromModNumber } from './query-schedule';
 
 function createTimeLeftInfo(name: string) {
   return function timeLeftInfo(timeLeft: number) {
@@ -15,10 +15,11 @@ function afterSchoolInfo() {
 
 function createModInfo(name: string, selector: (scheduleInfo: ScheduleInfo) => ModNumber) {
   return function modInfo(timeLeft: number, scheduleInfo: ScheduleInfo) {
-    const mod = selector(scheduleInfo);
+    const modNumber = selector(scheduleInfo);
+    const mod = getModNameFromModNumber(modNumber);
     return {
-      title: mod.toString(),
-      name: `${name}${isHalfMod(mod) ? ' half' : ''} mod`,
+      title: mod,
+      name: `${name}${isHalfMod(modNumber) ? ' half' : ''} mod`,
     };
   };
 }
@@ -60,6 +61,9 @@ export function getDashboardInfo({ current }: ScheduleInfo): DashboardInfoGetter
       return [beforeSchoolInfo];
     case ModNumber.AFTER_SCHOOL:
       return [afterSchoolInfo];
+    // currentMod and currentClass will both be homeroom, repetitive
+    case ModNumber.HOMEROOM:
+      return [currentClassInfo, modLeftInfo, nextClassInfo, dayEndsInfo];
     case ModNumber.PASSING_PERIOD:
       return [nextClassInfo, passingPeriodLeftInfo, nextModInfo, dayEndsInfo];
     case ModNumber.FOURTEEN:

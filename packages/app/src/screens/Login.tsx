@@ -10,9 +10,9 @@ import Text from '../components/common/Text';
 import { fetchUserInfo, fetchDates } from '../actions/async';
 import { AppState } from '../types/store';
 import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE } from '../constants/style';
-import WHS from '../../assets/images/WHS.png';
 import { getScheduleOnDate } from '../utils/query-schedule';
 import { setDaySchedule, updateDayState } from '../actions/creators';
+import WHS from '../../assets/images/WHS.png';
 
 const LoginScreen = styled(Screen)`
   align-items: center;
@@ -38,8 +38,9 @@ export default memo(function Login(props: NavigationScreenProps) {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      await dispatch(fetchUserInfo(username, password));
+      // Fetch dates first b/c the latter sets credentials and makes user "logged in"
       await dispatch(fetchDates());
+      await dispatch(fetchUserInfo(username, password));
 
       const now = new Date();
       dispatch(updateDayState(now));
