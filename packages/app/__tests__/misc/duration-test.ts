@@ -21,5 +21,10 @@ describe('duration utils', () => {
       expect(formatDuration(36000)).toBe('10:00:00');
       expect(formatDuration(360000)).toBe('100:00:00');
     });
+
+    it('doesn\'t skip a second due to rounding errors', () => {
+      expect(formatDuration(28024)).toBe('7:47:04');
+      expect(formatDuration(28023)).toBe('7:47:03');
+    });
   });
 });

@@ -5,16 +5,14 @@
  * @param durationInSeconds duration to format in seconds
  */
 export function formatDuration(durationInSeconds: number) {
-  const hours = durationInSeconds / 3600;
-  const fullHours = Math.floor(hours);
-  const hasFullHours = fullHours > 0;
+  const hours = Math.floor(durationInSeconds / 3600);
+  const hasHours = hours > 0;
 
-  const minutes = (hours - Math.floor(hours)) * 60;
-  const fullMinutes = Math.floor(minutes);
-  const displayMinutes = fullMinutes.toString().padStart(hasFullHours ? 2 : 1, '0');
+  const minutes = Math.floor((durationInSeconds % 3600) / 60);
+  const displayMinutes = minutes.toString().padStart(hasHours ? 2 : 1, '0');
 
-  const seconds = (minutes - Math.floor(minutes)) * 60;
+  const seconds = durationInSeconds % 60;
   const displaySeconds = Math.floor(seconds).toString().padStart(2, '0');
 
-  return `${hasFullHours ? `${fullHours}:` : ''}${displayMinutes}:${displaySeconds}`;
+  return `${hasHours ? `${hours}:` : ''}${displayMinutes}:${displaySeconds}`;
 }
