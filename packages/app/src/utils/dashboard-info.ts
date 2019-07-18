@@ -45,8 +45,8 @@ const passingPeriodLeftInfo = createTimeLeftInfo('until passing period ends');
 const modLeftInfo = createTimeLeftInfo('until mod ends');
 
 // TODO: add until day ends info
-function dayEndsInfo() {
-  return { title: 'TODO', name: 'until day ends' };
+function dayEndsInfo(timeLeft: number, scheduleInfo: ScheduleInfo, dayEnd: number) {
+  return { title: formatDuration(dayEnd), name: 'until day ends' };
 }
 
 /**

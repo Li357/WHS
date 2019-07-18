@@ -7,4 +7,4 @@ export interface DashboardInfo {
   crossSectioned?: boolean;
 }
 
-export type DashboardInfoGetter = (timeLeft: number, scheduleInfo: ScheduleInfo) => DashboardInfo;
+export type DashboardInfoGetter = (timeLeft: number, scheduleInfo: ScheduleInfo, dayEnd: number) => DashboardInfo;
