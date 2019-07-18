@@ -1,6 +1,6 @@
 import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds } from 'date-fns';
 
-import { DaySchedule, ModNumber, ModInfo, Schedule, ScheduleInfo } from '../types/schedule';
+import { DaySchedule, ModNumber, Schedule, ScheduleInfo } from '../types/schedule';
 import { DatesState } from '../types/store';
 import * as SCHEDULES from '../constants/schedules';
 
@@ -22,7 +22,7 @@ export function convertTimeToDate(time: string, date: Date = new Date()) {
  * @param daySchedule day schedule for the specified date
  * @see ModNumber
  */
-export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<ModInfo, 'current' | 'next'> {
+export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<ScheduleInfo, 'current' | 'next'> {
   const dayStart = convertTimeToDate(daySchedule[0][0], date);
   const dayEnd = convertTimeToDate(daySchedule.slice(-1)[0][1], date);
   if (isBefore(date, dayStart)) {
@@ -77,9 +77,20 @@ export function getClassAtMod(modNumber: ModNumber, schedule: Schedule, day: num
  * @param schedule user's schedule of classes
  */
 export function getScheduleInfoAtTime(date: Date, daySchedule: DaySchedule, schedule: Schedule): ScheduleInfo {
+  // This returns PASSING_PERIOD, BEFORE_SCHOOL, and AFTER_SCHOOL which are not actual class times
   const { current, next } = getModAtTime(date, daySchedule);
-  const currentClass = getClassAtMod(current, schedule, date.getDay());
-  const nextClass = next !== null ? getClassAtMod(next, schedule, date.getDay()) : null;
+  // Since this function is only used to display current class during a class mod,
+  // no need to check if current is passing period
+  const isNextPassingPeriod = next === ModNumber.PASSING_PERIOD;
+  // DO NOT use find and add one since mod numbers may not be continuous
+  const nextClassMod = isNextPassingPeriod
+    ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2]
+    : next!; // will not be null since FOURTEEN has a special case in getDashboardInfo
+  // TODO: Handle final assembly mod here and in getDashboardInfo
+
+  const day = date.getDay();
+  const currentClass = getClassAtMod(current, schedule, day);
+  const nextClass = getClassAtMod(nextClassMod, schedule, day);
   return { current, next, currentClass, nextClass };
 }
 

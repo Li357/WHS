@@ -192,14 +192,22 @@ describe('schedule querying', () => {
   });
 
   describe('isHalfMod', () => {
-    it('returns true for >=4 and <=11', () => {
-      expect(isHalfMod(4)).toBe(true);
-      expect(isHalfMod(11)).toBe(true);
+    it('returns true for >=Mod 4 and <=Mod 11', () => {
+      expect(isHalfMod(ModNumber.FOUR)).toBe(true);
+      expect(isHalfMod(ModNumber.ELEVEN)).toBe(true);
     });
 
     it('returns false for <=3 or >=12', () => {
-      expect(isHalfMod(3)).toBe(false);
-      expect(isHalfMod(12)).toBe(false);
+      expect(isHalfMod(ModNumber.THREE)).toBe(false);
+      expect(isHalfMod(ModNumber.TWELVE)).toBe(false);
+    });
+
+    it('returns false for assembly', () => {
+      expect(isHalfMod(ModNumber.ASSEMBLY)).toBe(false);
+    });
+
+    it('returns false for finals', () => {
+      expect(isHalfMod(ModNumber.FINALS)).toBe(false);
     });
   });
 });

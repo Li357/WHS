@@ -14,8 +14,8 @@ export default function InfoCard({ title, subtitle, name }: DashboardInfo) {
   return (
     <Card>
       <Text numberOfLines={2}>{title}</Text>
-      {subtitle && <Description>{subtitle}</Description>}
-      {name && <Subtext>{name}</Subtext>}
+      {subtitle !== undefined && <Description>{subtitle}</Description>}
+      {name !== undefined && <Subtext>{name}</Subtext>}
     </Card>
   );
 }

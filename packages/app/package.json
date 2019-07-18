@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start": "env REACT_DEBUGGER=\"$([ -d '/Applications/React Native Debugger.app' ] && echo \"open 'rndebugger://set-debugger-loc?host=localhost&port=8081' --args\")\" node node_modules/react-native/local-cli/cli.js start",
     "test": "yarn jest '__tests__\\/(?!.*utils).*$'",
     "test:watch": "yarn test --watch",
     "lint": "yarn tslint -p tsconfig.json src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}"

@@ -11,7 +11,7 @@ export default function CrossSectionedCard({ title, name }: DashboardInfo) {
     <Card warning={true}>
       <Text numberOfLines={2}>{title}</Text>
       <BadgeButton>CHECK SCHEDULE</BadgeButton>
-      {name && <Subtext>{name}</Subtext>}
+      {name !== undefined && <Subtext>{name}</Subtext>}
     </Card>
   );
 }

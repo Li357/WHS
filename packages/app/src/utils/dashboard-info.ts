@@ -26,12 +26,12 @@ function createModInfo(name: string, selector: (scheduleInfo: ScheduleInfo) => M
 function createClassInfo(name: string, selector: (ScheduleInfo: ScheduleInfo) => ScheduleItem) {
   return function classInfo(timeLeft: number, scheduleInfo: ScheduleInfo) {
     const scheduleItem = selector(scheduleInfo);
-    const asClassItem = scheduleItem as ClassItem;
-    const asCrossSectioned = scheduleItem as CrossSectionedItem;
-
-    const crossSectioned = asCrossSectioned.columns !== undefined;
-    const title = crossSectioned ? asClassItem.title : 'Cross Sectioned';
-    return { title, name: `${name} class`, crossSectioned };
+    if ((scheduleItem as CrossSectionedItem).columns !== undefined) {
+      return { title: 'Cross Sectioned', name: `${name} class`, crossSectioned: true };
+    }
+    const { title, body } = scheduleItem as ClassItem;
+    const subtitleObj = body !== '' ? { subtitle: body } : {};
+    return { title, ...subtitleObj, name: `${name} class` };
   };
 }
 
@@ -65,6 +65,6 @@ export function getDashboardInfo({ current }: ScheduleInfo): DashboardInfoGetter
     case ModNumber.FOURTEEN:
       return [currentModInfo, modLeftInfo, currentClassInfo];
     default:
-      return [currentModInfo, modLeftInfo, currentClassInfo, nextClassInfo, dayEndsInfo];
+      return [currentModInfo, modLeftInfo, nextClassInfo, currentClassInfo, dayEndsInfo];
   }
 }
