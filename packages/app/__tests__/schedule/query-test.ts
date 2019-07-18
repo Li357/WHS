@@ -37,24 +37,24 @@ describe('schedule querying', () => {
       });
     });
 
-    it('should return AFTER_SCHOOL and null', () => {
+    it('should return AFTER_SCHOOL', () => {
       [SCHEDULES.REGULAR, SCHEDULES.LATE_START, SCHEDULES.ASSEMBLY].forEach((schedule) => {
         expect(getModAtTime(new Date(2019, 10, 1, 15, 15), schedule)).toStrictEqual({
-          current: ModNumber.AFTER_SCHOOL, next: null,
+          current: ModNumber.AFTER_SCHOOL, next: ModNumber.AFTER_SCHOOL,
         });
       });
 
       [SCHEDULES.WEDNESDAY, SCHEDULES.LATE_START_WEDNESDAY].forEach((schedule) => {
         expect(getModAtTime(new Date(2019, 10, 1, 14, 55), schedule)).toStrictEqual({
-          current: ModNumber.AFTER_SCHOOL, next: null,
+          current: ModNumber.AFTER_SCHOOL, next: ModNumber.AFTER_SCHOOL,
         });
       });
 
       expect(getModAtTime(new Date(2019, 10, 1, 13, 15), SCHEDULES.EARLY_DISMISSAL)).toStrictEqual({
-        current: ModNumber.AFTER_SCHOOL, next: null,
+        current: ModNumber.AFTER_SCHOOL, next: ModNumber.AFTER_SCHOOL,
       });
       expect(getModAtTime(new Date(2019, 10, 1, 12, 30), SCHEDULES.FINALS)).toStrictEqual({
-        current: ModNumber.AFTER_SCHOOL, next: null,
+        current: ModNumber.AFTER_SCHOOL, next: ModNumber.AFTER_SCHOOL,
       });
     });
 
