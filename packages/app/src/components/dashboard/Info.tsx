@@ -17,6 +17,7 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   // TODO: add AppState event listeners
   const now = new Date();
   const [scheduleInfo, setScheduleInfo] = useState(() => getScheduleInfoAtTime(now, daySchedule, userSchedule));
+  console.log(scheduleInfo);
   const [countdown, setCountdown] = useState(() => getCountdown(now, scheduleInfo, daySchedule));
   const [dashboardInfo, setDashboardInfo] = useState(() => getDashboardInfo(daySchedule, userSchedule, scheduleInfo));
 
@@ -37,7 +38,7 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
           const untilDayEnd = differenceInSeconds(convertTimeToDate(dayEnd), future);
 
           return batch(() => {
-            setDashboardInfo(getDashboardInfo(nextScheduleInfo));
+            setDashboardInfo(getDashboardInfo(daySchedule, userSchedule, nextScheduleInfo));
             setScheduleInfo(nextScheduleInfo);
             if (endCountdown > 0) {
               setCountdown(getCountdown(future, nextScheduleInfo, daySchedule));
