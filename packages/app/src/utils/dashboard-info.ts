@@ -1,7 +1,8 @@
-import { ScheduleInfo, ModNumber, ScheduleItem, CrossSectionedItem, ClassItem } from '../types/schedule';
+import { ScheduleInfo, ModNumber, ScheduleItem, CrossSectionedItem, ClassItem, DaySchedule, Schedule } from '../types/schedule';
 import { DashboardInfoGetter } from '../types/dashboard-info';
 import { formatDuration } from './duration';
 import { isHalfMod, getModNameFromModNumber } from './query-schedule';
+import * as SCHEDULES from '../constants/schedules';
 
 function createTimeLeftInfo(name: string) {
   return function timeLeftInfo(timeLeft: number) {
@@ -9,8 +10,10 @@ function createTimeLeftInfo(name: string) {
   };
 }
 
-function afterSchoolInfo() {
-  return { title: 'You\'re done for the day!' };
+function createTextInfo(title: string) {
+  return function textInfo() {
+    return { title };
+  };
 }
 
 function createModInfo(name: string, selector: (scheduleInfo: ScheduleInfo) => ModNumber) {
@@ -45,6 +48,12 @@ const beforeSchoolInfo = createTimeLeftInfo('until school starts');
 const passingPeriodLeftInfo = createTimeLeftInfo('until passing period ends');
 const modLeftInfo = createTimeLeftInfo('until mod ends');
 
+const afterSchoolInfo = createTextInfo('You\'re done for the day');
+const breakInfo = createTextInfo('Enjoy your break');
+const summerInfo = createTextInfo('Enjoy your summer');
+const weekendInfo = createTextInfo('Enjoy your weekend');
+const scheduleEmptyInfo = createTextInfo('You\'re schedule is empty.');
+
 function dayEndsInfo(timeLeft: number, scheduleInfo: ScheduleInfo, dayEnd: number) {
   return { title: formatDuration(dayEnd), name: 'until day ends' };
 }
@@ -53,8 +62,22 @@ function dayEndsInfo(timeLeft: number, scheduleInfo: ScheduleInfo, dayEnd: numbe
  * Gets the information to show on the dashboard based on current mod
  * @param scheduleInfo contains current mod
  */
-export function getDashboardInfo({ current }: ScheduleInfo): DashboardInfoGetter[] {
-  // TODO: handle summer, break, empty schedules, weekends
+export function getDashboardInfo(
+  daySchedule: DaySchedule, userSchedule: Schedule, { current }: ScheduleInfo,
+): DashboardInfoGetter[] {
+  if (userSchedule.length === 0) {
+    return [scheduleEmptyInfo];
+  }
+
+  switch (daySchedule) {
+    case SCHEDULES.BREAK:
+      return [breakInfo];
+    case SCHEDULES.WEEKEND:
+      return [weekendInfo];
+    case SCHEDULES.SUMMER:
+      return [summerInfo];
+  }
+
   switch (current) {
     case ModNumber.BEFORE_SCHOOL:
       return [beforeSchoolInfo];
@@ -66,7 +89,6 @@ export function getDashboardInfo({ current }: ScheduleInfo): DashboardInfoGetter
     case ModNumber.PASSING_PERIOD:
       return [nextClassInfo, passingPeriodLeftInfo, nextModInfo, dayEndsInfo];
     case ModNumber.FINALS_FOUR:
-    case ModNumber.FINALS_EIGHT:
     case ModNumber.FOURTEEN:
       return [currentModInfo, modLeftInfo, currentClassInfo];
     default:

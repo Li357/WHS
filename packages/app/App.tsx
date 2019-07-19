@@ -39,8 +39,7 @@ export default class App extends Component<{}, AppComponentState> {
   private updateDayScheduleIfNeeded() {
     const { day: { lastStateUpdate }, dates } = store.getState();
     const now = new Date();
-    const day = now.getDay();
-    const shouldUpdate = lastStateUpdate === null || (!isSameDay(lastStateUpdate, now) && day > 0 && day < 6);
+    const shouldUpdate = lastStateUpdate === null || !isSameDay(lastStateUpdate, now);
 
     if (shouldUpdate) {
       store.dispatch(updateDayState(now));

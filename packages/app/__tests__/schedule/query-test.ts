@@ -6,7 +6,7 @@ import {
 } from '../../src/utils/query-schedule';
 import { DatesState } from '../../src/types/store';
 import * as SCHEDULES from '../../src/constants/schedules';
-import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem, ScheduleInfo } from '../../src/types/schedule';
+import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem } from '../../src/types/schedule';
 import { processSchedule } from '../../src/utils/process-schedule';
 import { excludeKeys } from '../../src/utils/object';
 import rawSchedule from './test-schedules/raw.json';
@@ -194,8 +194,12 @@ describe('schedule querying', () => {
     it.todo('returns correct for finals');
 
     it('returns null instead of undefined if not found', () => {
-      expect(getClassAtMod(ModNumber.BEFORE_SCHOOL, processed, 3) as ClassItem).toBe(null);
-      expect(getClassAtMod(ModNumber.AFTER_SCHOOL, processed, 3) as ClassItem).toBe(null);
+      expect(getClassAtMod(ModNumber.BEFORE_SCHOOL, processed, 3)).toBe(null);
+      expect(getClassAtMod(ModNumber.AFTER_SCHOOL, processed, 3)).toBe(null);
+    });
+
+    it('returns null for empty schedule', () => {
+      expect(getClassAtMod(ModNumber.ONE, [], 3)).toBe(null);
     });
   });
 
@@ -206,7 +210,7 @@ describe('schedule querying', () => {
 
     it('returns correct for current: BEFORE_SCHOOL, next: CLASS', () => {
       expect(getInfo(new Date(2019, 4, 6, 7, 55))).toStrictEqual({
-        current: ModNumber.BEFORE_SCHOOL, next: ModNumber.HOMEROOM, currentClass: null, nextClass: homeroom
+        current: ModNumber.BEFORE_SCHOOL, next: ModNumber.HOMEROOM, currentClass: null, nextClass: homeroom,
       });
     });
 
@@ -291,6 +295,10 @@ describe('schedule querying', () => {
 
       const two = getSchedule(new Date(2019, 11, 24));
       expect(two).toBe(SCHEDULES.BREAK);
+    });
+
+    it('returns WEEKEND for weekends', () => {
+      expect(getSchedule(new Date(2019, 8, 28))).toBe(SCHEDULES.WEEKEND);
     });
 
     it('returns EARLY_DISMISSAL schedule for early dismissals', () => {
@@ -394,7 +402,7 @@ describe('schedule querying', () => {
 
     const finalsOrdinals = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
     it('returns ordinal for FINALS', () => {
-      for (let modNumber = ModNumber.FINALS_ONE, i = 0; modNumber <= ModNumber.FINALS_EIGHT; modNumber++, i++) {
+      for (let modNumber = ModNumber.FINALS_ONE, i = 0; modNumber <= ModNumber.FINALS_FOUR; modNumber++, i++) {
         expect(getModNameFromModNumber(modNumber)).toBe(`${finalsOrdinals[i]} Final`);
       }
     });

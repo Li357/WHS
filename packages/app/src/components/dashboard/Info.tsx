@@ -18,7 +18,7 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   const now = new Date();
   const [scheduleInfo, setScheduleInfo] = useState(() => getScheduleInfoAtTime(now, daySchedule, userSchedule));
   const [countdown, setCountdown] = useState(() => getCountdown(now, scheduleInfo, daySchedule));
-  const [dashboardInfo, setDashboardInfo] = useState(() => getDashboardInfo(scheduleInfo));
+  const [dashboardInfo, setDashboardInfo] = useState(() => getDashboardInfo(daySchedule, userSchedule, scheduleInfo));
 
   const dayEnd = daySchedule.slice(-1)[0][1];
   const [endCountdown, setEndCountdown] = useState(() => (

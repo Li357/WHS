@@ -66,6 +66,11 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
  * @param day day of week to query
  */
 export function getClassAtMod(modNumber: ModNumber, schedule: Schedule, day: number) {
+  // occurs when user has empty schedule
+  if (schedule.length === 0) {
+    return null;
+  }
+
   const classSchedule = schedule[day - 1]; // Monday is 1, so 1 - 1 === 0
   const mod = getModFromModNumber(modNumber);
   return classSchedule.find(({ startMod, endMod }) => startMod <= mod && endMod > mod) || null;
@@ -122,9 +127,15 @@ export function getScheduleOnDate(queryDate: Date, dates: DatesState) {
     }
   }
 
+  // Always let summer/break take precedence over weekend
   // TODO: Check for summer
   if (containsDate(queryDate, dates.noSchool)) {
     return SCHEDULES.BREAK;
+  }
+
+  const day = queryDate.getDay();
+  if (day > 5 || day < 1) {
+    return SCHEDULES.WEEKEND;
   }
 
   if (containsDate(queryDate, dates.earlyDismissal)) {
@@ -135,7 +146,6 @@ export function getScheduleOnDate(queryDate: Date, dates: DatesState) {
     return SCHEDULES.ASSEMBLY;
   }
 
-  const day = queryDate.getDay();
   if (containsDate(queryDate, dates.lateStart)) {
     if (day === 3) {
       return SCHEDULES.LATE_START_WEDNESDAY;
@@ -197,14 +207,6 @@ export function getModNameFromModNumber(modNumber: ModNumber) {
       return '3rd Final';
     case ModNumber.FINALS_FOUR:
       return '4th Final';
-    case ModNumber.FINALS_FIVE:
-      return '5th Final';
-    case ModNumber.FINALS_SIX:
-      return '6th Final';
-    case ModNumber.FINALS_SEVEN:
-      return '7th Final';
-    case ModNumber.FINALS_EIGHT:
-      return '8th Final';
     default:
       return getModFromModNumber(modNumber).toString();
   }

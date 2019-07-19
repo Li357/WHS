@@ -109,10 +109,13 @@ export const ASSEMBLY: DaySchedule = [
 
 export const FINALS: DaySchedule = [
   ['8:00', '8:05', ModNumber.HOMEROOM],
-  ['8:10', '9:10', ModNumber.FINALS],
-  ['9:15', '10:15', ModNumber.FINALS],
-  ['10:20', '11:20', ModNumber.FINALS],
-  ['11:25', '12:25', ModNumber.FINALS],
+  ['8:10', '9:10', ModNumber.FINALS_ONE],
+  ['9:15', '10:15', ModNumber.FINALS_TWO],
+  ['10:20', '11:20', ModNumber.FINALS_THREE],
+  ['11:25', '12:25', ModNumber.FINALS_FOUR],
 ];
 
+// These are really only for symbolic use, and separate references allow for === checks
 export const BREAK: DaySchedule = [];
+export const SUMMER: DaySchedule = [];
+export const WEEKEND: DaySchedule = [];
