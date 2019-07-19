@@ -1,4 +1,6 @@
-import { ScheduleInfo, ModNumber, ScheduleItem, CrossSectionedItem, ClassItem, DaySchedule, Schedule } from '../types/schedule';
+import {
+  ScheduleInfo, ModNumber, ScheduleItem, CrossSectionedItem, ClassItem, DaySchedule, Schedule,
+} from '../types/schedule';
 import { DashboardInfoGetter } from '../types/dashboard-info';
 import { formatDuration } from './duration';
 import { isHalfMod, getModNameFromModNumber } from './query-schedule';

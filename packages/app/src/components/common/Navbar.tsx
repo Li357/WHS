@@ -6,7 +6,7 @@ import Text from './Text';
 import {
   NAVBAR_MARGIN_TOP, NAVBAR_MARGIN_BOTTOM,
   HAMBURGER_WIDTH, HAMBURGER_HEIGHT,
-  HAMBURGER_LINE_HEIGHT, HAMBURGER_LINE_BORDER_RADIUS,
+  HAMBURGER_LINE_HEIGHT, HAMBURGER_LINE_BORDER_RADIUS, SCREEN_MARGIN_HORIZONTAL,
 } from '../../constants/style';
 
 const NavbarContainer = styled.View`
@@ -14,7 +14,7 @@ const NavbarContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: ${NAVBAR_MARGIN_TOP} 0 ${NAVBAR_MARGIN_BOTTOM} 0;
+  padding: ${NAVBAR_MARGIN_TOP} ${SCREEN_MARGIN_HORIZONTAL} ${NAVBAR_MARGIN_BOTTOM};
 `;
 
 const HamburgerContainer = styled.TouchableOpacity`
