@@ -66,7 +66,7 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
  * @param day day of week to query
  */
 export function getClassAtMod(modNumber: ModNumber, schedule: Schedule, day: number) {
-  const classSchedule = schedule[day];
+  const classSchedule = schedule[day - 1]; // Monday is 1, so 1 - 1 === 0
   const mod = getModFromModNumber(modNumber);
   return classSchedule.find(({ startMod, endMod }) => startMod <= mod && endMod > mod) || null;
 }
@@ -88,7 +88,6 @@ export function getScheduleInfoAtTime(date: Date, daySchedule: DaySchedule, sche
   const nextClassMod = isNextPassingPeriod
     ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2]
     : next;
-  // TODO: Handle final assembly mod here and in getDashboardInfo
 
   const day = date.getDay();
   const currentClass = getClassAtMod(current, schedule, day);
@@ -185,18 +184,29 @@ export function isHalfMod(modNumber: ModNumber) {
  * @param modNumber mod number to transform
  */
 export function getModNameFromModNumber(modNumber: ModNumber) {
-  // TODO: Handle finals
   switch (modNumber) {
     case ModNumber.HOMEROOM:
       return 'Homeroom';
-    case ModNumber.ONE:
-    case ModNumber.TWO:
-    case ModNumber.THREE:
-      return modNumber.toString();
     case ModNumber.ASSEMBLY:
       return 'Assembly';
+    case ModNumber.FINALS_ONE:
+      return '1st Final';
+    case ModNumber.FINALS_TWO:
+      return '2nd Final';
+    case ModNumber.FINALS_THREE:
+      return '3rd Final';
+    case ModNumber.FINALS_FOUR:
+      return '4th Final';
+    case ModNumber.FINALS_FIVE:
+      return '5th Final';
+    case ModNumber.FINALS_SIX:
+      return '6th Final';
+    case ModNumber.FINALS_SEVEN:
+      return '7th Final';
+    case ModNumber.FINALS_EIGHT:
+      return '8th Final';
     default:
-      return (modNumber - 1).toString();
+      return getModFromModNumber(modNumber).toString();
   }
 }
 
@@ -204,8 +214,16 @@ export function getModNameFromModNumber(modNumber: ModNumber) {
  * Transforms ModNumber (from HOMEROOM to all FINALS) into actual mod numbers in the user's schedule
  * @param modNumber mod number to transform
  */
-// FIXME: Once assembly/finals interpolation is setup, this indexing will need to be changed
-// TODO: Maybe just use ModNumbers in the schedule to prevent conversion?
 export function getModFromModNumber(modNumber: ModNumber) {
   return modNumber - (modNumber > ModNumber.ASSEMBLY ? 1 : 0);
+}
+
+/**
+ * Returns the school start year from a specified date, i.e. May 2019 is still the 2018 school year
+ * @param date date to compute school year from
+ */
+export function getSchoolYearFromDate(date: Date) {
+  const currentYear = date.getFullYear();
+  const currentMonth = date.getMonth();
+  return currentMonth < 5 ? currentYear - 1 : currentYear;
 }

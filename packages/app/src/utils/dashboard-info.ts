@@ -45,7 +45,6 @@ const beforeSchoolInfo = createTimeLeftInfo('until school starts');
 const passingPeriodLeftInfo = createTimeLeftInfo('until passing period ends');
 const modLeftInfo = createTimeLeftInfo('until mod ends');
 
-// TODO: add until day ends info
 function dayEndsInfo(timeLeft: number, scheduleInfo: ScheduleInfo, dayEnd: number) {
   return { title: formatDuration(dayEnd), name: 'until day ends' };
 }
@@ -66,6 +65,8 @@ export function getDashboardInfo({ current }: ScheduleInfo): DashboardInfoGetter
       return [currentClassInfo, modLeftInfo, nextClassInfo, dayEndsInfo];
     case ModNumber.PASSING_PERIOD:
       return [nextClassInfo, passingPeriodLeftInfo, nextModInfo, dayEndsInfo];
+    case ModNumber.FINALS_FOUR:
+    case ModNumber.FINALS_EIGHT:
     case ModNumber.FOURTEEN:
       return [currentModInfo, modLeftInfo, currentClassInfo];
     default:

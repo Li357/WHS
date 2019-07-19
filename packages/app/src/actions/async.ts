@@ -15,6 +15,7 @@ import { getProfilePhoto, setProfilePhoto } from '../utils/manage-photos';
 import { setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials, setDates } from './creators';
 import { LoginError } from '../utils/error';
 import { FETCH_TIMEOUT, DATE_TYPES, SETTING_TYPES } from '../constants/fetch';
+import { getSchoolYearFromDate } from '../utils/query-schedule';
 
 export function fetchUserInfo(username: string, password: string) {
   const fetchUserInfoThunk: ThunkAction<
@@ -77,10 +78,7 @@ export function fetchDates(year?: number) {
     SetDatesAction
   > = async (dispatch) => {
     if (!year) {
-      const now = new Date();
-      const currentYear = now.getFullYear();
-      const currentMonth = now.getMonth();
-      year = currentMonth < 5 ? currentYear - 1 : currentYear;
+      year = getSchoolYearFromDate(new Date());
     }
 
     const [

@@ -1,0 +1,16 @@
+[
+  {
+    "_id": 0,
+    "type": "assembly",
+    "year": "2019",
+    "date": "2019-07-08T16:00:00.000Z",
+    "comment": ""
+  },
+  {
+    "_id": 1,
+    "type": "semester-one-end",
+    "year": "2019",
+    "comment": "",
+    "date": "2019-07-17T16:00:00.000Z"
+  }
+]

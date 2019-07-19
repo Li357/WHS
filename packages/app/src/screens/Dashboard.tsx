@@ -31,13 +31,13 @@ export default authorizedRoute('', function Dashboard() {
         // TODO: Report error
       }
     }
-  }
+  };
 
   const resetPhoto = async () => {
     const { username, schoolPicture } = userInfo;
     await selectPhoto(schoolPicture, false);
     await removeProfilePhoto(username);
-  }
+  };
 
   const DetailsHeader = (<Details userInfo={userInfo} onPress={toggleDetails} />);
   const ProfileHeader = (

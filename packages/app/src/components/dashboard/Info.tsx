@@ -14,6 +14,7 @@ interface InfoProps {
 }
 
 export default function Info({ daySchedule, userSchedule }: InfoProps) {
+  // TODO: add AppState event listeners
   const now = new Date();
   const [scheduleInfo, setScheduleInfo] = useState(() => getScheduleInfoAtTime(now, daySchedule, userSchedule));
   const [countdown, setCountdown] = useState(() => getCountdown(now, scheduleInfo, daySchedule));

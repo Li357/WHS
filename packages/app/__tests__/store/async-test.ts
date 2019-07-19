@@ -1,15 +1,18 @@
 import configureMockStore from 'redux-mock-store';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import fetch from 'react-native-fetch-polyfill';
+import { URL } from 'url';
+import { DateSchema } from 'whs-server';
 
-import { AppState, UserActions, UserAction, AppAction } from '../../src/types/store';
-import { LOGIN_URL } from '../../src/constants/fetch';
+import { AppState, UserActions, UserAction, AppAction, DatesActions, SetDatesAction } from '../../src/types/store';
+import { LOGIN_URL, DATES_URL } from '../../src/constants/fetch';
 import { fetchMock, open, TEST_HTML_DIR } from '../utils/fetch';
-import { fetchUserInfo, fetchSchoolPicture } from '../../src/actions/async';
+import { fetchUserInfo, fetchSchoolPicture, fetchDates } from '../../src/actions/async';
 import { processSchedule } from '../../src/utils/process-schedule';
 import { initialUserState, initialDayState, initialDatesState } from '../../src/constants/store';
 import { lightTheme } from '../../src/constants/theme';
 import { LoginError, NetworkError } from '../../src/utils/error';
+import dates from './test-dates/dates.json';
 
 const initialAppState: AppState = {
   user: initialUserState,
@@ -17,12 +20,18 @@ const initialAppState: AppState = {
   theme: lightTheme,
   dates: initialDatesState,
 };
+const datesArray = dates as unknown as DateSchema[];
 const mockStore = configureMockStore<AppState, ThunkDispatch<AppState, undefined, AppAction>>([thunk]);
 fetchMock.config.fetch = fetch;
 fetchMock
   .post(`${LOGIN_URL}?Username=Li357&Password=12345`, open(`${TEST_HTML_DIR}/student.html`))
   .post(`${LOGIN_URL}?Username=Li357&Password=02345`, open(`${TEST_HTML_DIR}/error.html`))
-  .post(`${LOGIN_URL}?Username=Test&Password=12345`, 400);
+  .post(`${LOGIN_URL}?Username=Test&Password=12345`, 400)
+  .get(`begin:${DATES_URL}?year=2019`, (url) => {
+    const urlObj = new URL(url);
+    const type = urlObj.searchParams.get('type');
+    return datesArray.filter((dateObj) => type === dateObj.type && dateObj.year === '2019');
+  });
 
 describe('async actions', () => {
   describe('fetchUserInfo', () => {
@@ -103,6 +112,26 @@ describe('async actions', () => {
   });
 
   describe('fetchDates', () => {
-    it.todo('fetches dates and sets store');
+    it('fetches dates and sets store', async () => {
+      const expectedActions: SetDatesAction[] = [
+        {
+          type: DatesActions.SET_DATES,
+          payload: {
+            assembly: [new Date(datesArray[0].date)],
+            noSchool: [],
+            earlyDismissal: [],
+            lateStart: [],
+            semesterOneStart: null,
+            semesterOneEnd: new Date(datesArray[1].date),
+            semesterTwoStart: null,
+            semesterTwoEnd: null,
+          },
+        },
+      ];
+
+      const store = mockStore(initialAppState);
+      await store.dispatch(fetchDates(2019));
+      expect(store.getActions()).toEqual(expectedActions);
+    });
   });
 });

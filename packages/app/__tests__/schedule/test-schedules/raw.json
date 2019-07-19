@@ -86,5 +86,133 @@
       "phaseNumber": 1,
       "data": { "courseId": "1" }
     }
+  ],
+  "monday": [
+    {
+      "sourceId": 26274,
+      "sourceType": "course",
+      "title": "Band - Warrior ",
+      "body": "Rm. 181 (Krueger)",
+      "roomNumber": "181",
+      "sectionNumber": 3,
+      "phaseNumber": 1,
+      "day": 1,
+      "startMod": 12,
+      "length": 1,
+      "endMod": 13,
+      "data": {
+        "courseId": "321"
+      }
+    },
+    {
+      "sourceId": 26299,
+      "sourceType": "course",
+      "title": "Band - Concert Jazz ",
+      "body": "AUDI (Krueger)",
+      "roomNumber": "AUDI",
+      "sectionNumber": 1,
+      "phaseNumber": 1,
+      "day": 1,
+      "startMod": 10,
+      "length": 2,
+      "endMod": 12,
+      "data": {
+        "courseId": "319"
+      }
+    },
+    {
+      "sourceId": 27393,
+      "sourceType": "course",
+      "title": "Latin 2",
+      "body": "Rm. 146 (Black)",
+      "roomNumber": "146",
+      "sectionNumber": 1,
+      "phaseNumber": 1,
+      "day": 1,
+      "startMod": 8,
+      "length": 2,
+      "endMod": 10,
+      "data": {
+        "courseId": "412"
+      }
+    },
+    {
+      "sourceId": 28819,
+      "sourceType": "course",
+      "title": "Physics  AP 1",
+      "body": "Rm. 325 (Powers)",
+      "roomNumber": "325",
+      "sectionNumber": 2,
+      "phaseNumber": 1,
+      "day": 1,
+      "startMod": 2,
+      "length": 1,
+      "endMod": 3,
+      "data": {
+        "courseId": "335"
+      }
+    },
+    {
+      "sourceId": 28873,
+      "sourceType": "course",
+      "title": "Chemistry (H) Sem 2",
+      "body": "Rm. 321 (Gradoville)",
+      "roomNumber": "321",
+      "sectionNumber": 4,
+      "phaseNumber": 3,
+      "day": 1,
+      "startMod": 14,
+      "length": 1,
+      "endMod": 15,
+      "data": {
+        "courseId": "328"
+      }
+    },
+    {
+      "sourceId": 28878,
+      "sourceType": "course",
+      "title": "Chemistry (H) Sem 2",
+      "body": "AUDI (Bulin)",
+      "roomNumber": "AUDI",
+      "sectionNumber": 1,
+      "phaseNumber": 4,
+      "day": 1,
+      "startMod": 3,
+      "length": 2,
+      "endMod": 5,
+      "data": {
+        "courseId": "328"
+      }
+    },
+    {
+      "sourceId": 29325,
+      "sourceType": "course",
+      "title": "Economics AP",
+      "body": "Rm. 214 (Schergin)",
+      "roomNumber": "214",
+      "sectionNumber": 2,
+      "phaseNumber": 1,
+      "day": 1,
+      "startMod": 6,
+      "length": 2,
+      "endMod": 8,
+      "data": {
+        "courseId": "460"
+      }
+    },
+    {
+      "sourceId": 1088,
+      "sourceType": "homeroom",
+      "title": "Homeroom",
+      "body": "Rm. 113 (Grossman)",
+      "roomNumber": "113",
+      "sectionNumber": 0,
+      "phaseNumber": 0,
+      "day": 1,
+      "startMod": 0,
+      "length": 1,
+      "endMod": 1,
+      "data": null
+    }
   ]
 }

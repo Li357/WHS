@@ -151,6 +151,7 @@ describe('reducers', () => {
     it('should handle SET_THEME', () => {
       expect(themeReducer(lightTheme, creators.setTheme(Theme.DARK))).toEqual(darkTheme);
       expect(themeReducer(darkTheme, creators.setTheme(Theme.DARK))).toEqual(darkTheme);
+      expect(themeReducer(darkTheme, creators.setTheme(Theme.LIGHT))).toEqual(lightTheme);
     });
   });
 

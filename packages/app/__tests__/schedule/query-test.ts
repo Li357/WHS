@@ -1,11 +1,15 @@
 import { isSameMinute, addMinutes } from 'date-fns';
 
 import {
-  isHalfMod, containsDate, getScheduleOnDate, convertTimeToDate, getModAtTime,
+  isHalfMod, containsDate, getScheduleOnDate, convertTimeToDate, getModAtTime, getClassAtMod,
+  getModNameFromModNumber, getModFromModNumber, getSchoolYearFromDate, getScheduleInfoAtTime, getCountdown,
 } from '../../src/utils/query-schedule';
 import { DatesState } from '../../src/types/store';
 import * as SCHEDULES from '../../src/constants/schedules';
-import { ModNumber } from '../../src/types/schedule';
+import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem, ScheduleInfo } from '../../src/types/schedule';
+import { processSchedule } from '../../src/utils/process-schedule';
+import { excludeKeys } from '../../src/utils/object';
+import rawSchedule from './test-schedules/raw.json';
 
 describe('schedule querying', () => {
   describe('convertTimeToDate', () => {
@@ -89,11 +93,147 @@ describe('schedule querying', () => {
   });
 
   describe('getClassAtMod', () => {
-    it.todo('');
+    const schedule: RawSchedule = [
+      {
+        sourceId: 1,
+        sourceType: 'course',
+        title: 'Test',
+        body: 'Test Body',
+        roomNumber: 'Body',
+        day: 3,
+        startMod: 3,
+        length: 3,
+        endMod: 6,
+        sectionNumber: 1,
+        phaseNumber: 1,
+        data: null,
+      },
+      {
+        sourceId: 2,
+        sourceType: 'course',
+        title: 'Test 2',
+        body: 'Test Body 2',
+        roomNumber: 'Body 2',
+        day: 3,
+        startMod: 6,
+        length: 2,
+        endMod: 8,
+        sectionNumber: 1,
+        phaseNumber: 1,
+        data: null,
+      },
+      {
+        sourceId: 3,
+        sourceType: 'course',
+        title: 'Test 3',
+        body: 'Test Body 3',
+        roomNumber: 'Body 3',
+        day: 1,
+        startMod: 6,
+        length: 2,
+        endMod: 8,
+        sectionNumber: 1,
+        phaseNumber: 1,
+        data: null,
+      },
+      {
+        sourceId: 4,
+        sourceType: 'course',
+        title: 'Test 4-1',
+        body: 'Test Body 4-1',
+        roomNumber: 'Body 4-1',
+        day: 2,
+        startMod: 6,
+        length: 2,
+        endMod: 8,
+        sectionNumber: 1,
+        phaseNumber: 1,
+        data: null,
+      },
+      {
+        sourceId: 5,
+        sourceType: 'course',
+        title: 'Test 4-2',
+        body: 'Test Body 4-2',
+        roomNumber: 'Body 4-2',
+        day: 2,
+        startMod: 6,
+        length: 2,
+        endMod: 8,
+        sectionNumber: 1,
+        phaseNumber: 1,
+        data: null,
+      },
+    ];
+    const processed = processSchedule(schedule);
+
+    it('selects correct schedule depending on day', () => {
+      expect((getClassAtMod(ModNumber.THREE, processed, 3) as ClassItem).title).toBe('Test');
+      expect((getClassAtMod(ModNumber.SIX, processed, 1) as ClassItem).title).toBe('Test 3');
+    });
+
+    it('returns correct for in-between mods', () => {
+      expect((getClassAtMod(ModNumber.FIVE, processed, 3) as ClassItem).title).toBe('Test');
+      expect((getClassAtMod(ModNumber.SEVEN, processed, 3) as ClassItem).title).toBe('Test 2');
+      expect((getClassAtMod(ModNumber.SEVEN, processed, 1) as ClassItem).title).toBe('Test 3');
+    });
+
+    it('returns correct for open mods', () => {
+      expect((getClassAtMod(ModNumber.TWO, processed, 3) as ClassItem).title).toBe('Open Mod');
+      expect((getClassAtMod(ModNumber.NINE, processed, 3) as ClassItem).title).toBe('Open Mod');
+      expect((getClassAtMod(ModNumber.FIVE, processed, 1) as ClassItem).title).toBe('Open Mod');
+    });
+
+    it('returns correct for cross-sectioned mod', () => {
+      const [, , , third, fourth] = schedule.map((obj) => excludeKeys(obj, ['phaseNumber', 'sectionNumber', 'data']));
+      expect((getClassAtMod(ModNumber.SEVEN, processed, 2) as CrossSectionedItem).columns).toStrictEqual(
+        [[third], [fourth]],
+      );
+    });
+
+    it.todo('returns correct for finals');
+
+    it('returns null instead of undefined if not found', () => {
+      expect(getClassAtMod(ModNumber.BEFORE_SCHOOL, processed, 3) as ClassItem).toBe(null);
+      expect(getClassAtMod(ModNumber.AFTER_SCHOOL, processed, 3) as ClassItem).toBe(null);
+    });
   });
 
   describe('getScheduleInfoAtTime', () => {
-    it.todo('');
+    const schedule = processSchedule(rawSchedule.monday);
+    const [[homeroom, open]] = schedule;
+    const getInfo = (date: Date) => getScheduleInfoAtTime(date, SCHEDULES.REGULAR, schedule);
+
+    it('returns correct for current: BEFORE_SCHOOL, next: CLASS', () => {
+      expect(getInfo(new Date(2019, 4, 6, 7, 55))).toStrictEqual({
+        current: ModNumber.BEFORE_SCHOOL, next: ModNumber.HOMEROOM, currentClass: null, nextClass: homeroom
+      });
+    });
+
+    it('returns correct for current: CLASS, next: PASSING_PERIOD', () => {
+      expect(getInfo(new Date(2019, 4, 6, 8, 10))).toStrictEqual({
+        current: ModNumber.HOMEROOM, next: ModNumber.PASSING_PERIOD, currentClass: homeroom, nextClass: open,
+      });
+    });
+
+    it('returns correct for current: PASSING_PERIOD, next: CLASS', () => {
+      expect(getInfo(new Date(2019, 4, 6, 8, 16))).toStrictEqual({
+        current: ModNumber.PASSING_PERIOD, next: ModNumber.ONE, currentClass: null, nextClass: open,
+      });
+    });
+
+    it('returns correct for current: CLASS, next: AFTER_SCHOOL', () => {
+      expect(getInfo(new Date(2019, 4, 6, 15, 5))).toStrictEqual({
+        current: ModNumber.FOURTEEN, next: ModNumber.AFTER_SCHOOL,
+        currentClass: schedule[0].slice(-1)[0], nextClass: null,
+      });
+    });
+
+    it('returns correct for current: AFTER_SCHOOL, next: AFTER_SCHOOL', () => {
+      expect(getInfo(new Date(2019, 4, 6, 15, 15))).toStrictEqual({
+        current: ModNumber.AFTER_SCHOOL, next: ModNumber.AFTER_SCHOOL, currentClass: null, nextClass: null,
+      });
+    });
   });
 
   describe('containsDate', () => {
@@ -188,7 +328,37 @@ describe('schedule querying', () => {
   });
 
   describe('getCountdown', () => {
-    it.todo('');
+    it('returns 0 if after school', () => {
+      const mockScheduleInfo = {
+        current: ModNumber.AFTER_SCHOOL, next: ModNumber.AFTER_SCHOOL,
+        currentClass: null, nextClass: null,
+      };
+      expect(getCountdown(convertTimeToDate('16:10'), mockScheduleInfo, SCHEDULES.REGULAR)).toBe(0);
+    });
+
+    it('returns seconds until current mod ends if next is PASSING_PERIOD', () => {
+      const mockScheduleInfo = {
+        current: ModNumber.THIRTEEN, next: ModNumber.PASSING_PERIOD,
+        currentClass: null, nextClass: null,
+      };
+      expect(getCountdown(convertTimeToDate('14:29'), mockScheduleInfo, SCHEDULES.REGULAR)).toBe(60);
+    });
+
+    it('returns seconds until current mod ends if next is AFTER_SCHOOL', () => {
+      const mockScheduleInfo = {
+        current: ModNumber.FOURTEEN, next: ModNumber.AFTER_SCHOOL,
+        currentClass: null, nextClass: null,
+      };
+      expect(getCountdown(convertTimeToDate('15:09'), mockScheduleInfo, SCHEDULES.REGULAR)).toBe(60);
+    });
+
+    it('returns seconds until next mod start', () => {
+      const mockScheduleInfo = {
+        current: ModNumber.PASSING_PERIOD, next: ModNumber.FOURTEEN,
+        currentClass: null, nextClass: null,
+      };
+      expect(getCountdown(convertTimeToDate('14:34'), mockScheduleInfo, SCHEDULES.REGULAR)).toBe(60);
+    });
   });
 
   describe('isHalfMod', () => {
@@ -207,15 +377,72 @@ describe('schedule querying', () => {
     });
 
     it('returns false for finals', () => {
-      expect(isHalfMod(ModNumber.FINALS)).toBe(false);
+      for (let finalsMod = ModNumber.FINALS_ONE; finalsMod <= ModNumber.FINALS_EIGHT; finalsMod++) {
+        expect(isHalfMod(finalsMod)).toBe(false);
+      }
     });
   });
 
   describe('getModNameFromModNumber', () => {
-    it.todo('');
+    it('returns Homeroom for HOMEROOM', () => {
+      expect(getModNameFromModNumber(ModNumber.HOMEROOM)).toBe('Homeroom');
+    });
+
+    it('returns Assembly for ASSEMBLY', () => {
+      expect(getModNameFromModNumber(ModNumber.ASSEMBLY)).toBe('Assembly');
+    });
+
+    const finalsOrdinals = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
+    it('returns ordinal for FINALS', () => {
+      for (let modNumber = ModNumber.FINALS_ONE, i = 0; modNumber <= ModNumber.FINALS_EIGHT; modNumber++, i++) {
+        expect(getModNameFromModNumber(modNumber)).toBe(`${finalsOrdinals[i]} Final`);
+      }
+    });
+
+    it('returns mod for less than ASSEMBLY', () => {
+      expect(getModNameFromModNumber(ModNumber.THREE)).toBe('3');
+    });
+
+    it('returns mod - 1 for greater than ASSEMBLY', () => {
+      expect(getModNameFromModNumber(ModNumber.FOUR)).toBe('4');
+    });
   });
 
   describe('getModFromModNumber', () => {
-    it.todo('');
+    it('returns corrected mod for those before ASSEMBLY', () => {
+      for (let mod = ModNumber.HOMEROOM; mod <= ModNumber.ASSEMBLY; mod++) {
+        expect(getModFromModNumber(mod)).toBe(mod);
+      }
+    });
+
+    it('returns corrected mod for those after ASSEMBLY', () => {
+      for (let mod = ModNumber.FOUR; mod <= ModNumber.FOURTEEN; mod++) {
+        expect(getModFromModNumber(mod)).toBe(mod - 1);
+      }
+    });
+
+    it.todo('handles finals');
+  });
+
+  describe('getSchoolYearFromDate', () => {
+    it('handles August', () => {
+      expect(getSchoolYearFromDate(new Date(2019, 7))).toBe(2019);
+    });
+
+    it('handles December', () => {
+      expect(getSchoolYearFromDate(new Date(2019, 11))).toBe(2019);
+    });
+
+    it('handles subsequent year', () => {
+      expect(getSchoolYearFromDate(new Date(2020, 1))).toBe(2019);
+    });
+
+    it('handles subsequent year May', () => {
+      expect(getSchoolYearFromDate(new Date(2020, 4))).toBe(2019);
+    });
+
+    it('handles subsequent year June', () => {
+      expect(getSchoolYearFromDate(new Date(2020, 5))).toBe(2020);
+    });
   });
 });

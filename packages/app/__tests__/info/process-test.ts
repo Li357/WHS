@@ -1,15 +1,23 @@
+import configureMockStore from 'redux-mock-store';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import fetch from 'react-native-fetch-polyfill';
+
 import {
-  getLoginURL, getLoginError, getSchoolPictureFromHTML, processName, getUserScheduleFromHTML, getUserInfoFromHTML,
+  getLoginURL, getLoginError, getSchoolPictureFromHTML, processName, getUserScheduleFromHTML, getUserInfoFromHTML, getTeacherSchedules,
 } from '../../src/utils/process-info';
-import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL } from '../../src/constants/fetch';
+import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL, SCHOOL_WEBSITE } from '../../src/constants/fetch';
 import { processSchedule } from '../../src/utils/process-schedule';
-import { getStudent$, getError$, getNew$, getTeacher$ } from '../utils/fetch';
+import { getStudent$, getError$, getNew$, getTeacher$, fetchMock, open, TEST_HTML_DIR } from '../utils/fetch';
+import { AppState, AppAction } from '../../src/types/store';
+import { TeacherSchedule } from '../../src/types/schedule';
+
+const mockStore = configureMockStore<AppState, ThunkDispatch<AppState, undefined, AppAction>>([thunk]);
+fetchMock.config.fetch = fetch;
+fetchMock
+  .get(`${SCHOOL_WEBSITE}/teachers/1`, open(`${TEST_HTML_DIR}/teacher.html`))
+  .get(`${SCHOOL_WEBSITE}/teachers/2`, open(`${TEST_HTML_DIR}/teacher.html`));
 
 describe('processing user info', () => {
-  describe('parseHTMLFromURL', () => {
-    it.todo('should fetch and parse HTML at URL');
-  });
-
   describe('getLoginURL', () => {
     it('should create URL to POST to for login', () => {
       expect(getLoginURL('John', '12345')).toEqual(`${LOGIN_URL}?Username=John&Password=12345`);
@@ -125,10 +133,16 @@ describe('processing user info', () => {
   });
 
   describe('getTeacherSchedules', () => {
-    it.todo('should get specified teacher schedules');
-  });
-
-  describe('getDates', () => {
-    it.todo('should get dates based on type and year');
+    it('should get specified teacher schedules', async () => {
+      const mockTeacherSchedules: TeacherSchedule[] = [
+        { url: `${SCHOOL_WEBSITE}/teachers/1`, name: 'Teacher 1', schedule: [] },
+        { url: `${SCHOOL_WEBSITE}/teachers/2`, name: 'Teacher 2', schedule: [] },
+      ];
+      const expectedTeacherSchedule = getUserScheduleFromHTML(await getTeacher$());
+      expect(await getTeacherSchedules(mockTeacherSchedules)).toEqual([
+        { url: `${SCHOOL_WEBSITE}/teachers/1`, name: 'Teacher 1', schedule: expectedTeacherSchedule },
+        { url: `${SCHOOL_WEBSITE}/teachers/2`, name: 'Teacher 2', schedule: expectedTeacherSchedule },
+      ]);
+    });
   });
 });
