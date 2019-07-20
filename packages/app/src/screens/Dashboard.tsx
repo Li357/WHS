@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import { createSelector } from 'reselect';
 
 import authorizedRoute from '../components/common/authorizedRoute';
 import Profile from '../components/dashboard/Profile';
 import Details from '../components/dashboard/Details';
 import Info from '../components/dashboard/Info';
-import { AppState } from '../types/store';
+import { AppState, DayScheduleType } from '../types/store';
 import { setUserInfo } from '../actions/creators';
 import { setProfilePhoto, removeProfilePhoto } from '../utils/manage-photos';
+import * as SCHEDULES from '../constants/schedules';
 
+const dayScheduleSelector = createSelector(
+  ({ day }: AppState) => day.schedule,
+  (dayScheduleType: DayScheduleType) => SCHEDULES[dayScheduleType],
+);
 export default authorizedRoute('', function Dashboard() {
   const [showingDetails, setShowingDetails] = useState(false);
   const userInfo = useSelector((state: AppState) => state.user);
-  const daySchedule = useSelector(({ day }: AppState) => day.schedule);
+  const daySchedule = useSelector(dayScheduleSelector);
   const dispatch = useDispatch();
 
   const toggleDetails = () => {

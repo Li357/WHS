@@ -6,7 +6,7 @@ import { getCountdown, getScheduleInfoAtTime, convertTimeToDate } from '../../ut
 import { getDashboardInfo } from '../../utils/dashboard-info';
 import InfoCard from './InfoCard';
 import CrossSectionedCard from './CrossSectionedCard';
-import { DaySchedule, Schedule } from '../../types/schedule';
+import { DaySchedule, Schedule, ModNumber } from '../../types/schedule';
 
 interface InfoProps {
   daySchedule: DaySchedule;
@@ -20,9 +20,11 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   const [countdown, setCountdown] = useState(() => getCountdown(now, scheduleInfo, daySchedule));
   const [dashboardInfo, setDashboardInfo] = useState(() => getDashboardInfo(daySchedule, userSchedule, scheduleInfo));
 
-  const dayEnd = daySchedule.slice(-1)[0][1];
+  const dayEnd = scheduleInfo.current !== ModNumber.UNKNOWN
+    ? convertTimeToDate(daySchedule.slice(-1)[0][1])
+    : now;
   const [endCountdown, setEndCountdown] = useState(() => (
-    Math.max(-1, differenceInSeconds(convertTimeToDate(dayEnd), now))
+    Math.max(0, differenceInSeconds(dayEnd, now))
   ));
   const [finished, setFinished] = useState(endCountdown === 0);
 
@@ -34,7 +36,7 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
           const future = new Date();
           const nextScheduleInfo = getScheduleInfoAtTime(future, daySchedule, userSchedule);
           // Recompute to stay consistent with other countdowns
-          const untilDayEnd = differenceInSeconds(convertTimeToDate(dayEnd), future);
+          const untilDayEnd = differenceInSeconds(dayEnd, future);
 
           return batch(() => {
             setDashboardInfo(getDashboardInfo(daySchedule, userSchedule, nextScheduleInfo));

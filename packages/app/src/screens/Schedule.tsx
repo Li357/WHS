@@ -1,5 +1,4 @@
-import React, { memo } from 'react';
-import { View } from 'react-native';
+import React from 'react';
 import Carousel from 'react-native-snap-carousel';
 
 import authorizedRoute from '../components/common/authorizedRoute';
@@ -9,20 +8,18 @@ import { wp } from '../utils/style';
 
 export default authorizedRoute(
   (navigation) => navigation.getParam('name', 'Schedule'),
-  memo(function Schedule({ navigation }) {
+  function Schedule({ navigation }) {
     const schedule = navigation.getParam('schedule', []);
 
     if (schedule.length === 0) {
       // TODO: Handle empty schedule
-      return (
-        <View></View>
-      );
+      return null;
     }
 
-    const currentDay = new Date().getDay();
-    const renderItem = ({ item, index }: { item: ScheduleItem[], index: number }) => (
-      <ScheduleCard schedule={item} day={index + 1} />
+    const renderItem = ({ item }: { item: ScheduleItem[], index: number }) => (
+      <ScheduleCard schedule={item} />
     );
+    const currentDay = new Date().getDay();
 
     return (
       <Carousel
@@ -35,6 +32,6 @@ export default authorizedRoute(
         containerCustomStyle={{ flex: 1 }}
       />
     );
-  }),
+  },
   false,
 );

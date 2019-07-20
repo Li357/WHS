@@ -1,9 +1,10 @@
 import {
   ScheduleItem, ClassItem, CrossSectionedItem, CrossSectionedColumn,
-  RawSchedule, UserDaySchedule, RawClassItem,
+  RawSchedule, UserDaySchedule, RawClassItem, ModNumber,
 } from '../types/schedule';
 import { sortByProps, insert, getWithFallback, splice, excludeKeys } from './object';
 import { SCHEDULE_RESTRICTED_KEYS } from '../constants/fetch';
+import { getModNameFromModNumber } from './query-schedule';
 
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item
@@ -141,6 +142,35 @@ export function interpolateOpenItems(userDaySchedule: UserDaySchedule, day: numb
     index++;
   }
   return transformed;
+}
+
+// TODO: Translate mods in user schedule into ModNumbers, then inject assembly mods
+export function interpolateAssembly(userDaySchedule: UserDaySchedule): UserDaySchedule {
+  return [];
+}
+
+/**
+ * Returns a day's user schedule for a finals day
+ * @param userDaySchedule user's schedule for a specific day
+ */
+export function getFinalsSchedule([homeroom]: UserDaySchedule): UserDaySchedule {
+  const { day } = homeroom;
+  const finals = Array(4).fill(undefined).map((_, i) => {
+    const startMod = ModNumber.FINALS_ONE;
+    const endMod = startMod + 1;
+    return {
+      sourceId: generateSourceId(startMod, endMod, day),
+      sourceType: 'course',
+      title: getModNameFromModNumber(startMod),
+      body: '',
+      roomNumber: '',
+      day,
+      startMod,
+      length: 1,
+      endMod,
+    };
+  });
+  return [homeroom, ...finals];
 }
 
 /**

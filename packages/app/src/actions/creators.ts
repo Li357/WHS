@@ -1,5 +1,3 @@
-// tslint:disable: object-literal-sort-keys
-
 import {
   UserActions, UserState, UserInfoKeys,
   SetUserInfoAction, SetUserScheduleAction, SetUserCredentialsAction,
@@ -7,9 +5,9 @@ import {
   DayActions, SetDayScheduleAction,
   Theme, SetThemeAction, ThemeActions,
   DatesState,
-  MiscellaneousActions, LogOutAction, OtherAction, DatesActions, UpdateDayStateAction,
+  MiscellaneousActions, LogOutAction, OtherAction, DatesActions, DayScheduleType,
 } from '../types/store';
-import { Schedule, DaySchedule, TeacherSchedule } from '../types/schedule';
+import { Schedule, TeacherSchedule } from '../types/schedule';
 
 export const setUserCredentials = (payload: Pick<UserState, 'username' | 'password'>): SetUserCredentialsAction => ({
   type: UserActions.SET_USER_CREDENTIALS,
@@ -36,12 +34,7 @@ export const addTeacherSchedule = (payload: TeacherSchedule): AddTeacherSchedule
   payload,
 });
 
-export const updateDayState = (payload: Date | null): UpdateDayStateAction => ({
-  type: DayActions.UPDATE_DAY_STATE,
-  payload,
-});
-
-export const setDaySchedule = (payload: DaySchedule): SetDayScheduleAction => ({
+export const setDaySchedule = (payload: DayScheduleType): SetDayScheduleAction => ({
   type: DayActions.SET_DAY_SCHEDULE,
   payload,
 });

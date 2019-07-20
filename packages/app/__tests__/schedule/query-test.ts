@@ -1,7 +1,7 @@
 import { isSameMinute, addMinutes } from 'date-fns';
 
 import {
-  isHalfMod, containsDate, getScheduleOnDate, convertTimeToDate, getModAtTime, getClassAtMod,
+  isHalfMod, containsDate, getScheduleTypeOnDate, convertTimeToDate, getModAtTime, getClassAtMod,
   getModNameFromModNumber, getModFromModNumber, getSchoolYearFromDate, getScheduleInfoAtTime, getCountdown,
 } from '../../src/utils/query-schedule';
 import { DatesState } from '../../src/types/store';
@@ -260,7 +260,7 @@ describe('schedule querying', () => {
     });
   });
 
-  describe('getScheduleOnDate', () => {
+  describe('getScheduleTypeOnDate', () => {
     const mockDates: DatesState = {
       assembly: [new Date(2020, 3, 6)],
       noSchool: [new Date(2019, 11, 23), new Date(2019, 11, 24)],
@@ -271,7 +271,7 @@ describe('schedule querying', () => {
       semesterTwoStart: new Date(2020, 0, 5),
       semesterTwoEnd: new Date(2020, 4, 22),
     };
-    const getSchedule = (date: Date) => getScheduleOnDate(date, mockDates);
+    const getSchedule = (date: Date) => SCHEDULES[getScheduleTypeOnDate(date, mockDates)];
 
     it.todo('returns BREAK schedule for summer');
 
@@ -385,7 +385,7 @@ describe('schedule querying', () => {
     });
 
     it('returns false for finals', () => {
-      for (let finalsMod = ModNumber.FINALS_ONE; finalsMod <= ModNumber.FINALS_EIGHT; finalsMod++) {
+      for (let finalsMod = ModNumber.FINALS_ONE; finalsMod <= ModNumber.FINALS_FOUR; finalsMod++) {
         expect(isHalfMod(finalsMod)).toBe(false);
       }
     });
