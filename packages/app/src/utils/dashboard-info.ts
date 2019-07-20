@@ -1,5 +1,5 @@
 import {
-  ScheduleInfo, ModNumber, ScheduleItem, CrossSectionedItem, ClassItem, DaySchedule, Schedule,
+  ScheduleInfo, ModNumber, ScheduleItem, ClassItem, DaySchedule, Schedule,
 } from '../types/schedule';
 import { DashboardInfoGetter } from '../types/dashboard-info';
 import { formatDuration } from './duration';
@@ -32,7 +32,7 @@ function createModInfo(name: string, selector: (scheduleInfo: ScheduleInfo) => M
 function createClassInfo(name: string, selector: (ScheduleInfo: ScheduleInfo) => ScheduleItem) {
   return function classInfo(timeLeft: number, scheduleInfo: ScheduleInfo) {
     const scheduleItem = selector(scheduleInfo);
-    if ((scheduleItem as CrossSectionedItem).columns !== undefined) {
+    if (scheduleItem.hasOwnProperty('columns')) {
       return { title: 'Cross Sectioned', name: `${name} class`, crossSectioned: true };
     }
     const { title, body } = scheduleItem as ClassItem;

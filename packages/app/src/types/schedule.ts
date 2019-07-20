@@ -16,8 +16,16 @@ export interface RawClassItem {
   data: RawClassItemData | null;
 }
 
-export type RawClassItemKeys = 'sectionNumber' | 'phaseNumber' | 'data';
-export type ClassItem = Omit<RawClassItem, RawClassItemKeys>;
+export interface ClassItem {
+  sourceId: number;
+  sourceType: string;
+  title: string;
+  body: string;
+  day: number;
+  startMod: ModNumber;
+  length: number;
+  endMod: ModNumber;
+}
 
 export type CrossSectionedColumn = ClassItem[];
 export interface CrossSectionedItem {

@@ -2,9 +2,8 @@ import {
   ScheduleItem, ClassItem, CrossSectionedItem, CrossSectionedColumn,
   RawSchedule, UserDaySchedule, RawClassItem, ModNumber,
 } from '../types/schedule';
-import { sortByProps, insert, getWithFallback, splice, excludeKeys } from './object';
-import { SCHEDULE_RESTRICTED_KEYS } from '../constants/fetch';
-import { getModNameFromModNumber, getModNumberFromMod } from './query-schedule';
+import { sortByProps, insert, getWithFallback, splice } from './object';
+import { getModNameFromModNumber, getModNumberFromMod, getOccupiedMods } from './query-schedule';
 
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item
@@ -20,6 +19,37 @@ export function generateSourceId(startMod: number, endMod: number, day: number) 
 }
 
 /**
+ * Creates a basic non-specific schedule item
+ * @param startMod startMod of the schedule item
+ * @param endMod endMod of the item
+ * @param day day of the item
+ */
+function createScheduleItem(startMod: number, endMod: number, day: number) {
+  const sourceId = generateSourceId(startMod, endMod, day);
+  const length = endMod - startMod;
+  // Transforms raw mods to ModNumbers, so that assembly injection and finals handling
+  // is streamlined and monolithic
+  const startModNumber = getModNumberFromMod(startMod);
+  const endModNumber = getModNumberFromMod(endMod);
+  return { sourceId, startMod: startModNumber, endMod: endModNumber, length, day };
+}
+
+/**
+ * creates a ClassItem
+ * @param title title of the item
+ * @param body body of the item
+ * @param startMod startMod of the item
+ * @param endMod endMod of the item
+ * @param day day of the item
+ * @param sourceType sourceType of the item
+ */
+export function createClassItem(
+  title: string, body: string, startMod: number, endMod: number, day: number, sourceType: string,
+): ClassItem {
+  return { ...createScheduleItem(startMod, endMod, day), title, body, sourceType };
+}
+
+/**
  * Constructs a cross-sectioned item
  * @param columns columns of cross-sectioned item
  * @param startMod start mod of the item
@@ -29,34 +59,27 @@ export function generateSourceId(startMod: number, endMod: number, day: number) 
 export function createCrossSectionedItem(
   columns: CrossSectionedColumn[], startMod: number, endMod: number, day: number,
 ): CrossSectionedItem {
-  return {
-    sourceId: generateSourceId(startMod, endMod, day),
-    columns,
-    day,
-    startMod,
-    length: endMod - startMod,
-    endMod,
-  };
+  return { ...createScheduleItem(startMod, endMod, day), columns };
 }
 
 /**
- * Constructs an open mod
+ * Constructs an open mod class item
  * @param startMod start mod of the open mod
  * @param endMod end mod of the open mod
  * @param day day of the open mod
  */
 export function createOpenItem(startMod: number, endMod: number, day: number): ClassItem {
-  return {
-    sourceId: generateSourceId(startMod, endMod, day),
-    sourceType: 'open',
-    title: 'Open Mod',
-    body: '',
-    roomNumber: '',
-    day,
-    startMod,
-    length: endMod - startMod,
-    endMod,
-  };
+  return createClassItem('Open Mod', '', startMod, endMod, day, 'open');
+}
+
+/**
+ * Converts a raw item from website to class item
+ * @param rawItem raw schedule item to convert to class item
+ */
+export function convertToClassItem({
+  title, body, startMod, endMod, day, sourceType,
+}: RawClassItem): ClassItem {
+  return createClassItem(title, body, startMod, endMod, day, sourceType);
 }
 
 /**
@@ -144,9 +167,69 @@ export function interpolateOpenItems(userDaySchedule: UserDaySchedule, day: numb
   return transformed;
 }
 
-// TODO: Translate mods in user schedule into ModNumbers, then inject assembly mods
-export function interpolateAssembly(userDaySchedule: UserDaySchedule): UserDaySchedule {
-  return [];
+/**
+ * Splits a class item down given index into two halves
+ * @param classItem to split
+ * @param modNumber modNumber to split the item
+ */
+function splitClassItem({ title, body, startMod, endMod, day, sourceType }: ClassItem, modNumber: ModNumber) {
+  const firstHalf = createClassItem(title, body, startMod, modNumber, day, sourceType);
+  const secondHalf = createClassItem(title, body, modNumber + 1, endMod, day, sourceType);
+  return [firstHalf, secondHalf];
+}
+
+/**
+ * Injects an assembly mod into the user's schedule for the day
+ * @param userDaySchedule user's schedule for the day
+ */
+export function interpolateAssembly(userDaySchedule: UserDaySchedule, day: number): UserDaySchedule {
+  if (userDaySchedule === undefined) {
+    return [];
+  }
+
+  const itemIndex = userDaySchedule.findIndex((scheduleItem) => (
+    getOccupiedMods(scheduleItem).includes(ModNumber.ASSEMBLY)
+  ));
+  const itemDuringAssembly = userDaySchedule[itemIndex];
+
+  const assemblyItem = createClassItem('Assembly', '', ModNumber.ASSEMBLY, ModNumber.FOUR, day, 'assembly');
+  // The assembly item will be cutting through an cross sectioned item
+  if (itemDuringAssembly.hasOwnProperty('columns')) {
+    const crossSectionedItem = itemDuringAssembly as CrossSectionedItem;
+    const [firstColumns, secondColumns] = crossSectionedItem.columns.reduce((
+      [first, second]: [CrossSectionedColumn[], CrossSectionedColumn[]],
+      column,
+      ) => {
+      const splitIndex = column.findIndex(({ startMod, endMod }) => endMod > ModNumber.ASSEMBLY);
+      const columnItem = column[splitIndex];
+      // mod in column traverses assembly
+      if (columnItem.startMod < ModNumber.ASSEMBLY) {
+        const [firstHalf, secondHalf] = splitClassItem(columnItem, ModNumber.ASSEMBLY);
+        first.push([...column.slice(0, splitIndex), firstHalf]);
+        second.push([secondHalf, ...column.slice(splitIndex + 1)]);
+      } else {
+        first.push(column.slice(0, splitIndex));
+        second.push(column.slice(splitIndex));
+      }
+      return [first, second];
+    }, [[], []]);
+
+    const firstCrossSection = createCrossSectionedItem(
+      firstColumns, crossSectionedItem.startMod, ModNumber.ASSEMBLY, day,
+    );
+    const secondCrossSection = createCrossSectionedItem(
+      secondColumns, ModNumber.ASSEMBLY, crossSectionedItem.endMod, day,
+    );
+    return splice(userDaySchedule, itemIndex, 2, [firstCrossSection, assemblyItem, secondCrossSection]);
+  }
+
+  // assembly cuts through a single length > 1 mod
+  if (itemDuringAssembly.length > 1) {
+    const [firstHalf, secondHalf] = splitClassItem(itemDuringAssembly as ClassItem, ModNumber.ASSEMBLY);
+    return splice(userDaySchedule, itemIndex, 1, [firstHalf, assemblyItem, secondHalf]);
+  }
+  // no cuts
+  return insert(userDaySchedule, [assemblyItem], itemIndex);
 }
 
 /**
@@ -156,29 +239,10 @@ export function interpolateAssembly(userDaySchedule: UserDaySchedule): UserDaySc
 export function getFinalsSchedule([homeroom]: UserDaySchedule): UserDaySchedule {
   const { day } = homeroom;
   const finals = Array(4).fill(undefined).map((_, i) => {
-    const startMod = ModNumber.FINALS_ONE;
-    const endMod = startMod + 1;
-    return {
-      sourceId: generateSourceId(startMod, endMod, day),
-      sourceType: 'course',
-      title: getModNameFromModNumber(startMod),
-      body: '',
-      roomNumber: '',
-      day,
-      startMod,
-      length: 1,
-      endMod,
-    };
+    const startMod = ModNumber.FINALS_ONE + i;
+    return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, day, 'finals');
   });
   return [homeroom, ...finals];
-}
-
-/**
- * Converts a raw item from website to class item
- * @param rawItem raw schedule item to convert to class item
- */
-export function convertToClassItem(rawItem: RawClassItem): ClassItem {
-  return excludeKeys(rawItem, SCHEDULE_RESTRICTED_KEYS);
 }
 
 /**
@@ -195,14 +259,6 @@ export function processSchedule(rawSchedule: RawSchedule) {
       const scheduleDay = index + 1;
       const sorted = sortByProps(userDaySchedule, ['startMod', 'length']);
       const withCrossSections = interpolateCrossSectionedItems(sorted, scheduleDay);
-      const withOpenItems = interpolateOpenItems(withCrossSections, scheduleDay);
-
-      // Transforms raw mods to ModNumbers, so that assembly injection and finals handling
-      // is streamlined and monolithic
-      return withOpenItems.map(({ startMod, endMod, ...scheduleItem }) => ({
-        ...scheduleItem,
-        startMod: getModNumberFromMod(startMod),
-        endMod: getModNumberFromMod(endMod),
-      }));
+      return interpolateOpenItems(withCrossSections, scheduleDay);
     });
 }

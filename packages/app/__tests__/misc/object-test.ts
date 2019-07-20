@@ -1,4 +1,4 @@
-import { insert, sortByProps, getWithFallback, splice, excludeKeys } from '../../src/utils/object';
+import { insert, sortByProps, getWithFallback, splice } from '../../src/utils/object';
 
 describe('array utils', () => {
   describe('splice', () => {
@@ -127,23 +127,6 @@ describe('array utils', () => {
       expect(getWithFallback(obj, ['a', 'c'], 0)).toEqual(0);
       expect(getWithFallback(obj, ['a', 'b'], 0)).toEqual(0);
       expect(getWithFallback(obj, ['a', 'b', 'c', 'd'], 0)).toEqual(0);
-    });
-  });
-
-  describe('excludeKeys', () => {
-    const obj = { a: 1, b: { c: 2 } };
-
-    it('should not mutate input', () => {
-      excludeKeys(obj, ['b']);
-      expect(obj).not.toEqual({ a: 1 });
-    });
-
-    it('should exclude key with primitive value from object', () => {
-      expect(excludeKeys(obj, ['a'])).toEqual({ b: { c: 2 }});
-    });
-
-    it('should exclude key with value from object', () => {
-      expect(excludeKeys(obj, ['b'])).toEqual({ a: 1 });
     });
   });
 });

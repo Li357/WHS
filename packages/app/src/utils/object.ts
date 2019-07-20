@@ -60,16 +60,3 @@ export function getWithFallback<T>(obj: any, path: string[], fallback: T) {
   }
   return currObj !== undefined ? currObj : fallback;
 }
-
-/**
- * Shallow exclude of listed keys from object
- * @param obj object whose keys will be excluded
- * @param keys keys to be excluded
- */
-export function excludeKeys<T, K extends keyof T>(obj: T, keys: K[]): Exclude<T, K> {
-  const shallowCopy = { ...obj };
-  for (const key of keys) {
-    delete shallowCopy[key];
-  }
-  return shallowCopy as Exclude<T, K>;
-}

@@ -7,8 +7,7 @@ import {
 import { DatesState } from '../../src/types/store';
 import * as SCHEDULES from '../../src/constants/schedules';
 import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem } from '../../src/types/schedule';
-import { processSchedule } from '../../src/utils/process-schedule';
-import { excludeKeys } from '../../src/utils/object';
+import { processSchedule, convertToClassItem } from '../../src/utils/process-schedule';
 import rawSchedule from './test-schedules/raw.json';
 
 describe('schedule querying', () => {
@@ -90,6 +89,14 @@ describe('schedule querying', () => {
         expect(returnsMod).toBe(true);
       }
     });
+
+    it('returns UNKNOWN for schedules without timepairs', () => {
+      [SCHEDULES.BREAK, SCHEDULES.SUMMER, SCHEDULES.WEEKEND].forEach((schedule) => {
+        expect(getModAtTime(new Date(), schedule)).toStrictEqual({
+          current: ModNumber.UNKNOWN, next: ModNumber.UNKNOWN,
+        });
+      });
+    });
   });
 
   describe('getClassAtMod', () => {
@@ -168,25 +175,25 @@ describe('schedule querying', () => {
     const processed = processSchedule(schedule);
 
     it('selects correct schedule depending on day', () => {
-      expect((getClassAtMod(ModNumber.THREE, processed, 3) as ClassItem).title).toBe('Test');
-      expect((getClassAtMod(ModNumber.SIX, processed, 1) as ClassItem).title).toBe('Test 3');
+      expect((getClassAtMod(ModNumber.THREE, processed[2]) as ClassItem).title).toBe('Test');
+      expect((getClassAtMod(ModNumber.SIX, processed[0]) as ClassItem).title).toBe('Test 3');
     });
 
     it('returns correct for in-between mods', () => {
-      expect((getClassAtMod(ModNumber.FIVE, processed, 3) as ClassItem).title).toBe('Test');
-      expect((getClassAtMod(ModNumber.SEVEN, processed, 3) as ClassItem).title).toBe('Test 2');
-      expect((getClassAtMod(ModNumber.SEVEN, processed, 1) as ClassItem).title).toBe('Test 3');
+      expect((getClassAtMod(ModNumber.FIVE, processed[2]) as ClassItem).title).toBe('Test');
+      expect((getClassAtMod(ModNumber.SEVEN, processed[2]) as ClassItem).title).toBe('Test 2');
+      expect((getClassAtMod(ModNumber.SEVEN, processed[0]) as ClassItem).title).toBe('Test 3');
     });
 
     it('returns correct for open mods', () => {
-      expect((getClassAtMod(ModNumber.TWO, processed, 3) as ClassItem).title).toBe('Open Mod');
-      expect((getClassAtMod(ModNumber.NINE, processed, 3) as ClassItem).title).toBe('Open Mod');
-      expect((getClassAtMod(ModNumber.FIVE, processed, 1) as ClassItem).title).toBe('Open Mod');
+      expect((getClassAtMod(ModNumber.TWO, processed[3]) as ClassItem).title).toBe('Open Mod');
+      expect((getClassAtMod(ModNumber.NINE, processed[3]) as ClassItem).title).toBe('Open Mod');
+      expect((getClassAtMod(ModNumber.FIVE, processed[1]) as ClassItem).title).toBe('Open Mod');
     });
 
     it('returns correct for cross-sectioned mod', () => {
-      const [, , , third, fourth] = schedule.map((obj) => excludeKeys(obj, ['phaseNumber', 'sectionNumber', 'data']));
-      expect((getClassAtMod(ModNumber.SEVEN, processed, 2) as CrossSectionedItem).columns).toStrictEqual(
+      const [, , , third, fourth] = schedule.map(convertToClassItem);
+      expect((getClassAtMod(ModNumber.SEVEN, processed[1]) as CrossSectionedItem).columns).toStrictEqual(
         [[third], [fourth]],
       );
     });
@@ -194,12 +201,12 @@ describe('schedule querying', () => {
     it.todo('returns correct for finals');
 
     it('returns null instead of undefined if not found', () => {
-      expect(getClassAtMod(ModNumber.BEFORE_SCHOOL, processed, 3)).toBe(null);
-      expect(getClassAtMod(ModNumber.AFTER_SCHOOL, processed, 3)).toBe(null);
+      expect(getClassAtMod(ModNumber.BEFORE_SCHOOL, processed[2])).toBe(null);
+      expect(getClassAtMod(ModNumber.AFTER_SCHOOL, processed[2])).toBe(null);
     });
 
     it('returns null for empty schedule', () => {
-      expect(getClassAtMod(ModNumber.ONE, [], 3)).toBe(null);
+      expect(getClassAtMod(ModNumber.ONE, [][2])).toBe(null);
     });
   });
 

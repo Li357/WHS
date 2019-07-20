@@ -18,6 +18,8 @@ import { getProfilePhoto } from './src/utils/manage-photos';
 import { setUserInfo, setDaySchedule, setUserSchedule } from './src/actions/creators';
 import { getScheduleTypeOnDate } from './src/utils/query-schedule';
 import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
+import { insert } from './src/utils/object';
+import { ScheduleItem } from './src/types/schedule';
 
 const { store, persistor } = initializeStore();
 
@@ -50,7 +52,7 @@ export default class App extends Component<{}, AppComponentState> {
     let revisedUserDaySchedule;
     switch (newDayScheduleType) {
       case 'ASSEMBLY':
-        revisedUserDaySchedule = interpolateAssembly(schedule[day - 1]);
+        revisedUserDaySchedule = interpolateAssembly(schedule[day - 1], day);
         break;
       case 'FINALS':
         revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1]);
@@ -58,12 +60,7 @@ export default class App extends Component<{}, AppComponentState> {
       default:
         return;
     }
-
-    const revisedUserSchedule = [
-      ...schedule.slice(0, day - 1),
-      revisedUserDaySchedule,
-      ...schedule.slice(day),
-    ];
+    const revisedUserSchedule = insert<ScheduleItem[]>(schedule, [revisedUserDaySchedule], day - 1);
     return store.dispatch(setUserSchedule(revisedUserSchedule));
   }
 

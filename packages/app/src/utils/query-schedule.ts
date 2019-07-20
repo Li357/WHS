@@ -1,6 +1,6 @@
 import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds } from 'date-fns';
 
-import { DaySchedule, ModNumber, Schedule, ScheduleInfo } from '../types/schedule';
+import { DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule, ScheduleItem } from '../types/schedule';
 import { DatesState, DayScheduleType } from '../types/store';
 
 /**
@@ -63,19 +63,24 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
 }
 
 /**
+ * Returns occupied mods (based on length) so does not include assembly
+ * @param scheduleItem item to get occupied mods from
+ */
+export function getOccupiedMods({ startMod, length }: ScheduleItem) {
+  return Array(length).fill(undefined).map((_, i) => startMod + i);
+}
+
+/**
  * Gets the class from the schedule at the specific mod and day
  * @param modNumber mod to check for class at
- * @param schedule student/staff's schedule
- * @param day day of week to query
+ * @param schedule student/staff's schedule for a certain day
  */
-export function getClassAtMod(modNumber: ModNumber, schedule: Schedule, day: number) {
+export function getClassAtMod(modNumber: ModNumber, userDaySchedule: UserDaySchedule) {
   // occurs when user has empty schedule
-  if (modNumber === ModNumber.UNKNOWN || schedule.length === 0) {
+  if (modNumber === ModNumber.UNKNOWN || userDaySchedule === undefined) {
     return null;
   }
-
-  const classSchedule = schedule[day - 1]; // Monday is 1, so 1 - 1 === 0
-  return classSchedule.find(({ startMod, endMod }) => startMod <= modNumber && endMod > modNumber) || null;
+  return userDaySchedule.find((scheduleItem) => getOccupiedMods(scheduleItem).includes(modNumber)) || null;
 }
 
 /**
@@ -96,8 +101,8 @@ export function getScheduleInfoAtTime(date: Date, daySchedule: DaySchedule, sche
     : next;
 
   const day = date.getDay();
-  const currentClass = getClassAtMod(current, schedule, day);
-  const nextClass = getClassAtMod(nextClassMod, schedule, day);
+  const currentClass = getClassAtMod(current, schedule[day - 1]);
+  const nextClass = getClassAtMod(nextClassMod, schedule[day - 1]);
   return { current, next, currentClass, nextClass };
 }
 

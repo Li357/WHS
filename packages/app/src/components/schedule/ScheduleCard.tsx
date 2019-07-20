@@ -12,7 +12,7 @@ import { ClassItem, CrossSectionedItem, ScheduleItem } from '../../types/schedul
 import { AppState } from '../../types/store';
 import { getScheduleTypeOnDate } from '../../utils/query-schedule';
 import * as SCHEDULES from '../../constants/schedules';
-import { interpolateAssembly, getFinalsSchedule } from '../../utils/process-schedule';
+import { interpolateAssembly, getFinalsSchedule, createClassItem } from '../../utils/process-schedule';
 import ScheduleCardItem from './ScheduleCardItem';
 import CrossSectionedCardItem from './CrossSectionedCardItem';
 
@@ -58,7 +58,7 @@ const makeCardDayScheduleSelector = () => createSelector(
 
     let userDaySchedule;
     if (daySchedule === SCHEDULES.ASSEMBLY && !isCurrentDay) {
-      userDaySchedule = interpolateAssembly(schedule);
+      userDaySchedule = interpolateAssembly(schedule, day);
     } else if (daySchedule === SCHEDULES.FINALS && !isCurrentDay) {
       userDaySchedule = getFinalsSchedule(schedule);
     } else {
@@ -66,17 +66,9 @@ const makeCardDayScheduleSelector = () => createSelector(
     }
 
     const wednesdayShift = currentDay === 3 ? 1 : 0;
-    const cardDaySchedule = daySchedule.map(([start, end], index) => ({
-      title: `${start} - ${end}`,
-      body: '',
-      roomNumber: '',
-      day,
-      length: 1,
-      startMod: index + wednesdayShift,
-      endMod: index + 1 + wednesdayShift,
-      sourceId: index,
-      sourceType: 'course',
-    }));
+    const cardDaySchedule = daySchedule.map(([start, end], index) => (
+      createClassItem(`${start} - ${end}`, '', index + wednesdayShift, index + wednesdayShift + 1, day, 'course')
+    ));
     return { cardDate, cardDaySchedule, userDaySchedule, isCurrentDay };
   },
 );
@@ -94,7 +86,7 @@ export default function ScheduleCard({ schedule }: ScheduleCardProps) {
   const formattedDay = format(cardDate, 'MMMM d');
   const scheduleToShow = showTimes ? cardDaySchedule : userDaySchedule!;
   const classes = scheduleToShow.map((scheduleItem) => {
-    if ((scheduleItem as CrossSectionedItem).columns !== undefined) {
+    if (scheduleItem.hasOwnProperty('columns')) {
       return (<CrossSectionedCardItem key={scheduleItem.sourceId} scheduleItem={scheduleItem as CrossSectionedItem} />);
     }
     return (<ScheduleCardItem key={scheduleItem.sourceId} scheduleItem={scheduleItem as ClassItem} />);
