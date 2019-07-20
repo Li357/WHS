@@ -50,11 +50,11 @@ const beforeSchoolInfo = createTimeLeftInfo('until school starts');
 const passingPeriodLeftInfo = createTimeLeftInfo('until passing period ends');
 const modLeftInfo = createTimeLeftInfo('until mod ends');
 
-const afterSchoolInfo = createTextInfo('You\'re done for the day');
-const breakInfo = createTextInfo('Enjoy your break');
-const summerInfo = createTextInfo('Enjoy your summer');
-const weekendInfo = createTextInfo('Enjoy your weekend');
-const scheduleEmptyInfo = createTextInfo('You\'re schedule is empty.');
+const afterSchoolInfo = createTextInfo('You\'re done for the day!');
+const breakInfo = createTextInfo('Enjoy your break!');
+const summerInfo = createTextInfo('Enjoy your summer!');
+const weekendInfo = createTextInfo('Enjoy your weekend!');
+const scheduleEmptyInfo = createTextInfo('Your schedule is empty.');
 
 function dayEndsInfo(timeLeft: number, scheduleInfo: ScheduleInfo, dayEnd: number) {
   return { title: formatDuration(dayEnd), name: 'until day ends' };
