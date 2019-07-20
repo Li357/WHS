@@ -4,7 +4,7 @@ import {
 } from '../types/schedule';
 import { sortByProps, insert, getWithFallback, splice, excludeKeys } from './object';
 import { SCHEDULE_RESTRICTED_KEYS } from '../constants/fetch';
-import { getModNameFromModNumber } from './query-schedule';
+import { getModNameFromModNumber, getModNumberFromMod } from './query-schedule';
 
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item
@@ -195,6 +195,14 @@ export function processSchedule(rawSchedule: RawSchedule) {
       const scheduleDay = index + 1;
       const sorted = sortByProps(userDaySchedule, ['startMod', 'length']);
       const withCrossSections = interpolateCrossSectionedItems(sorted, scheduleDay);
-      return interpolateOpenItems(withCrossSections, scheduleDay);
+      const withOpenItems = interpolateOpenItems(withCrossSections, scheduleDay);
+
+      // Transforms raw mods to ModNumbers, so that assembly injection and finals handling
+      // is streamlined and monolithic
+      return withOpenItems.map(({ startMod, endMod, ...scheduleItem }) => ({
+        ...scheduleItem,
+        startMod: getModNumberFromMod(startMod),
+        endMod: getModNumberFromMod(endMod),
+      }));
     });
 }

@@ -70,7 +70,7 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
  */
 export function getClassAtMod(modNumber: ModNumber, schedule: Schedule, day: number) {
   // occurs when user has empty schedule
-  if (modNumber === ModNumber.UNKNOWN) {
+  if (modNumber === ModNumber.UNKNOWN || schedule.length === 0) {
     return null;
   }
 
@@ -222,6 +222,14 @@ export function getModNameFromModNumber(modNumber: ModNumber) {
  */
 export function getModFromModNumber(modNumber: ModNumber) {
   return modNumber - (modNumber > ModNumber.ASSEMBLY ? 1 : 0);
+}
+
+/**
+ * Transforms mod to ModNumber
+ * @param modNumber mod number to transform
+ */
+export function getModNumberFromMod(mod: number) {
+  return mod + (mod > ModNumber.ASSEMBLY ? 1 : 0);
 }
 
 /**
