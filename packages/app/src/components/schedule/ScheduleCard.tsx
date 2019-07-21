@@ -3,7 +3,6 @@ import { Switch, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 import { useSelector } from 'react-redux';
 import { setDay, format } from 'date-fns';
-import { Bar } from 'react-native-progress';
 import { createSelector } from 'reselect';
 
 import Text from '../common/Text';
@@ -60,7 +59,7 @@ const makeCardDayScheduleSelector = () => createSelector(
     if (daySchedule === SCHEDULES.ASSEMBLY && !isCurrentDay) {
       userDaySchedule = interpolateAssembly(schedule, day);
     } else if (daySchedule === SCHEDULES.FINALS && !isCurrentDay) {
-      userDaySchedule = getFinalsSchedule(schedule);
+      userDaySchedule = getFinalsSchedule(schedule, day);
     } else {
       userDaySchedule = schedule.filter((scheduleItem) => (scheduleItem as ClassItem).title !== 'No Homeroom');
     }

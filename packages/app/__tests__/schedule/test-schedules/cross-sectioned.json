@@ -1,7 +1,7 @@
 {
   "none": [
     {
-      "sourceId": 1,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -12,7 +12,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 2,
+      "sourceId": 10203000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -25,7 +25,7 @@
   ],
   "single": [
     {
-      "sourceId": 1,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -36,7 +36,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 2,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -49,7 +49,7 @@
   ],
   "double": [
     {
-      "sourceId": 1,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -60,7 +60,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 2,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -71,7 +71,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 3,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -84,7 +84,7 @@
   ],
   "oneAndTwoHalves": [
     {
-      "sourceId": 2,
+      "sourceId": 10405000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -95,7 +95,7 @@
       "endMod": 5
     },
     {
-      "sourceId": 1,
+      "sourceId": 10406000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -106,7 +106,7 @@
       "endMod": 6
     },
     {
-      "sourceId": 3,
+      "sourceId": 10506000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -119,7 +119,7 @@
   ],
   "consecutive": [
     {
-      "sourceId": 1,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -130,7 +130,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 2,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -141,7 +141,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 3,
+      "sourceId": 10203000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -152,7 +152,7 @@
       "endMod": 3
     },
     {
-      "sourceId": 4,
+      "sourceId": 10203000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -163,7 +163,7 @@
       "endMod": 3
     },
     {
-      "sourceId": 5,
+      "sourceId": 10304000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -174,7 +174,7 @@
       "endMod": 4
     },
     {
-      "sourceId": 6,
+      "sourceId": 10305000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -187,7 +187,7 @@
   ],
   "nonConsecutive": [
     {
-      "sourceId": 1,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -198,7 +198,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 2,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -209,7 +209,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 3,
+      "sourceId": 10304000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -220,7 +220,7 @@
       "endMod": 4
     },
     {
-      "sourceId": 4,
+      "sourceId": 10304000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -233,7 +233,7 @@
   ],
   "nonConsecutiveWithBetween": [
     {
-      "sourceId": 1,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -244,7 +244,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 2,
+      "sourceId": 10102000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -255,7 +255,7 @@
       "endMod": 2
     },
     {
-      "sourceId": 5,
+      "sourceId": 10203000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -266,7 +266,7 @@
       "endMod": 3
     },
     {
-      "sourceId": 3,
+      "sourceId": 10304000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -277,7 +277,7 @@
       "endMod": 4
     },
     {
-      "sourceId": 4,
+      "sourceId": 10304000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -290,7 +290,7 @@
   ],
   "partialOverlap": [
     {
-      "sourceId": 1,
+      "sourceId": 10407000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -301,7 +301,7 @@
       "endMod": 7
     },
     {
-      "sourceId": 2,
+      "sourceId": 10608000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -312,7 +312,7 @@
       "endMod": 8
     },
     {
-      "sourceId": 3,
+      "sourceId": 10708000,
       "sourceType": "course",
       "title": "Test",
       "body": "",

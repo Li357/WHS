@@ -7,7 +7,7 @@ import { initialUserState, initialDayState, initialDatesState } from '../../src/
 import { lightTheme, darkTheme } from '../../src/constants/theme';
 import * as creators from '../../src/actions/creators';
 import { MiscellaneousActions, OtherAction, AppState, Theme, DayScheduleType } from '../../src/types/store';
-import { ModNumber, Schedule, TeacherSchedule } from '../../src/types/schedule';
+import { Schedule, TeacherSchedule } from '../../src/types/schedule';
 
 describe('reducers', () => {
   const dummyAction: OtherAction = { type: MiscellaneousActions.OTHER };
@@ -20,9 +20,9 @@ describe('reducers', () => {
     sectionNumber: 5,
     phaseNumber: 5,
     day: 5,
-    startMod: ModNumber.ONE,
+    startMod: 1,
     length: 1,
-    endMod: ModNumber.TWO,
+    endMod: 2,
     data: null,
   }]);
   const dummyTeacherSchedule: TeacherSchedule = {

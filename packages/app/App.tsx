@@ -55,7 +55,7 @@ export default class App extends Component<{}, AppComponentState> {
         revisedUserDaySchedule = interpolateAssembly(schedule[day - 1], day);
         break;
       case 'FINALS':
-        revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1]);
+        revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1], day);
         break;
       default:
         return;

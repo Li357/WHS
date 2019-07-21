@@ -5,13 +5,11 @@ import {
   processSchedule,
   convertToClassItem,
 } from '../../src/utils/process-schedule';
-import { ClassItem, ScheduleItem, RawSchedule, ModNumber, RawClassItem } from '../../src/types/schedule';
+import { ClassItem, ScheduleItem, RawSchedule } from '../../src/types/schedule';
 import crossSectionedSchedules from './test-schedules/cross-sectioned.json';
 import openSchedules from './test-schedules/open.json';
 import rawSchedules from './test-schedules/raw.json';
-import { getModNumberFromMod } from '../../src/utils/query-schedule';
 
-// ONLY processSchedule transforms mods to ModNumbers
 describe('schedule processing', () => {
   describe('utility functions', () => {
     it('should generate expected sourceId', () => {
@@ -24,7 +22,6 @@ describe('schedule processing', () => {
         sourceType: 'course',
         title: 'Test',
         body: '',
-        roomNumber: '',
         day: 1,
         startMod: 1,
         length: 1,
@@ -47,7 +44,6 @@ describe('schedule processing', () => {
         sourceType: 'open',
         title: 'Open Mod',
         body: '',
-        roomNumber: '',
         day: 1,
         startMod: 1,
         length: 1,
@@ -231,78 +227,67 @@ describe('schedule processing', () => {
         expect(interpolateOpenItems([], 1)).toEqual([createOpenItem(0, 15, 1)]);
       });
     });
+
+    describe('interpolateAssembly', () => {
+      it.todo('ignores schedule if empty');
+
+      it.todo('injects correct schedule item');
+
+      it.todo('handles cross-section that has a class that cuts thru assembly');
+
+      it.todo('handles cross-section without extra cuts');
+
+      it.todo('handles long non-cross-sectioned mod during assembly');
+
+      it.todo('handles regular injection');
+    });
+
+    describe('getFinalsSchedule', () => {
+      it.todo('ignores schedule if empty');
+
+      it.todo('returns final schedule with homeroom');
+    });
   });
 
   describe('convertToClassItem', () => {
-    const [rawItem]: RawSchedule = rawSchedules.groupByDay;
-    expect(convertToClassItem(rawItem)).toEqual({
-      sourceId: 1,
-      sourceType: 'course',
-      title: 'Test',
-      body: '',
-      roomNumber: '',
-      day: 5,
-      startMod: 0,
-      length: 15,
-      endMod: 15,
+    it('should convert a raw item to a class item', () => {
+      const [rawItem]: RawSchedule = rawSchedules.groupByDay;
+      expect(convertToClassItem(rawItem)).toEqual({
+        sourceId: 50015000,
+        sourceType: 'course',
+        title: 'Test',
+        body: '',
+        day: 5,
+        startMod: 0,
+        length: 15,
+        endMod: 15,
+      });
     });
   });
 
   describe('processSchedule', () => {
-    // ModNumbers are used here, not mods
     const schedules: Record<string, RawSchedule> = rawSchedules;
     const { groupByDay, sortByModThenLength } = schedules;
-    const createOpenDay = (day: number) => [{
-      // since sourceIds are not recalculated...
-      sourceId: generateSourceId(ModNumber.HOMEROOM, ModNumber.FOURTEEN, day),
-      sourceType: 'open',
-      title: 'Open Mod',
-      body: '',
-      roomNumber: '',
-      day,
-      startMod: ModNumber.HOMEROOM,
-      length: 15,
-      endMod: ModNumber.FOURTEEN + 1,
-    }];
-    const mapClassBounds = (rawItem: RawClassItem) => {
-      const modified = {
-        ...rawItem,
-        startMod: getModNumberFromMod(rawItem.startMod),
-        endMod: getModNumberFromMod(rawItem.endMod),
-      };
-      return convertToClassItem(modified);
-    };
+    const createOpenDay = (day: number) => [createOpenItem(0, 15, day)];
 
     it('converts raw schedule into 5-length array of day schedules', () => {
       expect(processSchedule([])).toHaveLength(5);
     });
 
     it('groups schedule items into separate arrays by day', () => {
-      const [five, one, three] = groupByDay.map(mapClassBounds);
+      const [five, one, three] = groupByDay.map(convertToClassItem);
       expect(processSchedule(groupByDay)).toEqual([
         [one], createOpenDay(2), [three], createOpenDay(4), [five],
       ]);
     });
 
     it('sorts each day schedule by startMod then length', () => {
-      const [first, third, second] = sortByModThenLength.map(mapClassBounds);
-      const openItem = {
-        sourceId: generateSourceId(third.endMod, ModNumber.FOURTEEN, first.day),
-        sourceType: 'open',
-        title: 'Open Mod',
-        body: '',
-        roomNumber: '',
-        day: first.day,
-        startMod: third.endMod,
-        length: ModNumber.FOURTEEN - third.endMod,
-        endMod: ModNumber.FOURTEEN + 1,
-      };
-
+      const [first, third, second] = sortByModThenLength.map(convertToClassItem);
       expect(processSchedule(sortByModThenLength)).toEqual([
         [
           first,
           createCrossSectionedItem([[second], [third]], second.startMod, third.endMod, first.day),
-          openItem,
+          createOpenItem(third.endMod, 15, first.day),
         ],
         createOpenDay(2), createOpenDay(3), createOpenDay(4), createOpenDay(5),
       ]);

@@ -3,7 +3,8 @@ import {
   RawSchedule, UserDaySchedule, RawClassItem, ModNumber,
 } from '../types/schedule';
 import { sortByProps, insert, getWithFallback, splice } from './object';
-import { getModNameFromModNumber, getModNumberFromMod, getOccupiedMods } from './query-schedule';
+import { getModNameFromModNumber, getOccupiedMods } from './query-schedule';
+import * as SCHEDULES from '../constants/schedules';
 
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item
@@ -25,13 +26,9 @@ export function generateSourceId(startMod: number, endMod: number, day: number) 
  * @param day day of the item
  */
 function createScheduleItem(startMod: number, endMod: number, day: number) {
-  const sourceId = generateSourceId(startMod, endMod, day);
   const length = endMod - startMod;
-  // Transforms raw mods to ModNumbers, so that assembly injection and finals handling
-  // is streamlined and monolithic
-  const startModNumber = getModNumberFromMod(startMod);
-  const endModNumber = getModNumberFromMod(endMod);
-  return { sourceId, startMod: startModNumber, endMod: endModNumber, length, day };
+  const sourceId = generateSourceId(startMod, endMod, day);
+  return { sourceId, startMod, endMod, length, day };
 }
 
 /**
@@ -181,14 +178,12 @@ function splitClassItem({ title, body, startMod, endMod, day, sourceType }: Clas
 /**
  * Injects an assembly mod into the user's schedule for the day
  * @param userDaySchedule user's schedule for the day
+ * @param day to interpolate assembly on
  */
 export function interpolateAssembly(userDaySchedule: UserDaySchedule, day: number): UserDaySchedule {
-  if (userDaySchedule === undefined) {
-    return [];
-  }
-
+  const assemblyMod = SCHEDULES.ASSEMBLY.findIndex((triplet) => triplet[2] === ModNumber.ASSEMBLY)!;
   const itemIndex = userDaySchedule.findIndex((scheduleItem) => (
-    getOccupiedMods(scheduleItem).includes(ModNumber.ASSEMBLY)
+    getOccupiedMods(scheduleItem).includes(assemblyMod)
   ));
   const itemDuringAssembly = userDaySchedule[itemIndex];
 
@@ -235,12 +230,14 @@ export function interpolateAssembly(userDaySchedule: UserDaySchedule, day: numbe
 /**
  * Returns a day's user schedule for a finals day
  * @param userDaySchedule user's schedule for a specific day
+ * @param day to get finals schedule on
  */
-export function getFinalsSchedule([homeroom]: UserDaySchedule): UserDaySchedule {
-  const { day } = homeroom;
+export function getFinalsSchedule(userDaySchedule: UserDaySchedule, day: number): UserDaySchedule {
+  const fallBackHomeroom = createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.ONE, day, 'homeroom');
+  const [homeroom = fallBackHomeroom] = userDaySchedule;
   const finals = Array(4).fill(undefined).map((_, i) => {
     const startMod = ModNumber.FINALS_ONE + i;
-    return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, day, 'finals');
+    return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, homeroom.day, 'finals');
   });
   return [homeroom, ...finals];
 }

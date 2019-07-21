@@ -2,7 +2,7 @@ import { isSameMinute, addMinutes } from 'date-fns';
 
 import {
   isHalfMod, containsDate, getScheduleTypeOnDate, convertTimeToDate, getModAtTime, getClassAtMod,
-  getModNameFromModNumber, getModFromModNumber, getSchoolYearFromDate, getScheduleInfoAtTime, getCountdown,
+  getModNameFromModNumber, getSchoolYearFromDate, getScheduleInfoAtTime, getCountdown,
 } from '../../src/utils/query-schedule';
 import { DatesState } from '../../src/types/store';
 import * as SCHEDULES from '../../src/constants/schedules';
@@ -199,6 +199,8 @@ describe('schedule querying', () => {
     });
 
     it.todo('returns correct for finals');
+
+    it.todo('returns correct for assembly');
 
     it('returns null instead of undefined if not found', () => {
       expect(getClassAtMod(ModNumber.BEFORE_SCHOOL, processed[2])).toBe(null);
@@ -421,22 +423,6 @@ describe('schedule querying', () => {
     it('returns mod - 1 for greater than ASSEMBLY', () => {
       expect(getModNameFromModNumber(ModNumber.FOUR)).toBe('4');
     });
-  });
-
-  describe('getModFromModNumber', () => {
-    it('returns corrected mod for those before ASSEMBLY', () => {
-      for (let mod = ModNumber.HOMEROOM; mod <= ModNumber.ASSEMBLY; mod++) {
-        expect(getModFromModNumber(mod)).toBe(mod);
-      }
-    });
-
-    it('returns corrected mod for those after ASSEMBLY', () => {
-      for (let mod = ModNumber.FOUR; mod <= ModNumber.FOURTEEN; mod++) {
-        expect(getModFromModNumber(mod)).toBe(mod - 1);
-      }
-    });
-
-    it.todo('handles finals');
   });
 
   describe('getSchoolYearFromDate', () => {
