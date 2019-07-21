@@ -7,7 +7,7 @@ import {
 import { DatesState } from '../../src/types/store';
 import * as SCHEDULES from '../../src/constants/schedules';
 import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem } from '../../src/types/schedule';
-import { processSchedule, convertToClassItem } from '../../src/utils/process-schedule';
+import { processSchedule, convertToClassItem, getFinalsSchedule } from '../../src/utils/process-schedule';
 import rawSchedule from './test-schedules/raw.json';
 
 describe('schedule querying', () => {
@@ -83,7 +83,7 @@ describe('schedule querying', () => {
           ));
           const middle = new Date((start + end) / 2);
           const { current, next } = getModAtTime(middle, schedule);
-          const lastPair = modNumber === ModNumber.FOURTEEN;
+          const lastPair = modNumber === ModNumber.FOURTEEN || modNumber === ModNumber.FINALS_FOUR;
           return current === modNumber && next === (lastPair ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD);
         });
         expect(returnsMod).toBe(true);
@@ -239,6 +239,20 @@ describe('schedule querying', () => {
       expect(getInfo(new Date(2019, 4, 6, 15, 5))).toStrictEqual({
         current: ModNumber.FOURTEEN, next: ModNumber.AFTER_SCHOOL,
         currentClass: schedule[0].slice(-1)[0], nextClass: null,
+      });
+    });
+
+    it('returns correct for current: FINALS_FOUR, next: AFTER_SCHOOL', () => {
+      const finalsUserSchedule = [getFinalsSchedule([], 1)];
+      const info = getScheduleInfoAtTime(
+        new Date(2019, 4, 6, 12, 20),
+        SCHEDULES.FINALS,
+        finalsUserSchedule,
+      );
+
+      expect(info).toStrictEqual({
+        current: ModNumber.FINALS_FOUR, next: ModNumber.AFTER_SCHOOL,
+        currentClass: finalsUserSchedule[0].slice(-1)[0], nextClass: null,
       });
     });
 

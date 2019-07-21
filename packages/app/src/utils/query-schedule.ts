@@ -43,7 +43,9 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
       end: modEnd,
     });
     if (isThisMod) {
-      const nextMod = modNumber === ModNumber.FOURTEEN ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD;
+      const nextMod = modNumber === ModNumber.FOURTEEN || modNumber === ModNumber.FINALS_FOUR
+        ? ModNumber.AFTER_SCHOOL
+        : ModNumber.PASSING_PERIOD;
       return { current: modNumber, next: nextMod };
     }
 
