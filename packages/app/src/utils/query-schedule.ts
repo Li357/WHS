@@ -68,7 +68,7 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
  * Returns occupied mods so does not include assembly
  * @param scheduleItem item to get occupied mods from
  */
-export function getOccupiedMods({ startMod, length }: ScheduleItem) {
+export function getOccupiedMods({ startMod, length }: ScheduleItem): ModNumber[] {
   return Array(length).fill(undefined).map((_, i) => startMod + i);
 }
 
@@ -218,6 +218,23 @@ export function getModNameFromModNumber(modNumber: ModNumber) {
       return '3rd Final';
     case ModNumber.FINALS_FOUR:
       return '4th Final';
+    default:
+      return modNumber.toString();
+  }
+}
+
+export function getShortNameFromModNumber(modNumber: ModNumber) {
+  switch (modNumber) {
+    case ModNumber.HOMEROOM:
+      return 'HR';
+    case ModNumber.ASSEMBLY:
+      return 'AS';
+    case ModNumber.FINALS_ONE:
+    case ModNumber.FINALS_TWO:
+    case ModNumber.FINALS_THREE:
+    case ModNumber.FINALS_FOUR:
+      const index = (modNumber % ModNumber.FINALS_ONE) + 1;
+      return index.toString();
     default:
       return modNumber.toString();
   }
