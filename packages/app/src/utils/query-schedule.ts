@@ -22,7 +22,6 @@ export function convertTimeToDate(time: string, date: Date = new Date()) {
  * @see ModNumber
  */
 export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<ScheduleInfo, 'current' | 'next'> {
-  // TODO: Handle ASSEMBLY and FINALS
   if (daySchedule.length === 0) {
     return { current: ModNumber.UNKNOWN, next: ModNumber.UNKNOWN };
   }

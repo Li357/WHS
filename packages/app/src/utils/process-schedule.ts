@@ -233,7 +233,7 @@ export function interpolateAssembly(userDaySchedule: UserDaySchedule, day: numbe
  * @param day to get finals schedule on
  */
 export function getFinalsSchedule(userDaySchedule: UserDaySchedule, day: number): UserDaySchedule {
-  const fallBackHomeroom = createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.ONE, day, 'homeroom');
+  const fallBackHomeroom = createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.FINALS_ONE, day, 'homeroom');
   const [homeroom = fallBackHomeroom] = userDaySchedule;
   const finals = Array(4).fill(undefined).map((_, i) => {
     const startMod = ModNumber.FINALS_ONE + i;
