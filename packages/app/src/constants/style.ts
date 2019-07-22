@@ -59,3 +59,4 @@ export const CARD_BORDER_WIDTH = BORDER_WIDTH;
 
 export const SCHEDULE_CARD_BODYTEXT_SIZE = 15;
 export const SCHEDULE_CARD_ITEM_HEIGHT = hp('15%');
+export const SCHEDULE_CARD_ITEM_PADDING = '5px';

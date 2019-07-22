@@ -2,7 +2,7 @@ import {
   ScheduleItem, ClassItem, CrossSectionedItem, CrossSectionedColumn,
   RawSchedule, UserDaySchedule, RawClassItem, ModNumber,
 } from '../types/schedule';
-import { sortByProps, insert, getWithFallback, splice } from './object';
+import { sortByProps, insert, getWithFallback, splice } from './utils';
 import { getModNameFromModNumber, getOccupiedMods } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
 

@@ -60,3 +60,11 @@ export function getWithFallback<T>(obj: any, path: string[], fallback: T) {
   }
   return currObj !== undefined ? currObj : fallback;
 }
+
+/**
+ * Returns sum of items in array
+ * @param arr array to be summed
+ */
+export function sum(arr: number[]) {
+  return arr.reduce((a, b) => a + b, 0);
+}

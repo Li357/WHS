@@ -1,4 +1,4 @@
-import { insert, sortByProps, getWithFallback, splice } from '../../src/utils/object';
+import { insert, sortByProps, getWithFallback, splice } from '../../src/utils/utils';
 
 describe('array utils', () => {
   describe('splice', () => {

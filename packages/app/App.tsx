@@ -18,7 +18,7 @@ import { getProfilePhoto } from './src/utils/manage-photos';
 import { setUserInfo, setDaySchedule, setUserSchedule } from './src/actions/creators';
 import { getScheduleTypeOnDate } from './src/utils/query-schedule';
 import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
-import { insert } from './src/utils/object';
+import { insert } from './src/utils/utils';
 import { ScheduleItem } from './src/types/schedule';
 
 const { store, persistor } = initializeStore();
