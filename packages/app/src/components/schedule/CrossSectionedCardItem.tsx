@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import { Text, View, StyleSheet } from 'react-native';
 
 import { CrossSectionedItem, CrossSectionedColumn, ClassItem } from '../../types/schedule';
 import { getOccupiedMods, isHalfMod } from '../../utils/query-schedule';
@@ -12,22 +13,30 @@ const BlockContainer = styled.View`
   flex-direction: row;
 `;
 
-const ColumnContainer = styled.View<{ last: boolean }>`
+const ColumnContainer = styled.View<{ last: boolean, empty: boolean }>`
   flex: 1;
   border-right-color: ${({ theme }) => theme.borderColor};
   border-right-width: ${({ last }) => last ? 0 : BORDER_WIDTH};
+  background-color: ${({ theme, empty }) => empty ? theme.foregroundColor : theme.backgroundColor};
 `;
 
 const EmptyBlock = styled.View`
   background-color: ${({ theme }) => theme.foregroundColor};
 `;
 
-const DetailsContainer = styled.View`
+const DetailsContainer = styled.View<{ topBorder: boolean, bottomBorder: boolean }>`
   justify-content: center;
   align-items: center;
+  border-top-width: ${({ topBorder }) => topBorder ? BORDER_WIDTH : 0};
+  border-top-color: ${({ theme }) => theme.borderColor};
+  border-bottom-width: ${({ bottomBorder }) => bottomBorder ? BORDER_WIDTH : 0};
+  border-bottom-color: ${({ theme }) => theme.borderColor};
 `;
 
-const ColumnItem = styled.View``;
+const ColumnItem = styled.View`
+  justify-content: center;
+  align-items: stretch;
+`;
 
 interface CrossSectionedCardItemProps {
   scheduleItem: CrossSectionedItem;
@@ -36,6 +45,8 @@ interface CrossSectionedCardItemProps {
 export default function CrossSectionedCardItem({ scheduleItem }: CrossSectionedCardItemProps) {
   const classMods = getOccupiedMods(scheduleItem);
   const flexRatios = classMods.map((mod) => isHalfMod(mod) ? 1 : 2);
+  const crossSectionedStartMod = classMods[0];
+  const crossSectionedEndMod = classMods.slice(-1)[0] + 1;
 
   const createColumn = (
     { title, body, startMod, endMod, length, sourceId }: ClassItem,
@@ -43,9 +54,9 @@ export default function CrossSectionedCardItem({ scheduleItem }: CrossSectionedC
     array: CrossSectionedColumn,
   ) => {
     const nextItem = array[index + 1];
-    const modsUntilNext = (nextItem ? nextItem.startMod : classMods.slice(-1)[0]) - endMod;
+    const modsUntilNext = (nextItem ? nextItem.startMod : crossSectionedEndMod) - endMod;
 
-    const prefix = startMod - classMods[0];
+    const prefix = startMod - crossSectionedStartMod;
     const modEndIndex = prefix + length;
 
     const prefixFlex = sum(flexRatios.slice(0, prefix));
@@ -55,7 +66,11 @@ export default function CrossSectionedCardItem({ scheduleItem }: CrossSectionedC
     return (
       <ColumnItem key={sourceId} style={{ flex: modItemFlex + flexBetweenNext }}>
         {index === 0 && prefix !== 0 && <EmptyBlock style={{ flex: prefixFlex }} />}
-        <DetailsContainer>
+        <DetailsContainer
+          topBorder={startMod !== crossSectionedStartMod}
+          bottomBorder={nextItem !== undefined || endMod !== crossSectionedEndMod}
+          style={{ flex: modItemFlex }}
+        >
           <Title numberOfLines={3}>{title}</Title>
           {body.length > 0 && <BodyText numberOfLines={2}>{body}</BodyText>}
         </DetailsContainer>
@@ -64,7 +79,13 @@ export default function CrossSectionedCardItem({ scheduleItem }: CrossSectionedC
     );
   };
   const columns = scheduleItem.columns.map((column, index, array) => (
-    <ColumnContainer key={index} last={index === array.length - 1}>{column.map(createColumn)}</ColumnContainer>
+    <ColumnContainer
+      key={index}
+      last={index === array.length - 1}
+      empty={column.length === 0}
+    >
+      {column.map(createColumn)}
+    </ColumnContainer>
   ));
 
   return (
