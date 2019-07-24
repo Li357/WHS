@@ -13,17 +13,19 @@ cache:
   directories:
   - "./packages/server/node_modules/.cache/mongodb-memory-server/mongodb-binaries"
 
-install: yarn && yarn lerna bootstrap
+before_install:
+  - yarn global add lerna
+install: yarn && lerna bootstrap
 
 before_script:
   - yarn global add coveralls
-script: cd ./packages/app && yarn test && cd ./server && yarn test:unit
+script: yarn workspace whs-app test && yarn workspace whs-server test:unit
 
 jobs:
   include:
   - stage: Generate App Coverage
     node_js: node
-    script: cd ./packages/app && yarn test:coverage --coverageReporters=text-lcov | coveralls && rm -rf ./coverage
+    script: yarn workspace whs-app test:coverage --coverageReporters=text-lcov | coveralls && rm -rf ./coverage
   - stage: Generate Server Coverage
     node_js: node
-    script: cd ./packages/server && yarn test:unit --coverage --coverageReporters=text-lcov | coveralls && rm -rf ./coverage
+    script: yarn workspace whs-server test:unit --coverage --coverageReporters=text-lcov | coveralls && rm -rf ./coverage
