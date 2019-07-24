@@ -13,7 +13,7 @@ cache:
   directories:
   - "./packages/server/node_modules/.cache/mongodb-memory-server/mongodb-binaries"
 
-install: yarn && cd ./packages/app && yarn && cd ./server && yarn
+install: yarn && yarn lerna bootstrap
 
 before_script:
   - yarn global add coveralls
