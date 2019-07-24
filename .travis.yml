@@ -1,0 +1,23 @@
+language: node_js
+node_js:
+- '12'
+
+env:
+  matrix:
+  - NODE_ENV=production
+  - secure: BV3ZK8LxxXXPFBq5N9OegXI7YzydoMW6R5J+c2OuvZpRkvyNPy/wtSshqzKq8UwO7IGLLxPfW7vpDrhxCvmclBnHjQ7nwmhT93278FSpxlhKrdJo2cSAefnoDZx5vywSW0Rp4Sd84CP/kv/oiBML5dMma594wQKRbhKNjDPOrjz4Ra8DtL4LHH1JM+OVEwcDWmjktXw99rr1mjw4ejWloyM9IKgXKFPhAnu5Zf3wrNHve7IqvAXoySc10ANvDH1x/wTZZQR6CRl2W/yVAGoB+2JtUBuxKl4ec5xd8xkvsQY/Dvnlkga4TMJT7aZAwtXBkFLeUVjatI/e3kQoYPd9SFk7OHp8iSQ6pyfzPZl59qAqTvF1YvyI0C7um45JB2hqp/0en+Agv1FDAShfxY2CzSrC9QYx8QEEHQjia5bQoN3XQNp0CdxAk7QThcaMvb/bEWqyqiqX8CpW8CGfGiWyMDQBySnuFVjlO6wN1WxTTP+bSJj48eZdjO1GHUpdOHxVN1YzM9aB1SVifKu1khS8ZP1tTDVuWNzNRKioVgNEpHoNnUgoKeYgmURJrGVB7ZDB+4KwUtpYCDcRdfNn4tBJQVz6W0sRefI0IaNP2oU3USIjBKSL2aKwiwO5Hk/a7bjkhS0MbCK3BcjW1ta50e7uTn9Dj6haZNWXZnELjntDyW4=
+  - secure: FlE26Wet30MFRp3ASne7LxRQutqEePVy17rAYvtjqTUqUiJoQ2YHoMEvB+arIJpl0lIPqU5pOa7D25BD7kkAnoT9GQIbejfVal1eLAHZkE/SalP6JcWdJMvCYIAIi/QQofgTpCHgYUeY+i50np22hgb92aSVZcSVbLr6DJxXStzndt30gSZSavwUH6cIFASnm+pPuJ4UecY4TsE9t86Zs2WcKQMZ2Y0+aJQ0Sv3eey34VoHWcyVT5mlsyG+pXQz856HU11BfVIYvchKT6U92jaa+9l3ZB210YE5pxN2voBAZp7M3zkhT9YgMWKfJv+g8YMZ3aqvNeD5oRog1NJq4Ro99CpkdvM832B1BBE8kWfUUIItnyi45vlmfY7ufmL3E/s7RPhVL7JqT95MPYB5LO/RnCCHFaSAWP4tZ5A91izGKg8sGacAcmsxlK/iJHH110QSicbS1zzoyeCo5Yc7RsB1uVbc82A6aQTas37mbdZg50TIchF20ErJylAb4O+ji+sgfbLancdgnFty7Tg4GapTofOPV3aLlcItuojJFImoJXwpQeb7tm66aqZWhPKg8WYjOcBX1/I328q3YylMRlApUlNfRqWwtRWsAX8815o7CafHy83WxSTQVt81EQ9HnrA7iB7JmnRixPPGDB3cLLiqKxgMGqJ8L4VZVNchGJ1A=
+  - secure: VMqRc4/bHYorhwCokC7aEBHTp/6nvJnKB6y3Zv8IRzeM8WCFv5jMOuMXu90eTqqAg1tmXhmH5ChNIvE1I84oByde7c0OsxtPCu0M75gxPB06HaUWBMz39Q5FFeuaWNuiHwKkuemqxhOyqPTrv0/E7nGDKt1Z2kCXLfP0/ZXj3T1z64esw+q8ZSnMuwkm1IIZeyssZfPY24E5f/QJj/s0JCohgPIEQX03VASfhzgp/gX+h+EWPxZrgCy13TKlax2ohurKP8eTzGMcTL+s6IwpFGMvooLr5u3deQLyv2iaI1rXCXMcma03cNAUFB5jw0E67fA3Dn+EiHASrFOkTU6vQQUMho3hfYgYhT8R77GMRJMueEyMSaKmevyVkCL5mb2Dwes218hhWCG7otWrj7jt2saIUIjPE72RgtcaQgC5+2KEGG7dz8y8BnE+yQhfoKI7bKzUd1YX6Co1kXcfnUxwSwYYVlzEk1nJHQ3y1GKfGPksIavG+DmSWIfF6QmiwAUw0GRx1nR93kxzlY4e+JlIOS30JxrT1k8nJKrg1bRG+ymy0uRdBe3nQFrSTQ2Dn0NlS7gA/OYKErZUCpFgY98mmuxjqW3HwdcM1Kb+YU2f0p/a1sObpi21o04z8CF8Oz6X9GASfuLRQoH9lx+2ygEV2JF2gPgeQjgrx2+5IgEF6Io=
+
+cache:
+  directories:
+  - "./packages/server/node_modules/.cache/mongodb-memory-server/mongodb-binaries"
+
+jobs:
+  include:
+  - stage: Generate App Coverage
+    node_js: node
+    script: cd ./packages/app && yarn test:coverage --coverageReporters=text-lcov | ../../node_modules/.bin/coveralls && rm -rf ./coverage
+  - stage: Generate Server Coverage
+    node_js: node
+    script: cd ./packages/server && yarn test:unit --coverage --coverageReporters=text-lcov | ../../node_modules/.bin/coveralls && rm -rf ./coverage
