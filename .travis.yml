@@ -13,13 +13,17 @@ cache:
   directories:
   - "./packages/server/node_modules/.cache/mongodb-memory-server/mongodb-binaries"
 
+install: yarn && cd ./packages/app && yarn && cd ./server && yarn
+
+before_script:
+  - yarn global add coveralls
 script: cd ./packages/app && yarn test && cd ./server && yarn test:unit
 
 jobs:
   include:
   - stage: Generate App Coverage
     node_js: node
-    script: cd ./packages/app && yarn test:coverage --coverageReporters=text-lcov | ../../node_modules/.bin/coveralls && rm -rf ./coverage
+    script: cd ./packages/app && yarn test:coverage --coverageReporters=text-lcov | coveralls && rm -rf ./coverage
   - stage: Generate Server Coverage
     node_js: node
-    script: cd ./packages/server && yarn test:unit --coverage --coverageReporters=text-lcov | ../../node_modules/.bin/coveralls && rm -rf ./coverage
+    script: cd ./packages/server && yarn test:unit --coverage --coverageReporters=text-lcov | coveralls && rm -rf ./coverage
