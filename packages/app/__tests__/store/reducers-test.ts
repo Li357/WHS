@@ -6,8 +6,8 @@ import datesReducer from '../../src/reducers/dates';
 import { initialUserState, initialDayState, initialDatesState } from '../../src/constants/store';
 import { lightTheme, darkTheme } from '../../src/constants/theme';
 import * as creators from '../../src/actions/creators';
-import { MiscellaneousActions, OtherAction, AppState, Theme } from '../../src/types/store';
-import { DaySchedule, ModNumber, Schedule, TeacherSchedule } from '../../src/types/schedule';
+import { MiscellaneousActions, OtherAction, AppState, Theme, DayScheduleType } from '../../src/types/store';
+import { Schedule, TeacherSchedule } from '../../src/types/schedule';
 
 describe('reducers', () => {
   const dummyAction: OtherAction = { type: MiscellaneousActions.OTHER };
@@ -30,7 +30,7 @@ describe('reducers', () => {
     name: 'Bob Johnson',
     schedule: dummySchedule,
   };
-  const dummyDaySchedule: DaySchedule = [['8:00', '8:15', ModNumber.HOMEROOM]];
+  const dummyDayScheduleType: DayScheduleType = 'REGULAR';
 
   describe('user', () => {
     it('should return initial state', () => {
@@ -115,28 +115,15 @@ describe('reducers', () => {
       expect(dayReducer(initialDayState, creators.other())).toEqual(initialDayState);
     });
 
-    it('should handle UPDATE_DAY_STATE', () => {
-      const update = new Date();
-      const expectedState = {
-        ...initialDayState,
-        lastStateUpdate: update,
-      };
-
-      expect(dayReducer(
-        initialDayState,
-        creators.updateDayState(update),
-      )).toEqual(expectedState);
-    });
-
     it('should handle SET_DAY_SCHEDULE', () => {
       const expectedState = {
         ...initialDayState,
-        schedule: dummyDaySchedule,
+        schedule: dummyDayScheduleType,
       };
 
       expect(dayReducer(
         initialDayState,
-        creators.setDaySchedule(dummyDaySchedule),
+        creators.setDaySchedule(dummyDayScheduleType),
       )).toEqual(expectedState);
     });
   });
@@ -193,8 +180,7 @@ describe('reducers', () => {
           schedule: dummySchedule,
         },
         day: {
-          schedule: dummyDaySchedule,
-          lastStateUpdate: new Date(),
+          schedule: dummyDayScheduleType,
         },
         theme: darkTheme,
         dates: {

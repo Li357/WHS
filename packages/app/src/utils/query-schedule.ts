@@ -1,8 +1,7 @@
 import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds } from 'date-fns';
 
-import { DaySchedule, ModNumber, Schedule, ScheduleInfo } from '../types/schedule';
-import { DatesState } from '../types/store';
-import * as SCHEDULES from '../constants/schedules';
+import { DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule, ScheduleItem } from '../types/schedule';
+import { DatesState, DayScheduleType } from '../types/store';
 
 /**
  * Converts a `h:mm` time (from a day schedule timpair) to a date for comparison
@@ -23,6 +22,10 @@ export function convertTimeToDate(time: string, date: Date = new Date()) {
  * @see ModNumber
  */
 export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<ScheduleInfo, 'current' | 'next'> {
+  if (daySchedule.length === 0) {
+    return { current: ModNumber.UNKNOWN, next: ModNumber.UNKNOWN };
+  }
+
   const dayStart = convertTimeToDate(daySchedule[0][0], date);
   const dayEnd = convertTimeToDate(daySchedule.slice(-1)[0][1], date);
   if (isBefore(date, dayStart)) {
@@ -40,7 +43,9 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
       end: modEnd,
     });
     if (isThisMod) {
-      const nextMod = modNumber === ModNumber.FOURTEEN ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD;
+      const nextMod = modNumber === ModNumber.FOURTEEN || modNumber === ModNumber.FINALS_FOUR
+        ? ModNumber.AFTER_SCHOOL
+        : ModNumber.PASSING_PERIOD;
       return { current: modNumber, next: nextMod };
     }
 
@@ -60,15 +65,24 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
 }
 
 /**
+ * Returns occupied mods so does not include assembly
+ * @param scheduleItem item to get occupied mods from
+ */
+export function getOccupiedMods({ startMod, length }: ScheduleItem): ModNumber[] {
+  return Array(length).fill(undefined).map((_, i) => startMod + i);
+}
+
+/**
  * Gets the class from the schedule at the specific mod and day
  * @param modNumber mod to check for class at
- * @param schedule student/staff's schedule
- * @param day day of week to query
+ * @param schedule student/staff's schedule for a certain day
  */
-export function getClassAtMod(modNumber: ModNumber, schedule: Schedule, day: number) {
-  const classSchedule = schedule[day - 1]; // Monday is 1, so 1 - 1 === 0
-  const mod = getModFromModNumber(modNumber);
-  return classSchedule.find(({ startMod, endMod }) => startMod <= mod && endMod > mod) || null;
+export function getClassAtMod(modNumber: ModNumber, userDaySchedule: UserDaySchedule) {
+  // occurs when user has empty schedule
+  if (modNumber === ModNumber.UNKNOWN || userDaySchedule === undefined) {
+    return null;
+  }
+  return userDaySchedule.find((scheduleItem) => getOccupiedMods(scheduleItem).includes(modNumber)) || null;
 }
 
 /**
@@ -84,14 +98,13 @@ export function getScheduleInfoAtTime(date: Date, daySchedule: DaySchedule, sche
   // no need to check if current is passing period
   const isNextPassingPeriod = next === ModNumber.PASSING_PERIOD;
   // DO NOT use find and add one since mod numbers may not be continuous
-
   const nextClassMod = isNextPassingPeriod
     ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2]
     : next;
 
   const day = date.getDay();
-  const currentClass = getClassAtMod(current, schedule, day);
-  const nextClass = getClassAtMod(nextClassMod, schedule, day);
+  const currentClass = getClassAtMod(current, schedule[day - 1]);
+  const nextClass = getClassAtMod(nextClassMod, schedule[day - 1]);
   return { current, next, currentClass, nextClass };
 }
 
@@ -105,11 +118,12 @@ export function containsDate(queryDate: Date, dates: Date[]) {
 }
 
 /**
- * Gets day schedule on a certain date
+ * Gets day schedule TYPE on a certain date
  * @param queryDate certain date to query
  * @param dates map of special dates from server
+ * @param omitBreak whether or not to stop from returning SCHEDULES.BREAK (used in schedule display)
  */
-export function getScheduleOnDate(queryDate: Date, dates: DatesState) {
+export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBreak = false): DayScheduleType {
   const { semesterOneEnd, semesterTwoEnd } = dates;
   if (semesterOneEnd !== null && semesterTwoEnd !== null) {
     const semesterOneFinalsOne = subDays(semesterOneEnd, 1);
@@ -118,35 +132,42 @@ export function getScheduleOnDate(queryDate: Date, dates: DatesState) {
     const isSemesterOneFinals = isSameDay(semesterOneFinalsOne, queryDate) || isSameDay(semesterOneEnd, queryDate);
     const isSemesterTwoFinals = isSameDay(semesterTwoFinalsOne, queryDate) || isSameDay(semesterTwoEnd, queryDate);
     if (isSemesterOneFinals || isSemesterTwoFinals) {
-      return SCHEDULES.FINALS;
+      return 'FINALS';
     }
-  }
-
-  // TODO: Check for summer
-  if (containsDate(queryDate, dates.noSchool)) {
-    return SCHEDULES.BREAK;
-  }
-
-  if (containsDate(queryDate, dates.earlyDismissal)) {
-    return SCHEDULES.EARLY_DISMISSAL;
-  }
-
-  if (containsDate(queryDate, dates.assembly)) {
-    return SCHEDULES.ASSEMBLY;
   }
 
   const day = queryDate.getDay();
+  if (!omitBreak) {
+    // Always let summer/break take precedence over weekend
+    // TODO: Check for summer
+    if (containsDate(queryDate, dates.noSchool)) {
+      return 'BREAK';
+    }
+
+    if (day > 5 || day < 1) {
+      return 'WEEKEND';
+    }
+  }
+
+  if (containsDate(queryDate, dates.earlyDismissal)) {
+    return 'EARLY_DISMISSAL';
+  }
+
+  if (containsDate(queryDate, dates.assembly)) {
+    return 'ASSEMBLY';
+  }
+
   if (containsDate(queryDate, dates.lateStart)) {
     if (day === 3) {
-      return SCHEDULES.LATE_START_WEDNESDAY;
+      return 'LATE_START_WEDNESDAY';
     }
-    return SCHEDULES.LATE_START;
+    return 'LATE_START';
   }
 
   if (day === 3) {
-    return SCHEDULES.WEDNESDAY;
+    return 'WEDNESDAY';
   }
-  return SCHEDULES.REGULAR;
+  return 'REGULAR';
 }
 
 /**
@@ -156,7 +177,7 @@ export function getScheduleOnDate(queryDate: Date, dates: DatesState) {
  * @param daySchedule day schedule to compute against
  */
 export function getCountdown(date: Date, { current, next }: ScheduleInfo, daySchedule: DaySchedule) {
-  if (current === ModNumber.AFTER_SCHOOL) {
+  if (current === ModNumber.AFTER_SCHOOL || daySchedule.length === 0) {
     return 0;
   }
 
@@ -197,25 +218,26 @@ export function getModNameFromModNumber(modNumber: ModNumber) {
       return '3rd Final';
     case ModNumber.FINALS_FOUR:
       return '4th Final';
-    case ModNumber.FINALS_FIVE:
-      return '5th Final';
-    case ModNumber.FINALS_SIX:
-      return '6th Final';
-    case ModNumber.FINALS_SEVEN:
-      return '7th Final';
-    case ModNumber.FINALS_EIGHT:
-      return '8th Final';
     default:
-      return getModFromModNumber(modNumber).toString();
+      return modNumber.toString();
   }
 }
 
-/**
- * Transforms ModNumber (from HOMEROOM to all FINALS) into actual mod numbers in the user's schedule
- * @param modNumber mod number to transform
- */
-export function getModFromModNumber(modNumber: ModNumber) {
-  return modNumber - (modNumber > ModNumber.ASSEMBLY ? 1 : 0);
+export function getShortNameFromModNumber(modNumber: ModNumber) {
+  switch (modNumber) {
+    case ModNumber.HOMEROOM:
+      return 'HR';
+    case ModNumber.ASSEMBLY:
+      return 'AS';
+    case ModNumber.FINALS_ONE:
+    case ModNumber.FINALS_TWO:
+    case ModNumber.FINALS_THREE:
+    case ModNumber.FINALS_FOUR:
+      const index = (modNumber % ModNumber.FINALS_ONE) + 1;
+      return index.toString();
+    default:
+      return modNumber.toString();
+  }
 }
 
 /**

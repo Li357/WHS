@@ -1,14 +1,13 @@
 import { isSameMinute, addMinutes } from 'date-fns';
 
 import {
-  isHalfMod, containsDate, getScheduleOnDate, convertTimeToDate, getModAtTime, getClassAtMod,
-  getModNameFromModNumber, getModFromModNumber, getSchoolYearFromDate, getScheduleInfoAtTime, getCountdown,
+  isHalfMod, containsDate, getScheduleTypeOnDate, convertTimeToDate, getModAtTime, getClassAtMod,
+  getModNameFromModNumber, getSchoolYearFromDate, getScheduleInfoAtTime, getCountdown,
 } from '../../src/utils/query-schedule';
 import { DatesState } from '../../src/types/store';
 import * as SCHEDULES from '../../src/constants/schedules';
-import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem, ScheduleInfo } from '../../src/types/schedule';
-import { processSchedule } from '../../src/utils/process-schedule';
-import { excludeKeys } from '../../src/utils/object';
+import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem } from '../../src/types/schedule';
+import { processSchedule, convertToClassItem, getFinalsSchedule } from '../../src/utils/process-schedule';
 import rawSchedule from './test-schedules/raw.json';
 
 describe('schedule querying', () => {
@@ -84,11 +83,19 @@ describe('schedule querying', () => {
           ));
           const middle = new Date((start + end) / 2);
           const { current, next } = getModAtTime(middle, schedule);
-          const lastPair = modNumber === ModNumber.FOURTEEN;
+          const lastPair = modNumber === ModNumber.FOURTEEN || modNumber === ModNumber.FINALS_FOUR;
           return current === modNumber && next === (lastPair ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD);
         });
         expect(returnsMod).toBe(true);
       }
+    });
+
+    it('returns UNKNOWN for schedules without timepairs', () => {
+      [SCHEDULES.BREAK, SCHEDULES.SUMMER, SCHEDULES.WEEKEND].forEach((schedule) => {
+        expect(getModAtTime(new Date(), schedule)).toStrictEqual({
+          current: ModNumber.UNKNOWN, next: ModNumber.UNKNOWN,
+        });
+      });
     });
   });
 
@@ -168,34 +175,40 @@ describe('schedule querying', () => {
     const processed = processSchedule(schedule);
 
     it('selects correct schedule depending on day', () => {
-      expect((getClassAtMod(ModNumber.THREE, processed, 3) as ClassItem).title).toBe('Test');
-      expect((getClassAtMod(ModNumber.SIX, processed, 1) as ClassItem).title).toBe('Test 3');
+      expect((getClassAtMod(ModNumber.THREE, processed[2]) as ClassItem).title).toBe('Test');
+      expect((getClassAtMod(ModNumber.SIX, processed[0]) as ClassItem).title).toBe('Test 3');
     });
 
     it('returns correct for in-between mods', () => {
-      expect((getClassAtMod(ModNumber.FIVE, processed, 3) as ClassItem).title).toBe('Test');
-      expect((getClassAtMod(ModNumber.SEVEN, processed, 3) as ClassItem).title).toBe('Test 2');
-      expect((getClassAtMod(ModNumber.SEVEN, processed, 1) as ClassItem).title).toBe('Test 3');
+      expect((getClassAtMod(ModNumber.FIVE, processed[2]) as ClassItem).title).toBe('Test');
+      expect((getClassAtMod(ModNumber.SEVEN, processed[2]) as ClassItem).title).toBe('Test 2');
+      expect((getClassAtMod(ModNumber.SEVEN, processed[0]) as ClassItem).title).toBe('Test 3');
     });
 
     it('returns correct for open mods', () => {
-      expect((getClassAtMod(ModNumber.TWO, processed, 3) as ClassItem).title).toBe('Open Mod');
-      expect((getClassAtMod(ModNumber.NINE, processed, 3) as ClassItem).title).toBe('Open Mod');
-      expect((getClassAtMod(ModNumber.FIVE, processed, 1) as ClassItem).title).toBe('Open Mod');
+      expect((getClassAtMod(ModNumber.TWO, processed[3]) as ClassItem).title).toBe('Open Mod');
+      expect((getClassAtMod(ModNumber.NINE, processed[3]) as ClassItem).title).toBe('Open Mod');
+      expect((getClassAtMod(ModNumber.FIVE, processed[1]) as ClassItem).title).toBe('Open Mod');
     });
 
     it('returns correct for cross-sectioned mod', () => {
-      const [, , , third, fourth] = schedule.map((obj) => excludeKeys(obj, ['phaseNumber', 'sectionNumber', 'data']));
-      expect((getClassAtMod(ModNumber.SEVEN, processed, 2) as CrossSectionedItem).columns).toStrictEqual(
+      const [, , , third, fourth] = schedule.map(convertToClassItem);
+      expect((getClassAtMod(ModNumber.SEVEN, processed[1]) as CrossSectionedItem).columns).toStrictEqual(
         [[third], [fourth]],
       );
     });
 
     it.todo('returns correct for finals');
 
+    it.todo('returns correct for assembly');
+
     it('returns null instead of undefined if not found', () => {
-      expect(getClassAtMod(ModNumber.BEFORE_SCHOOL, processed, 3) as ClassItem).toBe(null);
-      expect(getClassAtMod(ModNumber.AFTER_SCHOOL, processed, 3) as ClassItem).toBe(null);
+      expect(getClassAtMod(ModNumber.BEFORE_SCHOOL, processed[2])).toBe(null);
+      expect(getClassAtMod(ModNumber.AFTER_SCHOOL, processed[2])).toBe(null);
+    });
+
+    it('returns null for empty schedule', () => {
+      expect(getClassAtMod(ModNumber.ONE, [][2])).toBe(null);
     });
   });
 
@@ -206,7 +219,7 @@ describe('schedule querying', () => {
 
     it('returns correct for current: BEFORE_SCHOOL, next: CLASS', () => {
       expect(getInfo(new Date(2019, 4, 6, 7, 55))).toStrictEqual({
-        current: ModNumber.BEFORE_SCHOOL, next: ModNumber.HOMEROOM, currentClass: null, nextClass: homeroom
+        current: ModNumber.BEFORE_SCHOOL, next: ModNumber.HOMEROOM, currentClass: null, nextClass: homeroom,
       });
     });
 
@@ -226,6 +239,20 @@ describe('schedule querying', () => {
       expect(getInfo(new Date(2019, 4, 6, 15, 5))).toStrictEqual({
         current: ModNumber.FOURTEEN, next: ModNumber.AFTER_SCHOOL,
         currentClass: schedule[0].slice(-1)[0], nextClass: null,
+      });
+    });
+
+    it('returns correct for current: FINALS_FOUR, next: AFTER_SCHOOL', () => {
+      const finalsUserSchedule = [getFinalsSchedule([], 1)];
+      const info = getScheduleInfoAtTime(
+        new Date(2019, 4, 6, 12, 20),
+        SCHEDULES.FINALS,
+        finalsUserSchedule,
+      );
+
+      expect(info).toStrictEqual({
+        current: ModNumber.FINALS_FOUR, next: ModNumber.AFTER_SCHOOL,
+        currentClass: finalsUserSchedule[0].slice(-1)[0], nextClass: null,
       });
     });
 
@@ -256,7 +283,7 @@ describe('schedule querying', () => {
     });
   });
 
-  describe('getScheduleOnDate', () => {
+  describe('getScheduleTypeOnDate', () => {
     const mockDates: DatesState = {
       assembly: [new Date(2020, 3, 6)],
       noSchool: [new Date(2019, 11, 23), new Date(2019, 11, 24)],
@@ -267,7 +294,7 @@ describe('schedule querying', () => {
       semesterTwoStart: new Date(2020, 0, 5),
       semesterTwoEnd: new Date(2020, 4, 22),
     };
-    const getSchedule = (date: Date) => getScheduleOnDate(date, mockDates);
+    const getSchedule = (date: Date) => SCHEDULES[getScheduleTypeOnDate(date, mockDates)];
 
     it.todo('returns BREAK schedule for summer');
 
@@ -291,6 +318,10 @@ describe('schedule querying', () => {
 
       const two = getSchedule(new Date(2019, 11, 24));
       expect(two).toBe(SCHEDULES.BREAK);
+    });
+
+    it('returns WEEKEND for weekends', () => {
+      expect(getSchedule(new Date(2019, 8, 28))).toBe(SCHEDULES.WEEKEND);
     });
 
     it('returns EARLY_DISMISSAL schedule for early dismissals', () => {
@@ -377,7 +408,7 @@ describe('schedule querying', () => {
     });
 
     it('returns false for finals', () => {
-      for (let finalsMod = ModNumber.FINALS_ONE; finalsMod <= ModNumber.FINALS_EIGHT; finalsMod++) {
+      for (let finalsMod = ModNumber.FINALS_ONE; finalsMod <= ModNumber.FINALS_FOUR; finalsMod++) {
         expect(isHalfMod(finalsMod)).toBe(false);
       }
     });
@@ -394,7 +425,7 @@ describe('schedule querying', () => {
 
     const finalsOrdinals = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
     it('returns ordinal for FINALS', () => {
-      for (let modNumber = ModNumber.FINALS_ONE, i = 0; modNumber <= ModNumber.FINALS_EIGHT; modNumber++, i++) {
+      for (let modNumber = ModNumber.FINALS_ONE, i = 0; modNumber <= ModNumber.FINALS_FOUR; modNumber++, i++) {
         expect(getModNameFromModNumber(modNumber)).toBe(`${finalsOrdinals[i]} Final`);
       }
     });
@@ -406,22 +437,6 @@ describe('schedule querying', () => {
     it('returns mod - 1 for greater than ASSEMBLY', () => {
       expect(getModNameFromModNumber(ModNumber.FOUR)).toBe('4');
     });
-  });
-
-  describe('getModFromModNumber', () => {
-    it('returns corrected mod for those before ASSEMBLY', () => {
-      for (let mod = ModNumber.HOMEROOM; mod <= ModNumber.ASSEMBLY; mod++) {
-        expect(getModFromModNumber(mod)).toBe(mod);
-      }
-    });
-
-    it('returns corrected mod for those after ASSEMBLY', () => {
-      for (let mod = ModNumber.FOUR; mod <= ModNumber.FOURTEEN; mod++) {
-        expect(getModFromModNumber(mod)).toBe(mod - 1);
-      }
-    });
-
-    it.todo('handles finals');
   });
 
   describe('getSchoolYearFromDate', () => {

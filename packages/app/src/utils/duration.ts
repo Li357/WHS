@@ -16,3 +16,13 @@ export function formatDuration(durationInSeconds: number) {
 
   return `${hasHours ? `${hours}:` : ''}${displayMinutes}:${displaySeconds}`;
 }
+
+/**
+ * Formats a 24-hour time in hh:mm to 12-hour time
+ * @param militaryTime time to format
+ */
+export function formatTime(militaryTime: string) {
+  const [militaryHours, militaryMinutes] = militaryTime.split(':');
+  const remainder = Number(militaryHours) % 12;
+  return `${remainder === 0 ? 12 : remainder}:${militaryMinutes}`;
+}

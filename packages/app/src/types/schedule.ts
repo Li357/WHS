@@ -16,9 +16,7 @@ export interface RawClassItem {
   data: RawClassItemData | null;
 }
 
-export type RawClassItemKeys = 'sectionNumber' | 'phaseNumber' | 'data';
-export type ClassItem = Omit<RawClassItem, RawClassItemKeys>;
-
+export type ClassItem = Omit<RawClassItem, 'roomNumber' | 'sectionNumber' | 'phaseNumber' | 'data'>;
 export type CrossSectionedColumn = ClassItem[];
 export interface CrossSectionedItem {
   sourceId: number;
@@ -44,7 +42,6 @@ export enum ModNumber {
   ONE,
   TWO,
   THREE,
-  ASSEMBLY,
   FOUR,
   FIVE,
   SIX,
@@ -56,18 +53,18 @@ export enum ModNumber {
   TWELVE,
   THIRTEEN,
   FOURTEEN,
+
+  ASSEMBLY,
   FINALS_ONE,
   FINALS_TWO,
   FINALS_THREE,
   FINALS_FOUR,
-  FINALS_FIVE,
-  FINALS_SIX,
-  FINALS_SEVEN,
-  FINALS_EIGHT,
 
   PASSING_PERIOD,
   BEFORE_SCHOOL,
   AFTER_SCHOOL,
+
+  UNKNOWN,
 }
 export type DaySchedule = Array<[string, string, ModNumber]>;
 

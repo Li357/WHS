@@ -1,8 +1,8 @@
 import * as creators from '../../src/actions/creators';
 import {
-  UserActions, DayActions, MiscellaneousActions, ThemeActions, Theme, DatesActions,
+  UserActions, DayActions, MiscellaneousActions, ThemeActions, Theme, DatesActions, DayScheduleType,
 } from '../../src/types/store';
-import { Schedule, DaySchedule, TeacherSchedule } from '../../src/types/schedule';
+import { Schedule, TeacherSchedule } from '../../src/types/schedule';
 import { initialDatesState } from '../../src/constants/store';
 
 describe('action creators', () => {
@@ -65,17 +65,8 @@ describe('action creators', () => {
     expect(creators.addTeacherSchedule(payload)).toEqual(expectedAction);
   });
 
-  it('should create action to set day schedule last update', () => {
-    const payload = new Date();
-    const expectedAction = {
-      type: DayActions.UPDATE_DAY_STATE,
-      payload,
-    };
-    expect(creators.updateDayState(payload)).toEqual(expectedAction);
-  });
-
   it('should create action to set day schedule', () => {
-    const payload: DaySchedule = [];
+    const payload: DayScheduleType = 'REGULAR';
     const expectedAction = {
       type: DayActions.SET_DAY_SCHEDULE,
       payload,

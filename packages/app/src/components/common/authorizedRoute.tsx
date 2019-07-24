@@ -4,13 +4,23 @@ import { NavigationParams, NavigationScreenProps, NavigationDrawerScreenOptions 
 import Screen from './Screen';
 import Navbar from './Navbar';
 
-export default function authorizedRoute(name: string, Component: ComponentType) {
-  return function AuthorizedRoute(props: NavigationScreenProps<NavigationParams, NavigationDrawerScreenOptions>) {
+type NavigationProps = NavigationScreenProps<NavigationParams, NavigationDrawerScreenOptions>;
+type NavigationProp = NavigationProps['navigation'];
+
+export default function authorizedRoute(
+  name: string | ((props: NavigationProp) => string),
+  Component: ComponentType<{ navigation: NavigationProp}>,
+  gutter = true,
+) {
+  return function AuthorizedRoute(props: NavigationProps) {
+    const title = typeof name === 'function' ? name(props.navigation) : name;
     return (
-      <Screen>
-        <Navbar title={name} {...props} />
-        <Component />
-      </Screen>
+      <>
+        <Navbar title={title} {...props} />
+        <Screen gutter={gutter}>
+          <Component navigation={props.navigation} />
+        </Screen>
+      </>
     );
   };
 }

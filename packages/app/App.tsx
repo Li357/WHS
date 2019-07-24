@@ -6,7 +6,6 @@ import {
   createSwitchNavigator, createAppContainer, createDrawerNavigator,
 } from 'react-navigation';
 import { ThemeProvider } from 'styled-components';
-import { isSameDay } from 'date-fns';
 
 import Login from './src/screens/Login';
 import Dashboard from './src/screens/Dashboard';
@@ -16,8 +15,11 @@ import Drawer from './src/components/drawer/Drawer';
 import initializeStore from './src/utils/store';
 import { fetchDates, fetchSchoolPicture } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
-import { setUserInfo, updateDayState, setDaySchedule } from './src/actions/creators';
-import { getScheduleOnDate } from './src/utils/query-schedule';
+import { setUserInfo, setDaySchedule, setUserSchedule } from './src/actions/creators';
+import { getScheduleTypeOnDate } from './src/utils/query-schedule';
+import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
+import { insert } from './src/utils/utils';
+import { ScheduleItem } from './src/types/schedule';
 
 const { store, persistor } = initializeStore();
 
@@ -37,15 +39,29 @@ export default class App extends Component<{}, AppComponentState> {
   }
 
   private updateDayScheduleIfNeeded() {
-    const { day: { lastStateUpdate }, dates } = store.getState();
+    const { dates, day: { schedule: dayScheduleType }, user: { schedule } } = store.getState();
     const now = new Date();
-    const day = now.getDay();
-    const shouldUpdate = lastStateUpdate === null || (!isSameDay(lastStateUpdate, now) && day > 0 && day < 6);
 
-    if (shouldUpdate) {
-      store.dispatch(updateDayState(now));
-      store.dispatch(setDaySchedule(getScheduleOnDate(now, dates)));
+    const newDayScheduleType = getScheduleTypeOnDate(now, dates);
+    if (newDayScheduleType === dayScheduleType) {
+      return;
     }
+    store.dispatch(setDaySchedule(newDayScheduleType));
+
+    const day = now.getDay();
+    let revisedUserDaySchedule;
+    switch (newDayScheduleType) {
+      case 'ASSEMBLY':
+        revisedUserDaySchedule = interpolateAssembly(schedule[day - 1], day);
+        break;
+      case 'FINALS':
+        revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1], day);
+        break;
+      default:
+        return;
+    }
+    const revisedUserSchedule = insert<ScheduleItem[]>(schedule, [revisedUserDaySchedule], day - 1);
+    return store.dispatch(setUserSchedule(revisedUserSchedule));
   }
 
   private silentlyUpdateData = async () => {

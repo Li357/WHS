@@ -10,8 +10,8 @@ import Text from '../components/common/Text';
 import { fetchUserInfo, fetchDates } from '../actions/async';
 import { AppState } from '../types/store';
 import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE } from '../constants/style';
-import { getScheduleOnDate } from '../utils/query-schedule';
-import { setDaySchedule, updateDayState } from '../actions/creators';
+import { getScheduleTypeOnDate } from '../utils/query-schedule';
+import { setDaySchedule } from '../actions/creators';
 import WHS from '../../assets/images/WHS.png';
 
 const LoginScreen = styled(Screen)`
@@ -37,15 +37,17 @@ export default memo(function Login(props: NavigationScreenProps) {
 
   const handleLogin = async () => {
     setLoading(true);
+    // If dates fail to be fetched, this is not a problem as they are refetched on app start
+    // Fetch dates first b/c the latter sets credentials and makes user "logged in"
     try {
-      // Fetch dates first b/c the latter sets credentials and makes user "logged in"
       await dispatch(fetchDates());
-      await dispatch(fetchUserInfo(username, password));
+    // tslint:disable-next-line: no-empty
+    } catch (error) {}
 
+    try {
       const now = new Date();
-      dispatch(updateDayState(now));
-      dispatch(setDaySchedule(getScheduleOnDate(now, dates)));
-
+      await dispatch(fetchUserInfo(username, password));
+      dispatch(setDaySchedule(getScheduleTypeOnDate(now, dates)));
       props.navigation.navigate('Dashboard');
     } catch (error) {
       // TODO: Handle specific errors

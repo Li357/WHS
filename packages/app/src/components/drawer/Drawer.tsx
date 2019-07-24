@@ -7,7 +7,6 @@ import { useDispatch } from 'react-redux';
 import { DRAWER_MARGIN_HORIZONTAL } from '../../constants/style';
 import Profile from './Profile';
 import Button from './Button';
-import { AppState, AppAction } from '../../types/store';
 import { logOut } from '../../actions/creators';
 import DrawerItems from './DrawerItems';
 import { TeacherSchedule, Schedule } from '../../types/schedule';
@@ -18,7 +17,7 @@ const DrawerContainer = styled.View`
 `;
 
 export default function Drawer(props: DrawerItemsProps) {
-  const dispatch = useDispatch<AppState, AppAction>();
+  const dispatch = useDispatch();
   const logout = () => {
     dispatch(logOut());
     props.navigation.navigate('Login');

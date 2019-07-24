@@ -62,14 +62,9 @@ export function getWithFallback<T>(obj: any, path: string[], fallback: T) {
 }
 
 /**
- * Shallow exclude of listed keys from object
- * @param obj object whose keys will be excluded
- * @param keys keys to be excluded
+ * Returns sum of items in array
+ * @param arr array to be summed
  */
-export function excludeKeys<T, K extends keyof T>(obj: T, keys: K[]): Exclude<T, K> {
-  const shallowCopy = { ...obj };
-  for (const key of keys) {
-    delete shallowCopy[key];
-  }
-  return shallowCopy as Exclude<T, K>;
+export function sum(arr: number[]) {
+  return arr.reduce((a, b) => a + b, 0);
 }

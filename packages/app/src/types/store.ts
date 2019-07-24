@@ -1,6 +1,7 @@
 import { Action } from 'redux';
 
-import { Schedule, DaySchedule, TeacherSchedule } from './schedule';
+import { Schedule, TeacherSchedule } from './schedule';
+import * as SCHEDULES from '../constants/schedules';
 
 export type UserOverviewKeys = 'homeroom' | 'counselor' | 'dean' | 'id';
 export type UserOverviewMap = { [K in UserOverviewKeys]: string };
@@ -52,26 +53,17 @@ export interface AddTeacherScheduleAction extends Action<UserActions.ADD_TEACHER
   payload: TeacherSchedule;
 }
 
+export type DayScheduleType = keyof typeof SCHEDULES;
 export interface DayState {
-  schedule: DaySchedule;
-  lastStateUpdate: Date | null;
-}
-export interface SerializedDayState {
-  schedule: DaySchedule;
-  lastStateUpdate: string | null;
+  schedule: DayScheduleType;
 }
 
 export enum DayActions {
-  UPDATE_DAY_STATE = 'UPDATE_DAY_STATE',
   SET_DAY_SCHEDULE = 'SET_DAY_SCHEDULE',
 }
 
-export interface UpdateDayStateAction extends Action<DayActions.UPDATE_DAY_STATE> {
-  payload: Date | null;
-}
-
 export interface SetDayScheduleAction extends Action<DayActions.SET_DAY_SCHEDULE> {
-  payload: DaySchedule;
+  payload: DayScheduleType;
 }
 
 export interface ThemeState {
@@ -137,7 +129,7 @@ export interface OtherAction extends Action<MiscellaneousActions.OTHER> {} /* ha
 export type UserAction =
   | SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction
   | AddTeacherScheduleAction | OtherAction;
-export type DayAction = UpdateDayStateAction | SetDayScheduleAction | OtherAction;
+export type DayAction = SetDayScheduleAction | OtherAction;
 export type ThemeAction = SetThemeAction | OtherAction;
 export type DatesAction = SetDatesAction | OtherAction;
 export type MiscellaneousAction = LogOutAction | OtherAction;

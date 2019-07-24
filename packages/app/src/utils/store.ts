@@ -8,7 +8,7 @@ import { createLogger } from 'redux-logger';
 import {
   AppState, AppAction,
   UserState,
-  DatesState, DayState, SerializedDatesState, SerializedDayState,
+  DatesState, SerializedDatesState,
 } from '../types/store';
 import rootReducer from '../reducers/root';
 
@@ -22,20 +22,9 @@ const profilePhotoTransform = createTransform<UserState, UserState>(
   { whitelist: ['user'] },
 );
 
-// Converts dates from Dates to ISO strings and vice-versa
-const dateTransform = createTransform<
-  DatesState | DayState,
-  SerializedDatesState | SerializedDayState
->(
-  (inboundState, key) => {
-    if (key === 'day') {
-      const { schedule, lastStateUpdate } = inboundState as DayState;
-      return {
-        schedule,
-        lastStateUpdate: lastStateUpdate !== null ? lastStateUpdate.toUTCString() : null,
-      };
-    }
-
+// Converts dates to ISO strings and vice-versa
+const dateTransform = createTransform<DatesState, SerializedDatesState>(
+  (inboundState) => {
     const dates = inboundState as DatesState;
     const mappedDates = (Object.keys(dates) as Array<keyof DatesState>).reduce((
       map: { [K in keyof DatesState]?: string | string[] | null },
@@ -53,15 +42,7 @@ const dateTransform = createTransform<
     }, {}) as SerializedDatesState;
     return mappedDates;
   },
-  (outboundState, key) => {
-    if (key === 'day') {
-      const { schedule, lastStateUpdate } = outboundState as SerializedDayState;
-      return {
-        schedule,
-        lastStateUpdate: lastStateUpdate !== null ? new Date(lastStateUpdate) : null,
-      };
-    }
-
+  (outboundState) => {
     const dates = outboundState as SerializedDatesState;
     const mappedDates = (Object.keys(dates) as Array<keyof SerializedDatesState>).reduce((
       map: { [K in keyof DatesState]?: Date | Date[] | null },
@@ -79,7 +60,7 @@ const dateTransform = createTransform<
     }, {}) as DatesState;
     return mappedDates;
   },
-  { whitelist: ['day', 'dates'] },
+  { whitelist: ['dates'] },
 );
 
 export default function initializeStore() {

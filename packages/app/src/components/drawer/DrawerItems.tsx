@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { DrawerItemsProps } from 'react-navigation';
 import { useSelector } from 'react-redux';
-import { createSelector } from 'reselect';
 
 import Button from './Button';
 import ButtonGroup from './ButtonGroup';

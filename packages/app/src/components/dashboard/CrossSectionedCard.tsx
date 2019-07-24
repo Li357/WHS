@@ -9,7 +9,7 @@ import { DashboardInfo } from '../../types/dashboard-info';
 export default function CrossSectionedCard({ title, name }: DashboardInfo) {
   return (
     <Card warning={true}>
-      <Text numberOfLines={2}>{title}</Text>
+      <Text>{title}</Text>
       <BadgeButton>CHECK SCHEDULE</BadgeButton>
       {name !== undefined && <Subtext>{name}</Subtext>}
     </Card>

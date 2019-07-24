@@ -1,7 +1,5 @@
 import { DateListType, YearSettingType } from 'whs-server';
 
-import { RawClassItemKeys } from '../types/schedule';
-
 export const SCHOOL_WEBSITE = 'https://westside-web.azurewebsites.net';
 export const LOGIN_URL = `${SCHOOL_WEBSITE}/account/login`;
 const API_VERSION = 'v3';
@@ -27,6 +25,5 @@ export const SCHOOL_PICTURE_BLANK_SYMBOL = '@@blank-user';
 
 export const SCHEDULE_SELECTOR = 'body > script:not([src])';
 export const SCHEDULE_REGEX = /'(.+)';$/;
-export const SCHEDULE_RESTRICTED_KEYS: RawClassItemKeys[] = ['sectionNumber', 'phaseNumber', 'data'];
 
 export const LOGIN_ERROR_SELECTOR = '.alert.alert-danger';

@@ -22,7 +22,6 @@ describe('schedule processing', () => {
         sourceType: 'course',
         title: 'Test',
         body: '',
-        roomNumber: '',
         day: 1,
         startMod: 1,
         length: 1,
@@ -45,7 +44,6 @@ describe('schedule processing', () => {
         sourceType: 'open',
         title: 'Open Mod',
         body: '',
-        roomNumber: '',
         day: 1,
         startMod: 1,
         length: 1,
@@ -229,20 +227,41 @@ describe('schedule processing', () => {
         expect(interpolateOpenItems([], 1)).toEqual([createOpenItem(0, 15, 1)]);
       });
     });
+
+    describe('interpolateAssembly', () => {
+      it.todo('ignores schedule if empty');
+
+      it.todo('injects correct schedule item');
+
+      it.todo('handles cross-section that has a class that cuts thru assembly');
+
+      it.todo('handles cross-section without extra cuts');
+
+      it.todo('handles long non-cross-sectioned mod during assembly');
+
+      it.todo('handles regular injection');
+    });
+
+    describe('getFinalsSchedule', () => {
+      it.todo('ignores schedule if empty');
+
+      it.todo('returns final schedule with homeroom');
+    });
   });
 
   describe('convertToClassItem', () => {
-    const [rawItem]: RawSchedule = rawSchedules.groupByDay;
-    expect(convertToClassItem(rawItem)).toEqual({
-      sourceId: 1,
-      sourceType: 'course',
-      title: 'Test',
-      body: '',
-      roomNumber: '',
-      day: 5,
-      startMod: 0,
-      length: 15,
-      endMod: 15,
+    it('should convert a raw item to a class item', () => {
+      const [rawItem]: RawSchedule = rawSchedules.groupByDay;
+      expect(convertToClassItem(rawItem)).toEqual({
+        sourceId: 50015000,
+        sourceType: 'course',
+        title: 'Test',
+        body: '',
+        day: 5,
+        startMod: 0,
+        length: 15,
+        endMod: 15,
+      });
     });
   });
 

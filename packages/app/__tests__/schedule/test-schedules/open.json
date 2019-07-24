@@ -1,22 +1,20 @@
 {
   "full": [
     {
-      "sourceId": 1,
+      "sourceId": 10007000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
-      "roomNumber": "",
       "day": 1,
       "startMod": 0,
       "length": 7,
       "endMod": 7
     },
     {
-      "sourceId": 2,
+      "sourceId": 10715000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
-      "roomNumber": "",
       "day": 1,
       "startMod": 7,
       "length": 8,
@@ -25,22 +23,20 @@
   ],
   "between": [
     {
-      "sourceId": 1,
+      "sourceId": 10006000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
-      "roomNumber": "",
       "day": 1,
       "startMod": 0,
       "length": 6,
       "endMod": 6
     },
     {
-      "sourceId": 2,
+      "sourceId": 10615000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
-      "roomNumber": "",
       "day": 1,
       "startMod": 9,
       "length": 6,
@@ -49,11 +45,10 @@
   ],
   "beginning": [
     {
-      "sourceId": 1,
+      "sourceId": 10815000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
-      "roomNumber": "",
       "day": 1,
       "startMod": 8,
       "length": 7,
@@ -62,11 +57,10 @@
   ],
   "end": [
     {
-      "sourceId": 2,
+      "sourceId": 10007000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
-      "roomNumber": "",
       "day": 1,
       "startMod": 0,
       "length": 7,
@@ -75,22 +69,20 @@
   ],
   "both": [
     {
-      "sourceId": 1,
+      "sourceId": 10607000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
-      "roomNumber": "",
       "day": 1,
       "startMod": 6,
       "length": 1,
       "endMod": 7
     },
     {
-      "sourceId": 2,
+      "sourceId": 10708000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
-      "roomNumber": "",
       "day": 1,
       "startMod": 7,
       "length": 1,
@@ -99,7 +91,7 @@
   ],
   "withCrossSections": [
     {
-      "sourceId": 1,
+      "sourceId": 10305000,
       "columns": [],
       "day": 1,
       "startMod": 3,

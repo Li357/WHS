@@ -56,3 +56,7 @@ export const CARD_PADDING = '20px';
 export const CARD_PADDING_TOP = '40px';
 export const CARD_BORDER_RADIUS = BORDER_RADIUS;
 export const CARD_BORDER_WIDTH = BORDER_WIDTH;
+
+export const SCHEDULE_CARD_BODYTEXT_SIZE = 15;
+export const SCHEDULE_CARD_ITEM_HEIGHT = hp('15%');
+export const SCHEDULE_CARD_ITEM_PADDING = '5px';
