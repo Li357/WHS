@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "yarn jest '__tests__\\/(?!.*utils).*$'",
+    "test": "npx jest '__tests__\\/(?!.*utils).*$'",
     "test:watch": "yarn test --watch",
     "test:coverage": "yarn test --coverage",
-    "lint": "yarn tslint -p tsconfig.json src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}"
+    "lint": "npx tslint -p tsconfig.json src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.4.2",

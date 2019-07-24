@@ -11,9 +11,13 @@ describe('dates API', () => {
   let api: SuperTest<Test>;
   const str = JSON.stringify;
 
-  const mockDates = [
-    { _id: new ObjectId().toHexString(), type: 'assembly', year: '2018', date: '2018-02-01T22:19:03.002Z' },
-    { _id: new ObjectId().toHexString(), type: 'no-school', year: '2019', date: '2019-11-04T13:22:43.005Z' },
+  const mockDates: DateSchema[] = [
+    {
+      _id: new ObjectId().toHexString(), type: 'assembly', year: '2018', date: '2018-02-01T22:19:03.002Z', comment: '',
+    },
+    {
+      _id: new ObjectId().toHexString(), type: 'no-school', year: '2019', date: '2019-11-04T13:22:43.005Z', comment: '',
+    },
   ];
 
   const passwords = ['12345', '67890'];
