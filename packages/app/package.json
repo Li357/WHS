@@ -1,12 +1,12 @@
 {
-  "name": "whs-app",
+  "name": "@whs/app",
   "version": "3.0.0",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "npx jest '__tests__\\/(?!.*utils).*$'",
     "test:watch": "yarn test --watch",
-    "test:coverage": "yarn test --coverage",
+    "test:coverage": "yarn test --coverage --coverageReporters=text-lcov",
     "lint": "npx tslint -p tsconfig.json src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}"
   },
   "dependencies": {
@@ -48,6 +48,7 @@
     "@types/redux-logger": "^3.0.7",
     "@types/redux-mock-store": "^1.0.1",
     "@types/styled-components": "^4.1.16",
+    "@whs/server": "^3.0.0",
     "babel-jest": "^24.8.0",
     "fetch-mock": "^7.3.3",
     "jest": "^24.8.0",
@@ -58,8 +59,7 @@
     "tslint-etc": "^1.5.6",
     "tslint-react": "^4.0.0",
     "tslint-react-hooks": "^2.2.1",
-    "typescript": "^3.5.3",
-    "whs-server": "^3.0.0"
+    "typescript": "^3.5.3"
   },
   "jest": {
     "preset": "react-native"

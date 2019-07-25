@@ -1,5 +1,5 @@
 {
-  "name": "whs-server",
+  "name": "@whs/server",
   "version": "3.0.0",
   "private": true,
   "types": "index.d.ts",
@@ -13,6 +13,8 @@
     "lint:backend": "npx tslint -p tsconfig.backend.json",
     "lint": "yarn lint:frontend && yarn lint:backend",
     "test:unit": "vue-cli-service test:unit",
+    "test": "yarn test:unit",
+    "test:coverage": "yarn test --coverage --coverageReporters=text-lcov",
     "clean": "rm -rf dist"
   },
   "dependencies": {
