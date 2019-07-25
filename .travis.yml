@@ -15,17 +15,15 @@ cache:
 
 before_install:
   - yarn global add lerna
-install: yarn && lerna bootstrap
-
-before_script:
   - yarn global add coveralls
-script: lerna run test
+install: yarn && lerna bootstrap
 
 jobs:
   include:
-  - stage: Generate App Coverage
-    node_js: node
-    script: yarn workspace @whs/app test:coverage | coveralls && rm -rf ./coverage
-  - stage: Generate Server Coverage
-    node_js: node
-    script: yarn workspace @whs/server test:coverage | coveralls && rm -rf ./coverage
+    - stage: Test
+      name: App Unit Tests
+      node_js: node
+      script: yarn workspace @whs/app test:coverage | coveralls && rm -rf ./coverage
+    - script: yarn workspace @whs/server test:coverage | coveralls && rm -rf ./coverage
+      name: Server Unit Tests
+      node_js: node
