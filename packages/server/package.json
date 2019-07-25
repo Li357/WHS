@@ -5,14 +5,14 @@
   "types": "index.d.ts",
   "scripts": {
     "start": "node dist/backend/server.js",
-    "serve": "vue-cli-service serve",
-    "build:frontend": "vue-cli-service build --dest dist/frontend",
+    "serve": "./node_modules/.bin/vue-cli-service serve",
+    "build:frontend": "./node_modules/.bin/vue-cli-service build --dest dist/frontend",
     "build:backend": "npx tsc -p tsconfig.backend.json && rm -rf dist/shared && rm -rf dist/backend/types",
     "build": "yarn build:frontend && yarn build:backend",
-    "lint:frontend": "vue-cli-service lint",
+    "lint:frontend": "./node_modules/.bin/vue-cli-service lint",
     "lint:backend": "npx tslint -p tsconfig.backend.json",
     "lint": "yarn lint:frontend && yarn lint:backend",
-    "test:unit": "vue-cli-service test:unit",
+    "test:unit": "./node_modules/.bin/vue-cli-service test:unit",
     "test": "yarn test:unit",
     "test:coverage": "yarn test --coverage --coverageReporters=text-lcov",
     "clean": "rm -rf dist"
