@@ -14,6 +14,8 @@ cache:
   - './packages/server/node_modules/.cache/mongodb-memory-server/mongodb-binaries'
 
 before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$PATH"
   - yarn global add lerna
   - yarn global add coveralls
 install: yarn && lerna bootstrap
@@ -23,7 +25,7 @@ jobs:
     - stage: Test
       name: App Unit Tests
       node_js: node
-      script: yarn workspace @whs/app test:coverage | coveralls && rm -rf ./coverage
-    - script: yarn workspace @whs/server test:coverage | coveralls && rm -rf ./coverage
+      script: yarn workspace @whs/app test:coverage | coveralls
+    - script: yarn workspace @whs/server test:coverage | coveralls
       name: Server Unit Tests
       node_js: node
