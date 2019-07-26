@@ -2,16 +2,14 @@ import React, { Component } from 'react';
 import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import {
-  createSwitchNavigator, createAppContainer, createDrawerNavigator,
-} from 'react-navigation';
-import { ThemeProvider } from 'styled-components';
+import { createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
 
+import Drawer from './src/components/drawer/Drawer';
 import Login from './src/screens/Login';
 import Dashboard from './src/screens/Dashboard';
 import Schedule from './src/screens/Schedule';
 import Loading from './src/screens/Loading';
-import Drawer from './src/components/drawer/Drawer';
+import Themer from './src/components/common/Themer';
 import initializeStore from './src/utils/store';
 import { fetchDates, fetchSchoolPicture } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
@@ -19,7 +17,7 @@ import { setUserInfo, setDaySchedule, setUserSchedule } from './src/actions/crea
 import { getScheduleTypeOnDate } from './src/utils/query-schedule';
 import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
 import { insert } from './src/utils/utils';
-import { ScheduleItem } from './src/types/schedule';
+import Settings from './src/screens/Settings';
 
 const { store, persistor } = initializeStore();
 
@@ -60,7 +58,7 @@ export default class App extends Component<{}, AppComponentState> {
       default:
         return;
     }
-    const revisedUserSchedule = insert<ScheduleItem[]>(schedule, [revisedUserDaySchedule], day - 1);
+    const revisedUserSchedule = insert(schedule, [revisedUserDaySchedule], day - 1);
     return store.dispatch(setUserSchedule(revisedUserSchedule));
   }
 
@@ -83,6 +81,12 @@ export default class App extends Component<{}, AppComponentState> {
         navigationOptions: {
           drawerIcon: 'schedule',
           drawerLabel: 'My Schedule',
+        },
+      },
+      Settings: {
+        screen: Settings,
+        navigationOptions: {
+          drawerIcon: 'settings',
         },
       },
     }, {
@@ -110,18 +114,10 @@ export default class App extends Component<{}, AppComponentState> {
 
   private renderApp = () => {
     if (this.state.rehydrated) {
-      const { user: { username, password }, theme } = store.getState();
+      const { user: { username, password } } = store.getState();
       const isLoggedIn = username.length > 0 && password.length > 0;
       const AppContainer = this.createNavigationContainer(isLoggedIn);
-
-      return (
-        <ThemeProvider theme={theme}>
-          <>
-            <StatusBar barStyle={theme.statusBar} />
-            <AppContainer />
-          </>
-        </ThemeProvider>
-      );
+      return (<Themer><AppContainer /></Themer>);
     }
     return (
       <>

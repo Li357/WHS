@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Switch, ScrollView } from 'react-native';
+import { Switch, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 import { useSelector } from 'react-redux';
 import { setDay, format, differenceInSeconds } from 'date-fns';
@@ -82,7 +82,6 @@ function getDayProgress(date: Date, daySchedule: DaySchedule) {
   const end = convertTimeToDate(endTime, date);
   const partialCompletionRatio = Math.max(0, differenceInSeconds(end, date) / differenceInSeconds(end, start));
   const partialHeight = SCHEDULE_CARD_ITEM_HEIGHT * partialCompletionRatio;
-  console.log(finishedHeight, partialHeight, totalHeight, SCHEDULE_CARD_ITEM_HEIGHT);
   return (finishedHeight + partialHeight) / totalHeight;
 }
 
