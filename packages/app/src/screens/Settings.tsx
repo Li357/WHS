@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Dialog from 'react-native-dialog';
 
 import authorizedRoute from '../components/common/authorizedRoute';
 import Button from '../components/drawer/Button';
@@ -10,6 +11,7 @@ import { setTheme } from '../actions/creators';
 import { darkTheme } from '../constants/theme';
 import { notify } from '../utils/utils';
 import ButtonGroup from '../components/drawer/ButtonGroup';
+import client from '../utils/bugsnag';
 
 export default authorizedRoute('Settings', function Settings() {
   const { username, password } = useSelector((state: AppState) => state.user);
@@ -19,6 +21,8 @@ export default authorizedRoute('Settings', function Settings() {
   // light or dark theme, so instead we check if they stringify to the same string
   const [isDarkTheme, setIsDarkTheme] = useState(JSON.stringify(theme) === JSON.stringify(darkTheme));
   const [refreshing, setRefreshing] = useState(false);
+  const [reportingBug, setReportingBug] = useState(false);
+  const [bugReport, setBugReport] = useState('');
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -32,7 +36,8 @@ export default authorizedRoute('Settings', function Settings() {
   };
 
   const handleBugReport = () => {
-    // TODO: Dialog and send to bugsnag
+    client.notify(new Error(bugReport));
+    closeDialog();
   };
 
   const handleThemeChange = (newVal: boolean) => {
@@ -40,13 +45,24 @@ export default authorizedRoute('Settings', function Settings() {
     setIsDarkTheme(newVal);
   };
 
+  const openDialog = () => setReportingBug(true);
+  const closeDialog = () => setReportingBug(false);
+
+  const accentStyle = { color: theme.accentColor };
   return (
     <>
       <ButtonGroup>
         <Button onPress={handleRefresh} disabled={refreshing} icon="refresh">Manual Refresh</Button>
-        <Button onPress={handleBugReport} icon="warning">Report Bug</Button>
+        <Button onPress={openDialog} icon="warning">Report Bug</Button>
       </ButtonGroup>
       <Switch value={isDarkTheme} onChange={handleThemeChange}>Dark Theme</Switch>
+      <Dialog.Container visible={reportingBug}>
+        <Dialog.Title>Report Bug</Dialog.Title>
+        <Dialog.Description>Please describe the bug. Note some anonymous diagnostic info is sent.</Dialog.Description>
+        <Dialog.Input value={bugReport} onChangeText={setBugReport} />
+        <Dialog.Button label="Cancel" onPress={closeDialog} style={accentStyle} />
+        <Dialog.Button label="Report" onPress={handleBugReport} style={accentStyle} />
+      </Dialog.Container>
     </>
   );
 });

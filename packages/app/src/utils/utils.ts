@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+import client from './bugsnag';
 
 /**
  * Split array without mutation
@@ -73,4 +74,9 @@ export function sum(arr: number[]) {
 
 export function notify(title: string, body: string) {
   Alert.alert(title, body, [{ text: 'OK' }]);
+}
+
+export function reportError(error: Error) {
+  notify('Error', error.message);
+  client.notify(error);
 }

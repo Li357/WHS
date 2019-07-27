@@ -1,4 +1,6 @@
-import { DateListType, YearSettingType } from 'whs-server';
+import { DateListType, YearSettingType } from '@whs/server';
+
+
 
 export const SCHOOL_WEBSITE = 'https://westside-web.azurewebsites.net';
 export const LOGIN_URL = `${SCHOOL_WEBSITE}/account/login`;

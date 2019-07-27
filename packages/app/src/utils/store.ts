@@ -63,28 +63,27 @@ const dateTransform = createTransform<DatesState, SerializedDatesState>(
   { whitelist: ['dates'] },
 );
 
-export default function initializeStore() {
-  const persistConfig = {
-    key: 'root',
-    version: 3,
-    storage: AsyncStorage,
-    transforms: [profilePhotoTransform, dateTransform],
-  };
-  const persistedReducer = persistReducer<AppState, AppAction>(persistConfig, rootReducer);
+const persistConfig = {
+  key: 'root',
+  version: 3,
+  storage: AsyncStorage,
+  transforms: [profilePhotoTransform, dateTransform],
+};
+const persistedReducer = persistReducer<AppState, AppAction>(persistConfig, rootReducer);
 
-  const middleware: Middleware[] = [thunk];
-  if (process.env.NODE_ENV === 'development') {
-    middleware.push(createLogger());
-  }
-  const store = createStore<
-    AppState & PersistPartial,
-    AppAction,
-    { dispatch: ThunkDispatch<AppState, undefined, AppAction> },
-    {}
-  >(
-    persistedReducer,
-    applyMiddleware(...middleware),
-  );
-  const persistor = persistStore(store);
-  return { store, persistor };
+const middleware: Middleware[] = [thunk];
+if (process.env.NODE_ENV === 'development') {
+  middleware.push(createLogger());
 }
+const store = createStore<
+  AppState & PersistPartial,
+  AppAction,
+  { dispatch: ThunkDispatch<AppState, undefined, AppAction> },
+  {}
+>(
+  persistedReducer,
+  applyMiddleware(...middleware),
+);
+const persistor = persistStore(store);
+
+export { store, persistor };

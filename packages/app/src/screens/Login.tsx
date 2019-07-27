@@ -13,6 +13,7 @@ import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE } from '../constants/style';
 import { getScheduleTypeOnDate } from '../utils/query-schedule';
 import { setDaySchedule } from '../actions/creators';
 import WHS from '../../assets/images/WHS.png';
+import { reportError } from '../utils/utils';
 
 const LoginScreen = styled(Screen)`
   align-items: center;
@@ -50,9 +51,9 @@ export default memo(function Login(props: NavigationScreenProps) {
       dispatch(setDaySchedule(getScheduleTypeOnDate(now, dates)));
       props.navigation.navigate('Dashboard');
     } catch (error) {
-      // TODO: Handle specific errors
       setError(true);
       setLoading(false);
+      reportError(error);
     }
   };
 

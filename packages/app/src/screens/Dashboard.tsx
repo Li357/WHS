@@ -11,6 +11,7 @@ import { AppState, DayScheduleType } from '../types/store';
 import { setUserInfo } from '../actions/creators';
 import { setProfilePhoto, removeProfilePhoto } from '../utils/manage-photos';
 import * as SCHEDULES from '../constants/schedules';
+import { reportError } from '../utils/utils';
 
 const dayScheduleSelector = createSelector(
   ({ day }: AppState) => day.schedule,
@@ -34,7 +35,7 @@ export default authorizedRoute('', function Dashboard() {
         await setProfilePhoto(username, profilePhoto);
         dispatch(setUserInfo({ profilePhoto }));
       } catch (error) {
-        // TODO: Report error
+        reportError(error);
       }
     }
   };

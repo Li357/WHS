@@ -12,7 +12,7 @@ import Dashboard from './src/screens/Dashboard';
 import Schedule from './src/screens/Schedule';
 import Loading from './src/screens/Loading';
 import Themer from './src/components/common/Themer';
-import initializeStore from './src/utils/store';
+import { store, persistor } from './src/utils/store';
 import { fetchDates, fetchSchoolPicture } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
 import { setUserInfo, setDaySchedule, setUserSchedule } from './src/actions/creators';
@@ -20,8 +20,6 @@ import { getScheduleTypeOnDate } from './src/utils/query-schedule';
 import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
 import { insert } from './src/utils/utils';
 import Settings from './src/screens/Settings';
-
-const { store, persistor } = initializeStore();
 
 interface AppComponentState {
   rehydrated: boolean;
