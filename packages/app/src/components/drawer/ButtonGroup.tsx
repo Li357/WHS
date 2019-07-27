@@ -15,7 +15,7 @@ const ButtonWithoutMargin = styled(Button)`
 `;
 
 interface ButtonGroupProps {
-  activeIndex: number;
+  activeIndex?: number;
   children: Array<ReactElement<ButtonProps, typeof Button>>;
 }
 
@@ -24,6 +24,5 @@ export default function ButtonGroup(props: ButtonGroupProps) {
     const withActive = { ...child.props, active: index === props.activeIndex };
     return (<ButtonWithoutMargin {...withActive}>{withActive.children}</ButtonWithoutMargin>);
   });
-
   return (<Container>{children}</Container>);
 }

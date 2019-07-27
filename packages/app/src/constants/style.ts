@@ -34,6 +34,7 @@ export const FORM_MARGIN_VERTICAL = '7.5px';
 export const FORM_PADDING_HORIZONTAL = '20px';
 
 export const INPUT_BORDER_WIDTH = BORDER_WIDTH;
+export const INPUT_ACTIVE_COLOR = '#FFFFFF';
 
 export const BUTTON_MARGIN_VERTICAL = FORM_MARGIN_VERTICAL;
 

@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
   FORM_BORDER_RADIUS, FORM_HEIGHT, FORM_PADDING_HORIZONTAL,
-  SMALLTEXT_SIZE, BUTTON_MARGIN_VERTICAL,
+  SMALLTEXT_SIZE, BUTTON_MARGIN_VERTICAL, INPUT_ACTIVE_COLOR, SUBTEXT_FONT, SUBTEXT_SIZE,
 } from '../../constants/style';
 import Subtext from '../common/Subtext';
 import { AppState } from '../../types/store';
@@ -25,7 +25,7 @@ const ButtonContainer = styled.TouchableOpacity<{ active: boolean }>`
 
 const Label = styled(Subtext)<{ active: boolean }>`
   font-size: ${SMALLTEXT_SIZE};
-  color: ${({ theme, active }) => active ? theme.backgroundColor : theme.subtextColor};
+  color: ${({ theme, active }) => active ? INPUT_ACTIVE_COLOR : theme.subtextColor};
 `;
 
 export interface ButtonProps {
@@ -36,12 +36,12 @@ export interface ButtonProps {
 
 export default function Button({ children, icon, active = false, ...props }: ButtonProps & TouchableOpacityProps) {
   const theme = useSelector((state: AppState) => state.theme);
-  const iconColor = active ? theme.backgroundColor : theme.subtextColor;
+  const iconColor = active ? INPUT_ACTIVE_COLOR : theme.subtextColor;
 
   return (
     <ButtonContainer active={active} {...props}>
       <Label active={active}>{children}</Label>
-      {icon && <Icon name={icon} size={SMALLTEXT_SIZE} color={iconColor} />}
+      {icon && <Icon name={icon} size={SUBTEXT_SIZE} color={iconColor} />}
     </ButtonContainer>
   );
 }
