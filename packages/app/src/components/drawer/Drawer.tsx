@@ -13,7 +13,8 @@ import { TeacherSchedule, Schedule } from '../../types/schedule';
 
 const DrawerContainer = styled.View`
   flex: 1;
-  margin: 0 ${DRAWER_MARGIN_HORIZONTAL};
+  background-color: ${({ theme }) => theme.backgroundColor};
+  padding: 0 ${DRAWER_MARGIN_HORIZONTAL};
 `;
 
 export default function Drawer(props: DrawerItemsProps) {

@@ -2,7 +2,7 @@ import { ThemeState } from '../types/store';
 
 export const lightTheme: ThemeState = {
   backgroundColor: '#FFFFFF',
-  foregroundColor: '#F7F9FC',
+  foregroundColor: '#F4F6F8',
   textColor: '#000000',
   subtextColor: '#7C7C7C',
   borderColor: '#C6C6C6',

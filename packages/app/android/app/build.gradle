@@ -144,6 +144,7 @@ android {
 }
 
 dependencies {
+    implementation project(':bugsnag-react-native')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-reanimated')
     implementation project(':react-native-fs')

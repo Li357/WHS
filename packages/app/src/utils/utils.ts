@@ -1,3 +1,6 @@
+import { Alert } from 'react-native';
+import client from './bugsnag';
+
 /**
  * Split array without mutation
  * @param arr array to be spliced
@@ -67,4 +70,13 @@ export function getWithFallback<T>(obj: any, path: string[], fallback: T) {
  */
 export function sum(arr: number[]) {
   return arr.reduce((a, b) => a + b, 0);
+}
+
+export function notify(title: string, body: string) {
+  Alert.alert(title, body, [{ text: 'OK' }]);
+}
+
+export function reportError(error: Error) {
+  notify('Error', error.message);
+  client.notify(error);
 }
