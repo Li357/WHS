@@ -6,7 +6,7 @@ import { SUBTEXT_SIZE, SUBTEXT_FONT } from '../../constants/style';
 
 interface SubtextProps {
   color?: string;
-  children: string;
+  children: string | string[];
 }
 
 const StyledSubtext = styled.Text<SubtextProps>`
