@@ -3,6 +3,8 @@ import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
+// https://github.com/kmagiera/react-native-gesture-handler/issues/320
+import 'react-native-gesture-handler';
 
 import Drawer from './src/components/drawer/Drawer';
 import Login from './src/screens/Login';

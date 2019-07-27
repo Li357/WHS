@@ -24,7 +24,7 @@ export default authorizedRoute('Settings', function Settings() {
 
   const handleBugReport = () => {
     // TODO: Dialog and send to bugsnag
-  }
+  };
 
   const handleThemeChange = (newVal: boolean) => {
     dispatch(setTheme(newVal ? Theme.DARK : Theme.LIGHT));

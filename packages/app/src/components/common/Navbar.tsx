@@ -14,6 +14,7 @@ const NavbarContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  background-color: ${({ theme }) => theme.backgroundColor};
   padding: ${NAVBAR_MARGIN_TOP} ${SCREEN_MARGIN_HORIZONTAL} ${NAVBAR_MARGIN_BOTTOM};
 `;
 

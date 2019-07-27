@@ -168,7 +168,7 @@ export default function ScheduleCard({ schedule }: ScheduleCardProps) {
           value={showTimes}
           onValueChange={setShowTimes}
           ios_backgroundColor={showTimes ? accentColor : backgroundColor}
-          trackColor={{ false: borderColor, true: accentColor }}
+          trackColor={{ true: accentColor }}
         />
       </Header>
       <ScrollView showsVerticalScrollIndicator={false}>

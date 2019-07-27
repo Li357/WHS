@@ -34,7 +34,7 @@ export interface SwitchProps {
 }
 
 export default function Switch({ children, onChange, value }: SwitchProps) {
-  const { accentColor, backgroundColor, borderColor } = useSelector((state: AppState) => state.theme);
+  const { accentColor, backgroundColor } = useSelector((state: AppState) => state.theme);
   return (
     <SwitchContainer>
       <Label>{children}</Label>
@@ -42,7 +42,7 @@ export default function Switch({ children, onChange, value }: SwitchProps) {
         value={value}
         onValueChange={onChange}
         ios_backgroundColor={value ? accentColor : backgroundColor}
-        trackColor={{ false: borderColor, true: accentColor }}
+        trackColor={{ true: accentColor }}
       />
     </SwitchContainer>
   );
