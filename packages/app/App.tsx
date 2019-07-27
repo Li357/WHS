@@ -59,7 +59,7 @@ export default class App extends Component<{}, AppComponentState> {
         return;
     }
     const revisedUserSchedule = insert(schedule, [revisedUserDaySchedule], day - 1);
-    return store.dispatch(setUserSchedule(revisedUserSchedule));
+    store.dispatch(setUserSchedule(revisedUserSchedule));
   }
 
   private silentlyUpdateData = async () => {
@@ -107,7 +107,7 @@ export default class App extends Component<{}, AppComponentState> {
     if (isLoggedIn) {
       await this.silentlyUpdateData();
       await this.rehydrateProfilePhoto();
-      await this.updateDayScheduleIfNeeded();
+      this.updateDayScheduleIfNeeded();
     }
     this.setState({ rehydrated: true });
   }

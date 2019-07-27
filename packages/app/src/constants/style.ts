@@ -20,7 +20,8 @@ export const NAVBAR_MARGIN_BOTTOM = hp2px('6%');
 
 export const DRAWER_MARGIN_HORIZONTAL = wp2px('7%');
 export const DRAWER_INFO_MARGIN_TOP = NAVBAR_MARGIN_TOP;
-export const DRAWER_INFO_MARGIN_BOTTOM = NAVBAR_MARGIN_BOTTOM;
+export const DRAWER_INFO_MARGIN_BOTTOM = hp2px('3%');
+export const DRAWER_INFO_IMAGE_SIZE = hp('10%');
 
 export const HAMBURGER_WIDTH = '40px';
 export const HAMBURGER_HEIGHT = '27px';
@@ -43,7 +44,6 @@ export const LOGIN_IMAGE_SIZE = hp('23%');
 
 export const PROFILE_INFO_MARGIN_LEFT = '7%';
 export const PROFILE_PHOTO_SIZE = wp('35%');
-export const PROFILE_PHOTO_BORDER_RADIUS = PROFILE_PHOTO_SIZE / 2;
 export const PROFILE_MARGIN_BOTTOM = hp('4%');
 
 export const BADGE_BUTTON_HEIGHT = '20px';

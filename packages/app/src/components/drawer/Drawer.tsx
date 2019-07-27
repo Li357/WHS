@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { ScrollView } from 'react-native';
 import { DrawerItemsProps } from 'react-navigation';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { DRAWER_MARGIN_HORIZONTAL } from '../../constants/style';
 import Profile from './Profile';
@@ -10,6 +10,7 @@ import Button from './Button';
 import { logOut } from '../../actions/creators';
 import DrawerItems from './DrawerItems';
 import { TeacherSchedule, Schedule } from '../../types/schedule';
+import { AppState } from '../../types/store';
 
 const DrawerContainer = styled.View`
   flex: 1;
@@ -18,6 +19,7 @@ const DrawerContainer = styled.View`
 `;
 
 export default function Drawer(props: DrawerItemsProps) {
+  const userInfo = useSelector((state: AppState) => state.user);
   const dispatch = useDispatch();
   const logout = () => {
     dispatch(logOut());
@@ -31,8 +33,8 @@ export default function Drawer(props: DrawerItemsProps) {
 
   return (
     <DrawerContainer>
+      <Profile userInfo={userInfo} />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Profile />
         <DrawerItems onSchedulePress={onSchedulePress} {...props} />
         <Button icon="chevron-right" onPress={logout}>Logout</Button>
       </ScrollView>

@@ -6,7 +6,7 @@ import { TEXT_SIZE, TEXT_FONT } from '../../constants/style';
 
 interface StyledTextProps {
   color?: string;
-  children: string;
+  children: string | string[];
 }
 
 const StyledText = styled.Text<StyledTextProps>`
