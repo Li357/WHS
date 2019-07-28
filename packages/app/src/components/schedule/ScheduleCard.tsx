@@ -111,12 +111,11 @@ const makeCardDayScheduleSelector = () => createSelector(
       userDaySchedule = schedule.filter((scheduleItem) => (scheduleItem as ClassItem).title !== 'No Homeroom');
     }
 
-    const wednesdayShift = currentDay === 3 ? 1 : 0;
-    const cardDaySchedule = daySchedule.map(([start, end], index) => {
+    const cardDaySchedule = daySchedule.map(([start, end, modNumber]) => {
       const startTime = formatTime(start);
       const endTime = formatTime(end);
       return createClassItem(
-        `${startTime} - ${endTime}`, '', index + wednesdayShift, index + wednesdayShift + 1, day, 'course',
+        `${startTime} - ${endTime}`, '', modNumber, modNumber + 1, day, 'course',
       );
     });
     return { cardDate, cardDaySchedule, daySchedule, userDaySchedule, isCurrentDay, isFinals };
@@ -124,7 +123,7 @@ const makeCardDayScheduleSelector = () => createSelector(
 );
 export default function ScheduleCard({ schedule }: ScheduleCardProps) {
   const [showTimes, setShowTimes] = useState(false);
-  const { accentColor, borderColor, backgroundColor } = useSelector((state: AppState) => state.theme);
+  const { accentColor, backgroundColor } = useSelector((state: AppState) => state.theme);
 
   const cardDayScheduleSelector = useMemo(makeCardDayScheduleSelector, []);
   const {

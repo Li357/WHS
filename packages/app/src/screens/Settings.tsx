@@ -48,7 +48,6 @@ export default authorizedRoute('Settings', function Settings() {
   const openDialog = () => setReportingBug(true);
   const closeDialog = () => setReportingBug(false);
 
-  const accentStyle = { color: theme.accentColor };
   return (
     <>
       <ButtonGroup>
@@ -60,8 +59,8 @@ export default authorizedRoute('Settings', function Settings() {
         <Dialog.Title>Report Bug</Dialog.Title>
         <Dialog.Description>Please describe the bug. Note some anonymous diagnostic info is sent.</Dialog.Description>
         <Dialog.Input value={bugReport} onChangeText={setBugReport} />
-        <Dialog.Button label="Cancel" onPress={closeDialog} style={accentStyle} />
-        <Dialog.Button label="Report" onPress={handleBugReport} style={accentStyle} />
+        <Dialog.Button label="Cancel" onPress={closeDialog} />
+        <Dialog.Button label="Report" onPress={handleBugReport} />
       </Dialog.Container>
     </>
   );

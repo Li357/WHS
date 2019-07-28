@@ -1,9 +1,10 @@
 import { DateListType, YearSettingType } from '@whs/server';
 
-
-
 export const SCHOOL_WEBSITE = 'https://westside-web.azurewebsites.net';
 export const LOGIN_URL = `${SCHOOL_WEBSITE}/account/login`;
+export const SEARCH_URL = `${SCHOOL_WEBSITE}/api/search`;
+export const TEACHER_URL = `${SCHOOL_WEBSITE}/teachers`;
+
 const API_VERSION = 'v3';
 export const SERVER_URL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:5000'

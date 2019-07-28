@@ -20,6 +20,7 @@ import { getScheduleTypeOnDate } from './src/utils/query-schedule';
 import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
 import { insert } from './src/utils/utils';
 import Settings from './src/screens/Settings';
+import AddSchedule from './src/screens/AddSchedule';
 
 interface AppComponentState {
   rehydrated: boolean;
@@ -81,6 +82,13 @@ export default class App extends Component<{}, AppComponentState> {
         navigationOptions: {
           drawerIcon: 'schedule',
           drawerLabel: 'My Schedule',
+        },
+      },
+      AddSchedule: {
+        screen: AddSchedule,
+        navigationOptions: {
+          drawerIcon: 'add',
+          drawerLabel: 'Add Schedule',
         },
       },
       Settings: {

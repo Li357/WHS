@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
   FORM_BORDER_RADIUS, FORM_HEIGHT, FORM_PADDING_HORIZONTAL,
-  SMALLTEXT_SIZE, BUTTON_MARGIN_VERTICAL, INPUT_ACTIVE_COLOR, SUBTEXT_FONT, SUBTEXT_SIZE,
+  SMALLTEXT_SIZE, BUTTON_MARGIN_VERTICAL, INPUT_ACTIVE_COLOR, SUBTEXT_SIZE,
 } from '../../constants/style';
 import Subtext from '../common/Subtext';
 import { AppState } from '../../types/store';

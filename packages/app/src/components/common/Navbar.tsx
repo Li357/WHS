@@ -6,7 +6,7 @@ import Text from './Text';
 import {
   NAVBAR_MARGIN_TOP, NAVBAR_MARGIN_BOTTOM,
   HAMBURGER_WIDTH, HAMBURGER_HEIGHT,
-  HAMBURGER_LINE_HEIGHT, HAMBURGER_LINE_BORDER_RADIUS, SCREEN_MARGIN_HORIZONTAL,
+  HAMBURGER_LINE_HEIGHT, HAMBURGER_LINE_BORDER_RADIUS, SCREEN_MARGIN_HORIZONTAL, NAVBAR_TITLE_MARGIN_LEFT,
 } from '../../constants/style';
 
 const NavbarContainer = styled.View`
@@ -39,6 +39,11 @@ const Three = styled(One)`
   width: 85%;
 `;
 
+const Title = styled(Text)`
+  flex-shrink: 1;
+  margin-left: ${NAVBAR_TITLE_MARGIN_LEFT};
+`;
+
 interface NavbarProps {
   title: string;
 }
@@ -51,7 +56,7 @@ export default function Navbar(props: NavbarProps & NavigationScreenProps<Naviga
         <Two />
         <Three />
       </HamburgerContainer>
-      <Text>{props.title}</Text>
+      <Title minimumFontScale={0.25}>{props.title}</Title>
     </NavbarContainer>
   );
 }

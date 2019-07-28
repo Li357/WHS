@@ -34,7 +34,7 @@ export default function DrawerItems({
       setActiveIndex(-1);
     };
 
-    if (/Schedule/.test(name)) {
+    if (/My Schedule/.test(name)) {
       const myScheduleButton = (
         <Button key={route.key} icon={icon} onPress={updateIndex(0, mySchedule)}>{name}</Button>
       );
@@ -42,7 +42,7 @@ export default function DrawerItems({
         .fill(undefined)
         .reduce((acc, _, scheduleIndex) => {
           const schedule = teacherSchedules[scheduleIndex];
-          const scheduleHandler = updateIndex(scheduleIndex, schedule);
+          const scheduleHandler = updateIndex(scheduleIndex + 1, schedule);
           if (schedule === undefined) {
             return acc;
           }

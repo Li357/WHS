@@ -17,6 +17,7 @@ export const SCREEN_MARGIN_HORIZONTAL = wp2px('10%');
 
 export const NAVBAR_MARGIN_TOP = hp2px('8%');
 export const NAVBAR_MARGIN_BOTTOM = hp2px('6%');
+export const NAVBAR_TITLE_MARGIN_LEFT = wp2px('10%');
 
 export const DRAWER_MARGIN_HORIZONTAL = wp2px('7%');
 export const DRAWER_INFO_MARGIN_TOP = NAVBAR_MARGIN_TOP;
@@ -61,3 +62,6 @@ export const CARD_BORDER_WIDTH = BORDER_WIDTH;
 export const SCHEDULE_CARD_BODYTEXT_SIZE = 15;
 export const SCHEDULE_CARD_ITEM_HEIGHT = hp('15%');
 export const SCHEDULE_CARD_ITEM_PADDING = '5px';
+
+export const ADD_SCHEDULE_TEACHER_PHOTO_SIZE = FORM_HEIGHT * 0.6;
+export const ADD_SCHEDULE_TEACHER_PHOTO_MARGIN_LEFT = '5%';
