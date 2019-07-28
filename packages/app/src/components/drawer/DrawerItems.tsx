@@ -42,7 +42,7 @@ export default function DrawerItems({
         .fill(undefined)
         .reduce((acc, _, scheduleIndex) => {
           const schedule = teacherSchedules[scheduleIndex];
-          const scheduleHandler = updateIndex(scheduleIndex, schedule);
+          const scheduleHandler = updateIndex(scheduleIndex + 1, schedule);
           if (schedule === undefined) {
             return acc;
           }

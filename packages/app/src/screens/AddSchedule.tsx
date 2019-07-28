@@ -20,7 +20,7 @@ const TeacherContainer = styled.View`
   margin: ${FORM_MARGIN_VERTICAL} 0;
 `;
 
-export default authorizedRoute('Add', function AddSchedule() {
+export default authorizedRoute('Add Schedule', function AddSchedule() {
   const teacherSchedules = useSelector(({ user }: AppState) => user.teacherSchedules);
   const dispatch = useDispatch();
   const [query, setQuery] = useState('');

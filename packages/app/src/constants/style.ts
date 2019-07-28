@@ -17,6 +17,7 @@ export const SCREEN_MARGIN_HORIZONTAL = wp2px('10%');
 
 export const NAVBAR_MARGIN_TOP = hp2px('8%');
 export const NAVBAR_MARGIN_BOTTOM = hp2px('6%');
+export const NAVBAR_TITLE_MARGIN_LEFT = wp2px('10%');
 
 export const DRAWER_MARGIN_HORIZONTAL = wp2px('7%');
 export const DRAWER_INFO_MARGIN_TOP = NAVBAR_MARGIN_TOP;
