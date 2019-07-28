@@ -67,6 +67,7 @@ const persistConfig = {
   key: 'root',
   version: 3,
   storage: AsyncStorage,
+  timeout: 0,
   transforms: [profilePhotoTransform, dateTransform],
 };
 const persistedReducer = persistReducer<AppState, AppAction>(persistConfig, rootReducer);

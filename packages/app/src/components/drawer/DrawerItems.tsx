@@ -34,7 +34,7 @@ export default function DrawerItems({
       setActiveIndex(-1);
     };
 
-    if (/Schedule/.test(name)) {
+    if (/My Schedule/.test(name)) {
       const myScheduleButton = (
         <Button key={route.key} icon={icon} onPress={updateIndex(0, mySchedule)}>{name}</Button>
       );

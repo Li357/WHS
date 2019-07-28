@@ -1,6 +1,6 @@
 import fetch from 'react-native-fetch-polyfill';
 import { load } from 'react-native-cheerio';
-import { DateType, DateSchema } from 'whs-server';
+import { DateType, DateSchema } from '@whs/server';
 
 import { processSchedule } from './process-schedule';
 import {

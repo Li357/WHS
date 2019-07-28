@@ -37,6 +37,18 @@ export interface TeacherSchedule {
   schedule: Schedule;
 }
 
+export interface RawTeacherData {
+  id: number;
+  schoolId: string;
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  phone: string;
+  departmentId: number;
+  profilePictureUri: string | null;
+  deleted: boolean;
+}
+
 export enum ModNumber {
   HOMEROOM,
   ONE,
