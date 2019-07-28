@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import fetch from 'react-native-fetch-polyfill';
 import styled from 'styled-components/native';
@@ -16,7 +17,6 @@ import { FORM_BORDER_RADIUS, FORM_MARGIN_VERTICAL, SMALLTEXT_SIZE, FORM_PADDING_
 import { AppState } from '../types/store';
 import { addTeacherSchedule, setTeacherSchedules } from '../actions/creators';
 import { getUserScheduleFromHTML, parseHTMLFromURL } from '../utils/process-info';
-import { ScrollView } from 'react-native';
 
 const ListContainer = styled.View`
   border-radius: ${FORM_BORDER_RADIUS};
