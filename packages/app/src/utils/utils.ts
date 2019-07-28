@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+
 import client from './bugsnag';
 
 /**

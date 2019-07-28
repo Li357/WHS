@@ -5,11 +5,7 @@ import PhotoUpload from 'react-native-photo-upload';
 
 import Text from '../common/Text';
 import { UserInfo } from '../../types/store';
-import {
-  PROFILE_INFO_MARGIN_LEFT,
-  PROFILE_PHOTO_SIZE, PROFILE_PHOTO_BORDER_RADIUS,
-  PROFILE_MARGIN_BOTTOM,
-} from '../../constants/style';
+import { PROFILE_INFO_MARGIN_LEFT, PROFILE_PHOTO_SIZE, PROFILE_MARGIN_BOTTOM } from '../../constants/style';
 import Subtext from '../common/Subtext';
 import BadgeButton from './BadgeButton';
 import Avatar from '../common/Avatar';

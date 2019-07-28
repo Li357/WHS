@@ -2,7 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import fetch from 'react-native-fetch-polyfill';
 import { URL } from 'url';
-import { DateSchema } from 'whs-server';
+import { DateSchema } from '@whs/server';
 
 import { AppState, UserActions, UserAction, AppAction, DatesActions, SetDatesAction } from '../../src/types/store';
 import { LOGIN_URL, DATES_URL } from '../../src/constants/fetch';
