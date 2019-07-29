@@ -3,8 +3,6 @@ import { Platform } from 'react-native';
 
 import { hp2px, wp2px, wp, hp } from '../utils/style';
 
-export const BORDER_RADIUS = 25;
-
 export const TEXT_FONT = Platform.select({ ios: 'SFProDisplay-Bold', android: 'Roboto-Bold' });
 export const TEXT_SIZE = 40;
 export const SUBTEXT_FONT = Platform.select({ ios: 'SFProDisplay-Medium', android: 'Roboto-Medium' });
@@ -22,7 +20,7 @@ export const NAVBAR_TITLE_MARGIN_LEFT = wp2px('10%');
 export const DRAWER_MARGIN_HORIZONTAL = wp2px('7%');
 export const DRAWER_INFO_MARGIN_TOP = NAVBAR_MARGIN_TOP;
 export const DRAWER_INFO_MARGIN_BOTTOM = hp2px('3%');
-export const DRAWER_INFO_IMAGE_SIZE = hp('10%');
+export const DRAWER_INFO_IMAGE_SIZE = wp('25%');
 
 export const HAMBURGER_WIDTH = '40px';
 export const HAMBURGER_HEIGHT = '27px';
@@ -30,8 +28,8 @@ export const HAMBURGER_LINE_HEIGHT = '4px';
 export const HAMBURGER_LINE_BORDER_RADIUS = '2px';
 
 // Controls both input and button form elements
-export const FORM_HEIGHT = BORDER_RADIUS * 2;
-export const FORM_BORDER_RADIUS = BORDER_RADIUS;
+export const FORM_HEIGHT = Math.min(hp('8%'), 50);
+export const FORM_BORDER_RADIUS = FORM_HEIGHT / 2;
 export const FORM_MARGIN_VERTICAL = '7.5px';
 export const FORM_PADDING_HORIZONTAL = '20px';
 
@@ -56,12 +54,11 @@ export const BADGE_BUTTON_TEXT_SIZE = 10;
 export const CARD_MARGIN_BOTTOM = '20px';
 export const CARD_PADDING = '20px';
 export const CARD_PADDING_TOP = '40px';
-export const CARD_BORDER_RADIUS = BORDER_RADIUS;
+export const CARD_BORDER_RADIUS = FORM_BORDER_RADIUS;
 export const CARD_BORDER_WIDTH = BORDER_WIDTH;
 
 export const SCHEDULE_CARD_BODYTEXT_SIZE = 15;
 export const SCHEDULE_CARD_ITEM_HEIGHT = hp('15%');
-export const SCHEDULE_CARD_ITEM_PADDING = '5px';
 
 export const ADD_SCHEDULE_TEACHER_PHOTO_SIZE = FORM_HEIGHT * 0.6;
 export const ADD_SCHEDULE_TEACHER_PHOTO_MARGIN_LEFT = '5%';

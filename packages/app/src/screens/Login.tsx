@@ -2,6 +2,7 @@ import React, { memo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components/native';
 import { NavigationScreenProps } from 'react-navigation';
+import { CircleSnail } from 'react-native-progress';
 
 import Screen from '../components/common/Screen';
 import Input from '../components/common/Input';
@@ -9,7 +10,7 @@ import Button from '../components/common/Button';
 import Text from '../components/common/Text';
 import { fetchUserInfo, fetchDates } from '../actions/async';
 import { AppState } from '../types/store';
-import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE } from '../constants/style';
+import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE, SUBTEXT_SIZE } from '../constants/style';
 import { getScheduleTypeOnDate } from '../utils/query-schedule';
 import { setDaySchedule } from '../actions/creators';
 import WHS from '../../assets/images/WHS.png';
@@ -34,6 +35,7 @@ export default memo(function Login(props: NavigationScreenProps) {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const dates = useSelector((state: AppState) => state.dates);
+  const theme = useSelector((state: AppState) => state.theme);
   const dispatch = useDispatch();
 
   const handleLogin = async () => {
@@ -65,7 +67,9 @@ export default memo(function Login(props: NavigationScreenProps) {
       <Header>Login to WHS</Header>
       <Input placeholder="Username" value={username} onChangeText={setUsername} error={error} />
       <Input placeholder="Password" value={password} onChangeText={setPassword} error={error} secureTextEntry={true} />
-      <Button onPress={handleLogin} disabled={!canLogin}>Login</Button>
+      <Button onPress={handleLogin} disabled={!canLogin}>
+        {loading ? <CircleSnail size={SUBTEXT_SIZE} color={theme.foregroundColor} /> : 'Login'}
+      </Button>
     </LoginScreen>
   );
 });

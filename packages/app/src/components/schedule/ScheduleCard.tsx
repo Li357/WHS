@@ -160,8 +160,8 @@ export default function ScheduleCard({ schedule }: ScheduleCardProps) {
     <ScheduleCardContainer>
       <Header>
         <Body>
-          <Title>{formattedDay}</Title>
-          <Subtext>{formattedDate}</Subtext>
+          <Title minimumFontScale={0.5}>{formattedDay}</Title>
+          <Subtext minimumFontScale={0.5}>{formattedDate}</Subtext>
         </Body>
         <Switch
           value={showTimes}

@@ -3,8 +3,9 @@ import styled from 'styled-components/native';
 import { ScrollView } from 'react-native';
 import { DrawerItemsProps } from 'react-navigation';
 import { useDispatch, useSelector } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { DRAWER_MARGIN_HORIZONTAL } from '../../constants/style';
+import { DRAWER_MARGIN_HORIZONTAL, SUBTEXT_SIZE } from '../../constants/style';
 import Profile from './Profile';
 import Button from './Button';
 import { logOut } from '../../actions/creators';
@@ -16,6 +17,11 @@ const DrawerContainer = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.backgroundColor};
   padding: 0 ${DRAWER_MARGIN_HORIZONTAL};
+`;
+
+const LogoutIcon = styled(Icon)`
+  font-size: ${SUBTEXT_SIZE};
+  color: ${({ theme }) => theme.subtextColor};
 `;
 
 export default function Drawer(props: DrawerItemsProps) {
@@ -36,7 +42,7 @@ export default function Drawer(props: DrawerItemsProps) {
       <Profile userInfo={userInfo} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <DrawerItems onSchedulePress={onSchedulePress} {...props} />
-        <Button icon="chevron-right" onPress={logout}>Logout</Button>
+        <Button left={<LogoutIcon name="chevron-right" />} onPress={logout}>Logout</Button>
       </ScrollView>
     </DrawerContainer>
   );

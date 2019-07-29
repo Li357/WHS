@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { TextProps } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -6,7 +6,7 @@ import { SUBTEXT_SIZE, SUBTEXT_FONT } from '../../constants/style';
 
 interface SubtextProps {
   color?: string;
-  children: string | string[];
+  children: ReactNode;
 }
 
 const StyledSubtext = styled.Text<SubtextProps>`

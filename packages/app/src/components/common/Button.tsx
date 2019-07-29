@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { TouchableOpacityProps } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -16,17 +16,19 @@ const ButtonContainer = styled.TouchableOpacity`
 `;
 
 const Label = styled(Subtext)`
+  justify-content: center;
+  align-items: center;
   color: ${({ theme }) => theme.backgroundColor};
 `;
 
 interface ButtonProps {
-  children: string;
+  children: ReactNode;
 }
 
 export default function Button({ children, ...props }: ButtonProps & TouchableOpacityProps) {
   return (
     <ButtonContainer {...props}>
-      <Label>{children}</Label>
+      {typeof children === 'string' ? <Label>{children}</Label> : children}
     </ButtonContainer>
   );
 }
