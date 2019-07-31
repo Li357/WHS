@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { AppState as RNAppState, AppStateStatus } from 'react-native';
 import { batch } from 'react-redux';
 import { differenceInSeconds } from 'date-fns';
 
@@ -27,9 +28,10 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
     Math.max(0, differenceInSeconds(dayEnd, now))
   ));
   const [finished, setFinished] = useState(endCountdown === 0);
+  const [inactive, setInactive] = useState(false);
 
   useEffect(() => {
-    if (!finished) {
+    if (!finished && !inactive) {
       // updating countdown causes timeout to be reset, i.e. an interval
       const id: NodeJS.Timeout = setTimeout(() => {
         if (countdown === 0) {
@@ -56,7 +58,27 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
       }, 1000);
       return () => clearTimeout(id);
     }
-  }, [scheduleInfo, daySchedule, userSchedule, countdown, endCountdown, dashboardInfo]);
+  }, [inactive, scheduleInfo, daySchedule, userSchedule, countdown, endCountdown, dashboardInfo]);
+
+  const updateInfo = (newStatus: AppStateStatus) => {
+    switch (newStatus) {
+      case 'inactive':
+        setInactive(true);
+        return;
+      case 'active':
+        batch(() => {
+          const openDate = new Date();
+          setScheduleInfo(getScheduleInfoAtTime(openDate, daySchedule, userSchedule));
+          setCountdown(getCountdown(openDate, scheduleInfo, daySchedule));
+          setDashboardInfo(getDashboardInfo(daySchedule, userSchedule, scheduleInfo));
+          setInactive(false);
+        });
+    }
+  };
+  useEffect(() => {
+    RNAppState.addEventListener('change', updateInfo);
+    return () => RNAppState.removeEventListener('change', updateInfo);
+  });
 
   const cards = dashboardInfo.map((getter, index) => {
     const { crossSectioned, ...info } = getter(countdown, scheduleInfo, endCountdown);

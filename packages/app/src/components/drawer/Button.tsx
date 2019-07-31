@@ -1,15 +1,12 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components/native';
 import { TouchableOpacityProps } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
   FORM_BORDER_RADIUS, FORM_HEIGHT, FORM_PADDING_HORIZONTAL,
-  SMALLTEXT_SIZE, BUTTON_MARGIN_VERTICAL, INPUT_ACTIVE_COLOR, SUBTEXT_SIZE,
+  SMALLTEXT_SIZE, BUTTON_MARGIN_VERTICAL, INPUT_ACTIVE_COLOR,
 } from '../../constants/style';
 import Subtext from '../common/Subtext';
-import { AppState } from '../../types/store';
 
 const ButtonContainer = styled.TouchableOpacity<{ active: boolean }>`
   flex-direction: row;
@@ -30,18 +27,15 @@ const Label = styled(Subtext)<{ active: boolean }>`
 
 export interface ButtonProps {
   children: string;
-  icon?: string;
   active?: boolean;
+  left?: ReactNode;
 }
 
-export default function Button({ children, icon, active = false, ...props }: ButtonProps & TouchableOpacityProps) {
-  const theme = useSelector((state: AppState) => state.theme);
-  const iconColor = active ? INPUT_ACTIVE_COLOR : theme.subtextColor;
-
+export default function Button({ children, left, active = false, ...props }: ButtonProps & TouchableOpacityProps) {
   return (
     <ButtonContainer active={active} {...props}>
       <Label active={active}>{children}</Label>
-      {icon && <Icon name={icon} size={SUBTEXT_SIZE} color={iconColor} />}
+      {left}
     </ButtonContainer>
   );
 }

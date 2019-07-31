@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, AppState as RNAppState, AppStateStatus } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
+import { createAppContainer, createDrawerNavigator } from 'react-navigation';
+import { Transition } from 'react-native-reanimated';
+import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 // https://github.com/kmagiera/react-native-gesture-handler/issues/320
 import 'react-native-gesture-handler';
 
@@ -37,30 +39,32 @@ export default class App extends Component<{}, AppComponentState> {
     store.dispatch(setUserInfo({ profilePhoto }));
   }
 
-  private updateDayScheduleIfNeeded() {
-    const { dates, day: { schedule: dayScheduleType }, user: { schedule } } = store.getState();
-    const now = new Date();
+  private updateDayScheduleIfNeeded(newStatus: AppStateStatus = 'active') {
+    if (newStatus === 'active') {
+      const { dates, day: { schedule: dayScheduleType }, user: { schedule } } = store.getState();
+      const now = new Date();
 
-    const newDayScheduleType = getScheduleTypeOnDate(now, dates);
-    if (newDayScheduleType === dayScheduleType) {
-      return;
-    }
-    store.dispatch(setDaySchedule(newDayScheduleType));
-
-    const day = now.getDay();
-    let revisedUserDaySchedule;
-    switch (newDayScheduleType) {
-      case 'ASSEMBLY':
-        revisedUserDaySchedule = interpolateAssembly(schedule[day - 1], day);
-        break;
-      case 'FINALS':
-        revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1], day);
-        break;
-      default:
+      const newDayScheduleType = getScheduleTypeOnDate(now, dates);
+      if (newDayScheduleType === dayScheduleType) {
         return;
+      }
+      store.dispatch(setDaySchedule(newDayScheduleType));
+
+      const day = now.getDay();
+      let revisedUserDaySchedule;
+      switch (newDayScheduleType) {
+        case 'ASSEMBLY':
+          revisedUserDaySchedule = interpolateAssembly(schedule[day - 1], day);
+          break;
+        case 'FINALS':
+          revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1], day);
+          break;
+        default:
+          return;
+      }
+      const revisedUserSchedule = insert(schedule, [revisedUserDaySchedule], day - 1);
+      store.dispatch(setUserSchedule(revisedUserSchedule));
     }
-    const revisedUserSchedule = insert(schedule, [revisedUserDaySchedule], day - 1);
-    store.dispatch(setUserSchedule(revisedUserSchedule));
   }
 
   private silentlyUpdateData = async () => {
@@ -101,10 +105,18 @@ export default class App extends Component<{}, AppComponentState> {
       initialRouteName: 'Dashboard',
       contentComponent: Drawer,
     });
-    const Navigator = createSwitchNavigator({
+    const Navigator = createAnimatedSwitchNavigator({
       Login: { screen: Login },
       Authorized: { screen: Authorized },
-    }, { initialRouteName: isLoggedIn ? 'Authorized' : 'Login' });
+    }, {
+      initialRouteName: isLoggedIn ? 'Authorized' : 'Login',
+      transition: (
+        <Transition.Together>
+          <Transition.In type="slide-top" durationMs={400} interpolation="easeInOut" />
+          <Transition.Out type="slide-bottom" durationMs={200} interpolation="easeInOut" />
+        </Transition.Together>
+      ),
+    });
     return createAppContainer(Navigator);
   }
 
@@ -133,6 +145,14 @@ export default class App extends Component<{}, AppComponentState> {
         <Loading />
       </>
     );
+  }
+
+  public componentDidMount() {
+    RNAppState.addEventListener('change', this.updateDayScheduleIfNeeded);
+  }
+
+  public componentWillUnmount() {
+    RNAppState.removeEventListener('change', this.updateDayScheduleIfNeeded);
   }
 
   public render() {

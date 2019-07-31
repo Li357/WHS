@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { TextProps } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -6,7 +6,7 @@ import { TEXT_SIZE, TEXT_FONT } from '../../constants/style';
 
 interface StyledTextProps {
   color?: string;
-  children: string | string[];
+  children: ReactNode;
 }
 
 const StyledText = styled.Text<StyledTextProps>`

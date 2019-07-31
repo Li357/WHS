@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Dialog from 'react-native-dialog';
+import styled from 'styled-components/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { CircleSnail } from 'react-native-progress';
 
 import authorizedRoute from '../components/common/authorizedRoute';
 import Button from '../components/drawer/Button';
@@ -12,6 +15,12 @@ import { darkTheme } from '../constants/theme';
 import { notify } from '../utils/utils';
 import ButtonGroup from '../components/drawer/ButtonGroup';
 import client from '../utils/bugsnag';
+import { SUBTEXT_SIZE } from '../constants/style';
+
+const SettingIcon = styled(Icon)`
+  font-size: ${SUBTEXT_SIZE};
+  color: ${({ theme }) => theme.subtextColor};
+`;
 
 export default authorizedRoute('Settings', function Settings() {
   const { username, password } = useSelector((state: AppState) => state.user);
@@ -48,11 +57,21 @@ export default authorizedRoute('Settings', function Settings() {
   const openDialog = () => setReportingBug(true);
   const closeDialog = () => setReportingBug(false);
 
+  const refreshLeftElement = refreshing
+    ? (<CircleSnail size={SUBTEXT_SIZE} color={theme.subtextColor} />)
+    : (<SettingIcon name="refresh" />);
+
   return (
     <>
       <ButtonGroup>
-        <Button onPress={handleRefresh} disabled={refreshing} icon="refresh">Manual Refresh</Button>
-        <Button onPress={openDialog} icon="warning">Report Bug</Button>
+        <Button
+          onPress={handleRefresh}
+          disabled={refreshing}
+          left={refreshLeftElement}
+        >
+          Manual Refresh
+        </Button>
+        <Button onPress={openDialog} left={<SettingIcon name="warning" />}>Report Bug</Button>
       </ButtonGroup>
       <Switch value={isDarkTheme} onChange={handleThemeChange}>Dark Theme</Switch>
       <Dialog.Container visible={reportingBug}>
