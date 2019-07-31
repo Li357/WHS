@@ -39,10 +39,11 @@ const ColumnItem = styled.View`
 `;
 
 interface CrossSectionedCardItemProps {
+  first: boolean;
   scheduleItem: CrossSectionedItem;
 }
 
-export default function CrossSectionedCardItem({ scheduleItem }: CrossSectionedCardItemProps) {
+export default function CrossSectionedCardItem({ first, scheduleItem }: CrossSectionedCardItemProps) {
   const classMods = getOccupiedMods(scheduleItem);
   const flexRatios = classMods.map((mod) => isHalfMod(mod) ? 1 : 2);
   const crossSectionedStartMod = classMods[0];
@@ -89,7 +90,7 @@ export default function CrossSectionedCardItem({ scheduleItem }: CrossSectionedC
   ));
 
   return (
-    <CardItem type="course" scheduleItem={scheduleItem}>
+    <CardItem first={first} type="course" scheduleItem={scheduleItem}>
       <BlockContainer>{columns}</BlockContainer>
     </CardItem>
   );

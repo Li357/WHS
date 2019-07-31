@@ -6,10 +6,10 @@ import { ScheduleItem, ModNumber } from '../../types/schedule';
 import { getOccupiedMods, getShortNameFromModNumber, isHalfMod } from '../../utils/query-schedule';
 import Subtext from '../common/Subtext';
 
-const ItemContainer = styled.View<{ type: string }>`
+const ItemContainer = styled.View<{ first: boolean, type: string }>`
   flex-direction: row;
   align-items: stretch;
-  border-top-width: ${BORDER_WIDTH};
+  border-top-width: ${({ first }) => first ? 0 : BORDER_WIDTH};
   border-top-color: ${({ theme }) => theme.borderColor};
   background-color: ${({ theme, type }) => (
     type === 'open' || type === 'annotation'
@@ -44,11 +44,12 @@ export const BodyText = styled(Subtext)`
 interface CardItemProps {
   scheduleItem: ScheduleItem;
   type: string;
+  first: boolean;
   isFinals?: boolean;
   children: ReactNode;
 }
 
-export default function CardItem({ children, type, scheduleItem, isFinals = false }: CardItemProps) {
+export default function CardItem({ children, type, first, scheduleItem, isFinals = false }: CardItemProps) {
   const classMods = getOccupiedMods(scheduleItem);
   const modHeights = classMods.map((mod) => {
     const isHalf = (!isFinals && isHalfMod(mod)) || mod === ModNumber.HOMEROOM;
@@ -65,7 +66,7 @@ export default function CardItem({ children, type, scheduleItem, isFinals = fals
   });
 
   return (
-    <ItemContainer type={type}>
+    <ItemContainer first={first} type={type}>
       <IndicatorsContainer>{modIndicators}</IndicatorsContainer>
       {children}
     </ItemContainer>

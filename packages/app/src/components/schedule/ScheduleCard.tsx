@@ -27,6 +27,7 @@ const ScheduleCardContainer = styled.View`
   background-color: ${({ theme }) => theme.backgroundColor};
   border-radius: ${CARD_BORDER_RADIUS};
   border: ${BORDER_WIDTH} solid ${({ theme }) => theme.borderColor};
+  overflow: hidden;
 `;
 
 const Header = styled.View`
@@ -42,6 +43,13 @@ const Body = styled.View`
   flex-direction: row;
 `;
 
+const ScheduleBody = styled(Body)`
+  border-top-color: ${({ theme }) => theme.borderColor};
+  border-top-width: ${BORDER_WIDTH};
+  border-bottom-color: ${({ theme }) => theme.borderColor};
+  border-bottom-width: ${BORDER_WIDTH};
+`;
+
 const BarContainer = styled.View`
   flex: 1;
   justify-content: center;
@@ -54,6 +62,8 @@ const VerticalBar = styled(Bar)`
 
 const ClassesContainer = styled.View`
   flex: 9;
+  border-left-color: ${({ theme }) => theme.borderColor};
+  border-left-width: ${BORDER_WIDTH};
 `;
 
 const Title = styled(Text)`
@@ -73,15 +83,17 @@ function getDayProgress(date: Date, daySchedule: DaySchedule) {
   }
 
   const index = daySchedule.findIndex(([, , mod]) => mod === searchMod);
-  const modHeights = daySchedule.map(([, , mod]) => SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) ? 2 : 1));
+  const modHeights = daySchedule.map(([, , mod]) => (
+    SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1)
+  ));
   const finishedHeight = sum(modHeights.slice(0, index));
   const totalHeight = sum(modHeights);
 
   const [startTime, endTime] = daySchedule[index];
   const start = convertTimeToDate(startTime, date);
   const end = convertTimeToDate(endTime, date);
-  const partialCompletionRatio = Math.max(0, differenceInSeconds(end, date) / differenceInSeconds(end, start));
-  const partialHeight = SCHEDULE_CARD_ITEM_HEIGHT * partialCompletionRatio;
+  const partialCompletionRatio = Math.max(0, differenceInSeconds(date, start) / differenceInSeconds(end, start));
+  const partialHeight = modHeights[index] * partialCompletionRatio;
   return (finishedHeight + partialHeight) / totalHeight;
 }
 
@@ -139,13 +151,20 @@ export default function ScheduleCard({ schedule }: ScheduleCardProps) {
   const formattedDate = format(cardDate, 'MMM d');
   const scheduleToShow = showTimes ? cardDaySchedule : userDaySchedule!;
 
-  const classes = scheduleToShow.map((scheduleItem) => {
+  const classes = scheduleToShow.map((scheduleItem, index) => {
     if (scheduleItem.hasOwnProperty('columns')) {
-      return (<CrossSectionedCardItem key={scheduleItem.sourceId} scheduleItem={scheduleItem as CrossSectionedItem} />);
+      return (
+        <CrossSectionedCardItem
+          key={scheduleItem.sourceId}
+          first={index === 0}
+          scheduleItem={scheduleItem as CrossSectionedItem}
+        />
+      );
     }
     return (
       <ClassCardItem
         key={scheduleItem.sourceId}
+        first={index === 0}
         scheduleItem={scheduleItem as ClassItem}
         isFinals={isFinals}
       />
@@ -155,6 +174,11 @@ export default function ScheduleCard({ schedule }: ScheduleCardProps) {
     SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1)
   )));
   const dayProgress = isCurrentDay ? getDayProgress(new Date(), daySchedule) : 0;
+  const progressBar = (
+    <BarContainer>
+      <VerticalBar width={totalHeight} progress={dayProgress} color={accentColor} />
+    </BarContainer>
+  );
 
   return (
     <ScheduleCardContainer>
@@ -171,10 +195,10 @@ export default function ScheduleCard({ schedule }: ScheduleCardProps) {
         />
       </Header>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Body>
-          {isCurrentDay && <BarContainer><VerticalBar width={totalHeight} progress={dayProgress} /></BarContainer>}
+        <ScheduleBody>
+          {isCurrentDay && progressBar}
           <ClassesContainer>{classes}</ClassesContainer>
-        </Body>
+        </ScheduleBody>
       </ScrollView>
     </ScheduleCardContainer>
   );
