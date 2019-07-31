@@ -3,6 +3,7 @@ import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
+import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 // https://github.com/kmagiera/react-native-gesture-handler/issues/320
 import 'react-native-gesture-handler';
 
@@ -21,6 +22,7 @@ import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-sche
 import { insert } from './src/utils/utils';
 import Settings from './src/screens/Settings';
 import AddSchedule from './src/screens/AddSchedule';
+import { Transition } from 'react-native-reanimated';
 
 interface AppComponentState {
   rehydrated: boolean;
@@ -101,10 +103,18 @@ export default class App extends Component<{}, AppComponentState> {
       initialRouteName: 'Dashboard',
       contentComponent: Drawer,
     });
-    const Navigator = createSwitchNavigator({
+    const Navigator = createAnimatedSwitchNavigator({
       Login: { screen: Login },
       Authorized: { screen: Authorized },
-    }, { initialRouteName: isLoggedIn ? 'Authorized' : 'Login' });
+    }, {
+      initialRouteName: isLoggedIn ? 'Authorized' : 'Login',
+      transition: (
+        <Transition.Together>
+          <Transition.In type="slide-top" durationMs={400} interpolation="easeInOut" />
+          <Transition.Out type="slide-bottom" durationMs={200} interpolation="easeInOut" />
+        </Transition.Together>
+      ),
+    });
     return createAppContainer(Navigator);
   }
 
