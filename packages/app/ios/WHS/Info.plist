@@ -61,6 +61,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CodePushDeploymentKey</key>
+	<string>$(CODEPUSH_KEY)</string>
 	<key>BugsnagAPIKey</key>
 	<string>3fb4434641f5a8e78c8a1ca4ad968cc5</string>
 </dict>
