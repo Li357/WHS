@@ -47,7 +47,7 @@
 import Vue from 'vue';
 import { Route } from 'vue-router';
 import { Component, Prop } from 'vue-property-decorator';
-import { format } from 'date-fns';
+import { format, isSameDay, isDate } from 'date-fns';
 
 import AddDateModal from './AddDateModal.vue';
 import { DateListType, DateSchemaWithoutID, DateSchema } from '../../shared/types/api';
@@ -174,11 +174,15 @@ export default class DateList extends Vue {
   }
 
   private removeDate(type: DateListType, year: string, date: string) {
-    const isoString = new Date(date).toISOString();
-    API.removeDate(type, year, isoString);
-    this.dates = this.dates.filter((dateObj) => (
-      !(dateObj.type === type && dateObj.year === year && dateObj.date === isoString)
-    ));
+    const dateToRemove = new Date(date);
+    this.dates = this.dates.filter((dateObj) => {
+      const dateInDB = new Date(dateObj.date);
+      const isDateToRemove = dateObj.type === type && dateObj.year === year && isSameDay(dateToRemove, dateInDB);
+      if (isDateToRemove) {
+        API.removeDate(type, year, dateInDB.toISOString());
+      }
+      return !isDateToRemove;
+    });
     this.$notify({
       title: 'Success',
       message: 'Date removed! Please click Save Dates to commit changes.',
