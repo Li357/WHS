@@ -1,8 +1,10 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { StatusBar } from 'react-native';
 import styled from 'styled-components/native';
+import { CircleSnail } from 'react-native-progress';
 
 import Screen from '../components/common/Screen';
+import { ACCENT_COLOR } from '../constants/style';
 
 const LoadingScreen = styled(Screen)`
   align-items: center;
@@ -13,7 +15,8 @@ const LoadingScreen = styled(Screen)`
 export default function Loading() {
   return (
     <LoadingScreen>
-      <Text>Loading...</Text>
+      <StatusBar barStyle="dark-content" />
+      <CircleSnail color={ACCENT_COLOR} />
     </LoadingScreen>
   );
 }

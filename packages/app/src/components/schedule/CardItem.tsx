@@ -6,7 +6,7 @@ import { ScheduleItem, ModNumber } from '../../types/schedule';
 import { getOccupiedMods, getShortNameFromModNumber, isHalfMod } from '../../utils/query-schedule';
 import Subtext from '../common/Subtext';
 
-const ItemContainer = styled.View<{ first: boolean, type: string }>`
+const CardItemContainer = styled.View<{ first: boolean, type: string }>`
   flex-direction: row;
   align-items: stretch;
   border-top-width: ${({ first }) => first ? 0 : BORDER_WIDTH};
@@ -22,10 +22,17 @@ const IndicatorsContainer = styled.View`
   border-right-width: ${BORDER_WIDTH};
   border-right-color: ${({ theme }) => theme.borderColor};
   align-items: stretch;
-  flex: 2;
+  flex: 1;
 `;
 
 const IndicatorContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+`;
+
+const ItemContainer = styled.View`
+  flex: 6;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 `;
@@ -66,9 +73,9 @@ export default function CardItem({ children, type, first, scheduleItem, isFinals
   });
 
   return (
-    <ItemContainer first={first} type={type}>
+    <CardItemContainer first={first} type={type}>
       <IndicatorsContainer>{modIndicators}</IndicatorsContainer>
-      {children}
-    </ItemContainer>
+      <ItemContainer>{children}</ItemContainer>
+    </CardItemContainer>
   );
 }

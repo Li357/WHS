@@ -60,10 +60,10 @@ const VerticalBar = styled(Bar)`
   transform: rotate(90deg);
 `;
 
-const ClassesContainer = styled.View`
+const ClassesContainer = styled.View<{ isCurrentDay: boolean }>`
   flex: 9;
   border-left-color: ${({ theme }) => theme.borderColor};
-  border-left-width: ${BORDER_WIDTH};
+  border-left-width: ${({ isCurrentDay }) => isCurrentDay ? BORDER_WIDTH : 0};
 `;
 
 const Title = styled(Text)`
@@ -207,7 +207,7 @@ export default function ScheduleCard({ schedule }: ScheduleCardProps) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <ScheduleBody>
           {isCurrentDay && progressBar}
-          <ClassesContainer>{classes}</ClassesContainer>
+          <ClassesContainer isCurrentDay={isCurrentDay}>{classes}</ClassesContainer>
         </ScheduleBody>
       </ScrollView>
     </ScheduleCardContainer>

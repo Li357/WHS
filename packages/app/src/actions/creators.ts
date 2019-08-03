@@ -5,7 +5,7 @@ import {
   DayActions, SetDayScheduleAction,
   Theme, SetThemeAction, ThemeActions,
   DatesState,
-  MiscellaneousActions, LogOutAction, OtherAction, DatesActions, DayScheduleType,
+  MiscellaneousActions, LogOutAction, OtherAction, DatesActions, DayScheduleType, SetRefreshedAction,
 } from '../types/store';
 import { Schedule, TeacherSchedule } from '../types/schedule';
 
@@ -36,6 +36,11 @@ export const addTeacherSchedule = (payload: TeacherSchedule): AddTeacherSchedule
 
 export const setDaySchedule = (payload: DayScheduleType): SetDayScheduleAction => ({
   type: DayActions.SET_DAY_SCHEDULE,
+  payload,
+});
+
+export const setRefreshed = (payload: [boolean, boolean]): SetRefreshedAction => ({
+  type: DayActions.SET_REFRESHED,
   payload,
 });
 

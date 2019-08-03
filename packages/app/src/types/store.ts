@@ -31,40 +31,34 @@ export enum UserActions {
   ADD_TEACHER_SCHEDULE = 'ADD_TEACHER_SCHEDULE',
 }
 
-export interface SetUserCredentialsAction extends Action<UserActions.SET_USER_CREDENTIALS> {
-  payload: Pick<UserState, 'username' | 'password'>;
-}
+interface AppActionType<K, P> extends Action<K> { payload: P; }
+
+export type SetUserCredentialsAction = AppActionType<
+  UserActions.SET_USER_CREDENTIALS, Pick<UserState, 'username' | 'password'>
+>;
 
 export type UserInfoKeys = | 'name' | 'schoolPicture' | 'profilePhoto' | 'isTeacher' | 'classOf' | UserOverviewKeys;
 export type UserInfo = Pick<UserState, UserInfoKeys>;
-export interface SetUserInfoAction extends Action<UserActions.SET_USER_INFO> {
-  payload: Partial<UserInfo>;
-}
+export type SetUserInfoAction = AppActionType<UserActions.SET_USER_INFO, Partial<UserInfo>>;
 
-export interface SetUserScheduleAction extends Action<UserActions.SET_USER_SCHEDULE> {
-  payload: Schedule;
-}
-
-export interface SetTeacherSchedulesAction extends Action<UserActions.SET_TEACHER_SCHEDULES> {
-  payload: TeacherSchedule[];
-}
-
-export interface AddTeacherScheduleAction extends Action<UserActions.ADD_TEACHER_SCHEDULE> {
-  payload: TeacherSchedule;
-}
+export type SetUserScheduleAction = AppActionType<UserActions.SET_USER_SCHEDULE, Schedule>;
+export type SetTeacherSchedulesAction = AppActionType<UserActions.SET_TEACHER_SCHEDULES, TeacherSchedule[]>;
+export type AddTeacherScheduleAction = AppActionType<UserActions.ADD_TEACHER_SCHEDULE, TeacherSchedule>;
 
 export type DayScheduleType = keyof typeof SCHEDULES;
 export interface DayState {
+  refreshedSemesterOne: boolean;
+  refreshedSemesterTwo: boolean;
   schedule: DayScheduleType;
 }
 
 export enum DayActions {
   SET_DAY_SCHEDULE = 'SET_DAY_SCHEDULE',
+  SET_REFRESHED = 'SET_REFRESHED',
 }
 
-export interface SetDayScheduleAction extends Action<DayActions.SET_DAY_SCHEDULE> {
-  payload: DayScheduleType;
-}
+export type SetDayScheduleAction = AppActionType<DayActions.SET_DAY_SCHEDULE, DayScheduleType>;
+export type SetRefreshedAction = AppActionType<DayActions.SET_REFRESHED, [boolean, boolean]>;
 
 export interface ThemeState {
   backgroundColor: string;
@@ -85,9 +79,7 @@ export enum Theme {
   DARK = 'dark',
 }
 
-export interface SetThemeAction extends Action<ThemeActions.SET_THEME> {
-  payload: Theme;
-}
+export type SetThemeAction = AppActionType<ThemeActions.SET_THEME, Theme>;
 
 export interface DatesState {
   assembly: Date[];
@@ -114,9 +106,7 @@ export enum DatesActions {
   SET_DATES = 'SET_DATES',
 }
 
-export interface SetDatesAction extends Action<DatesActions.SET_DATES> {
-  payload: Partial<DatesState>;
-}
+export type SetDatesAction = AppActionType<DatesActions.SET_DATES, Partial<DatesState>>;
 
 export enum MiscellaneousActions {
   LOG_OUT = 'LOG_OUT',
@@ -129,7 +119,7 @@ export interface OtherAction extends Action<MiscellaneousActions.OTHER> {} /* ha
 export type UserAction =
   | SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction
   | AddTeacherScheduleAction | OtherAction;
-export type DayAction = SetDayScheduleAction | OtherAction;
+export type DayAction = SetRefreshedAction | SetDayScheduleAction | OtherAction;
 export type ThemeAction = SetThemeAction | OtherAction;
 export type DatesAction = SetDatesAction | OtherAction;
 export type MiscellaneousAction = LogOutAction | OtherAction;

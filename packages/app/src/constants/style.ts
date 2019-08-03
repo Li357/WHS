@@ -3,6 +3,8 @@ import { Platform } from 'react-native';
 
 import { hp2px, wp2px, wp, hp } from '../utils/style';
 
+export const ACCENT_COLOR = '#EF4040';
+
 export const TEXT_FONT = Platform.select({ ios: 'SFProDisplay-Bold', android: 'Roboto-Bold' });
 export const TEXT_SIZE = 40;
 export const SUBTEXT_FONT = Platform.select({ ios: 'SFProDisplay-Medium', android: 'Roboto-Medium' });

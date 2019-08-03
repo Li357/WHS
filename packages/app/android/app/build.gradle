@@ -77,6 +77,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 project.ext.vectoricons = [
     iconFontNames: ['MaterialIcons.ttf']
@@ -123,9 +124,20 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "CODEPUSH_KEY", '""'
+            applicationIdSuffix ".debug"
+        }
+
+        releaseStaging {
+            buildConfigField "String", "CODEPUSH_KEY", '"' + CODEPUSH_STAGING_KEY + '"'
+            matchingFallbacks = ["release"]
+        }
+
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            buildConfigField "String", "CODEPUSH_KEY", '"' + CODEPUSH_PRODUCTION_KEY + '"'
         }
     }
     // applicationVariants are e.g. debug, release
@@ -144,6 +156,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-code-push')
     implementation project(':bugsnag-react-native')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-reanimated')

@@ -1,6 +1,6 @@
 import { DateSchemaWithoutID } from '../../shared/types/api';
 
-export interface ClientDate extends DateSchemaWithoutID {
+export type ClientDate = DateSchemaWithoutID & {
   _id?: string;
   saved: boolean;
-}
+};

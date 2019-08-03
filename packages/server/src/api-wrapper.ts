@@ -12,6 +12,7 @@ class API {
     const response = await fetch(`${this.AUTH_API}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(credentials),
     });
     if (!response.ok) {
@@ -23,7 +24,10 @@ class API {
   }
 
   public async logout() {
-    const response = await fetch(`${this.AUTH_API}/logout`, { method: 'POST' });
+    const response = await fetch(`${this.AUTH_API}/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
     if (!response.ok) {
       if (response.status === 401) {
         throw new Error('You are already logged out. Refresh the page.');
@@ -67,6 +71,7 @@ class API {
       const response = await fetch(`${this.DATES_API}/dates`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(this.changes),
       });
       if (!response.ok) {
