@@ -20,7 +20,7 @@ import { store, persistor } from './src/utils/store';
 import { fetchDates, fetchSchoolPicture, fetchUserInfo } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
 import { setUserInfo, setDaySchedule, setUserSchedule, setRefreshed } from './src/actions/creators';
-import { getScheduleTypeOnDate } from './src/utils/query-schedule';
+import { getScheduleTypeOnDate, isScheduleEmpty } from './src/utils/query-schedule';
 import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
 import { insert } from './src/utils/utils';
 import Settings from './src/screens/Settings';
@@ -78,9 +78,9 @@ export default class App extends Component<{}, AppComponentState> {
     }
   }
 
-  private async refreshScheduleIfNeeded() {
+  private refreshScheduleIfNeeded() {
     const {
-      user: { username, password },
+      user: { username, password, schedule },
       dates: { semesterOneStart, semesterTwoStart, semesterTwoEnd },
       day: { refreshedSemesterOne, refreshedSemesterTwo },
     } = store.getState();
@@ -90,15 +90,17 @@ export default class App extends Component<{}, AppComponentState> {
       return;
     }
 
+    if (isScheduleEmpty(schedule)) {
+      return store.dispatch(fetchUserInfo(username, password));
+    }
     if (isAfter(now, semesterTwoEnd)) {
-      store.dispatch(setRefreshed([false, false]));
-      await store.dispatch(fetchDates(now.getFullYear()));
-    } else if (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo) {
-      store.dispatch(setRefreshed([true, true]));
-      await store.dispatch(fetchUserInfo(username, password));
-    } else if (isAfter(now, semesterOneStart) && !refreshedSemesterOne) {
-      store.dispatch(setRefreshed([true, false]));
-      await store.dispatch(fetchUserInfo(username, password));
+      return store.dispatch(fetchDates(now.getFullYear()));
+    }
+
+    const shouldRefresh = (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo)
+      || (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
+    if (shouldRefresh) {
+      return store.dispatch(fetchUserInfo(username, password));
     }
   }
 

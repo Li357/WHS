@@ -1,19 +1,39 @@
 import React from 'react';
 import Carousel from 'react-native-snap-carousel';
+import styled from 'styled-components/native';
 
 import authorizedRoute from '../components/common/authorizedRoute';
 import ScheduleCard from '../components/schedule/ScheduleCard';
+import Subtext from '../components/common/Subtext';
 import { ScheduleItem } from '../types/schedule';
 import { wp } from '../utils/style';
+import { SCREEN_MARGIN_HORIZONTAL } from '../constants/style';
+import { isScheduleEmpty } from '../utils/query-schedule';
+
+const EmptyScreen = styled.View`
+  height: 50%;
+  justify-content: center;
+  align-items: center;
+  padding: 0 ${SCREEN_MARGIN_HORIZONTAL};
+`;
+
+const InfoText = styled(Subtext)`
+  text-align: center;
+`;
 
 export default authorizedRoute(
   (navigation) => navigation.getParam('name', 'Schedule'),
   function Schedule({ navigation }) {
     const schedule = navigation.getParam('schedule', []);
 
-    if (schedule.length === 0) {
-      // TODO: Handle empty schedule
-      return null;
+    if (isScheduleEmpty(schedule)) {
+      return (
+        <EmptyScreen>
+          <InfoText numberOfLines={3}>
+            Your schedule is empty. Navigate to Settings > Manual Refresh to update your schedule when school starts.
+          </InfoText>
+        </EmptyScreen>
+      );
     }
 
     const renderItem = ({ item }: { item: ScheduleItem[], index: number }) => (

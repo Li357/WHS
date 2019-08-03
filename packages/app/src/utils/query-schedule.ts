@@ -201,6 +201,14 @@ export function isHalfMod(modNumber: ModNumber) {
 }
 
 /**
+ * Checks if processed schedule is completely empty
+ * @param schedule processed schedule
+ */
+export function isScheduleEmpty(schedule: Schedule) {
+  return schedule.every((dayUserSchedule) => dayUserSchedule.length === 0);
+}
+
+/**
  * Transforms ModNumber (from HOMEROOM to all FINALS) into actual mod display string
  * @param modNumber mod number to transform
  */

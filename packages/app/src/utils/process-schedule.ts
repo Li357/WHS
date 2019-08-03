@@ -151,7 +151,7 @@ export function interpolateOpenItems(userDaySchedule: UserDaySchedule, day: numb
   let index = 0;
   let indexShift = 0; // every insert shifts indices by one to the right
 
-  while (index <= userDaySchedule.length) {
+  while (index < userDaySchedule.length) {
     const prevEndMod = getWithFallback(userDaySchedule[index - 1], ['endMod'], 0);
     const currentStartMod = getWithFallback(userDaySchedule[index], ['startMod'], 15);
 

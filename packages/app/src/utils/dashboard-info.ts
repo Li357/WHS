@@ -3,7 +3,7 @@ import {
 } from '../types/schedule';
 import { DashboardInfoGetter } from '../types/dashboard-info';
 import { formatDuration } from './duration';
-import { isHalfMod, getModNameFromModNumber } from './query-schedule';
+import { isHalfMod, getModNameFromModNumber, isScheduleEmpty } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
 
 function createTimeLeftInfo(name: string) {
@@ -72,7 +72,7 @@ function dayEndsInfo(timeLeft: number, scheduleInfo: ScheduleInfo, dayEnd: numbe
 export function getDashboardInfo(
   daySchedule: DaySchedule, userSchedule: Schedule, { current }: ScheduleInfo,
 ): DashboardInfoGetter[] {
-  if (userSchedule.length === 0) {
+  if (isScheduleEmpty(userSchedule)) {
     return [scheduleEmptyInfo];
   }
 
