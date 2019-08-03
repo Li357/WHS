@@ -93,6 +93,7 @@ $breakpoint = 900px
 
   &-navbar
     background-color rgba(0, 0, 0, .04)
+    overflow hidden
 
     @media screen and (max-width: $breakpoint)
       width 0 !important
