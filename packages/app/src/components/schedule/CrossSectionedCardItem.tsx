@@ -18,7 +18,9 @@ const EmptyBlock = styled.View`
   background-color: ${({ theme }) => theme.foregroundColor};
 `;
 
+// height: 0 is a hack since flexBasis doesn't seem to work.
 const DetailsContainer = styled.View<{ topBorder: boolean, bottomBorder: boolean }>`
+  height: 0;
   justify-content: center;
   align-items: center;
   border-top-width: ${({ topBorder }) => topBorder ? BORDER_WIDTH : 0};
