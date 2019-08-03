@@ -1,4 +1,5 @@
 import { ThemeState } from '../types/store';
+import { ACCENT_COLOR } from './style';
 
 export const lightTheme: ThemeState = {
   backgroundColor: '#FFFFFF',
@@ -6,7 +7,7 @@ export const lightTheme: ThemeState = {
   textColor: '#000000',
   subtextColor: '#7C7C7C',
   borderColor: '#C6C6C6',
-  accentColor: '#EF4040',
+  accentColor: ACCENT_COLOR,
   statusBar: 'dark-content',
 };
 
@@ -16,6 +17,6 @@ export const darkTheme: ThemeState = {
   textColor: '#FFFFFF',
   subtextColor: '#A5A5A5',
   borderColor: '#A0A0A0',
-  accentColor: '#EF4040',
+  accentColor: ACCENT_COLOR,
   statusBar: 'light-content',
 };

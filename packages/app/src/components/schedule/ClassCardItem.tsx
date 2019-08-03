@@ -7,7 +7,6 @@ import CardItem, { Title, BodyText } from './CardItem';
 const DetailsContainer = styled.View`
   justify-content: center;
   align-items: center;
-  flex: 8;
 `;
 
 interface ScheduleCardItemProps {

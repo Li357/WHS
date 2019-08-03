@@ -1,17 +1,11 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text, View, StyleSheet } from 'react-native';
 
 import { CrossSectionedItem, CrossSectionedColumn, ClassItem } from '../../types/schedule';
 import { getOccupiedMods, isHalfMod } from '../../utils/query-schedule';
 import CardItem, { Title, BodyText } from './CardItem';
 import { sum } from '../../utils/utils';
-import { BORDER_WIDTH, SCHEDULE_CARD_ITEM_PADDING } from '../../constants/style';
-
-const BlockContainer = styled.View`
-  flex: 8;
-  flex-direction: row;
-`;
+import { BORDER_WIDTH } from '../../constants/style';
 
 const ColumnContainer = styled.View<{ last: boolean, empty: boolean }>`
   flex: 1;
@@ -88,10 +82,5 @@ export default function CrossSectionedCardItem({ first, scheduleItem }: CrossSec
       {column.map(createColumn)}
     </ColumnContainer>
   ));
-
-  return (
-    <CardItem first={first} type="course" scheduleItem={scheduleItem}>
-      <BlockContainer>{columns}</BlockContainer>
-    </CardItem>
-  );
+  return (<CardItem first={first} type="course" scheduleItem={scheduleItem}>{columns}</CardItem>);
 }

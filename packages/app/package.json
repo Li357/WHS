@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
     "@babel/runtime": "^7.4.5",
     "@types/cheerio": "^0.22.11",
     "@types/fetch-mock": "^7.3.0",

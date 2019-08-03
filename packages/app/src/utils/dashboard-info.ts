@@ -33,7 +33,12 @@ function createClassInfo(name: string, selector: (ScheduleInfo: ScheduleInfo) =>
   return function classInfo(timeLeft: number, scheduleInfo: ScheduleInfo) {
     const scheduleItem = selector(scheduleInfo);
     if (scheduleItem.hasOwnProperty('columns')) {
-      return { title: 'Cross Sectioned', name: `${name} class`, crossSectioned: true };
+      return {
+        title: 'Cross Sectioned',
+        name: `${name} class`,
+        crossSectioned: true,
+        scheduleItem,
+      };
     }
     const { title, body } = scheduleItem as ClassItem;
     const subtitleObj = body !== '' ? { subtitle: body } : {};

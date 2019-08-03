@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { StatusBar, AppState as RNAppState, AppStateStatus } from 'react-native';
+import { AppState as RNAppState, AppStateStatus } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { Transition } from 'react-native-reanimated';
 import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
+import codePush from 'react-native-code-push';
 // https://github.com/kmagiera/react-native-gesture-handler/issues/320
 import 'react-native-gesture-handler';
+import { isAfter } from 'date-fns';
 
 import Drawer from './src/components/drawer/Drawer';
 import Login from './src/screens/Login';
@@ -15,9 +17,9 @@ import Schedule from './src/screens/Schedule';
 import Loading from './src/screens/Loading';
 import Themer from './src/components/common/Themer';
 import { store, persistor } from './src/utils/store';
-import { fetchDates, fetchSchoolPicture } from './src/actions/async';
+import { fetchDates, fetchSchoolPicture, fetchUserInfo } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
-import { setUserInfo, setDaySchedule, setUserSchedule } from './src/actions/creators';
+import { setUserInfo, setDaySchedule, setUserSchedule, setRefreshed } from './src/actions/creators';
 import { getScheduleTypeOnDate } from './src/utils/query-schedule';
 import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
 import { insert } from './src/utils/utils';
@@ -26,11 +28,20 @@ import AddSchedule from './src/screens/AddSchedule';
 
 interface AppComponentState {
   rehydrated: boolean;
+  syncStatus: codePush.SyncStatus;
+  syncProgress: number;
 }
 
+@codePush({
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  installMode: codePush.InstallMode.ON_NEXT_RESUME,
+  mandatoryInstallMode: codePush.InstallMode.ON_NEXT_RESUME,
+})
 export default class App extends Component<{}, AppComponentState> {
   public state = {
     rehydrated: false,
+    syncStatus: codePush.SyncStatus.UP_TO_DATE,
+    syncProgress: 0,
   };
 
   private rehydrateProfilePhoto = async () => {
@@ -64,6 +75,30 @@ export default class App extends Component<{}, AppComponentState> {
       }
       const revisedUserSchedule = insert(schedule, [revisedUserDaySchedule], day - 1);
       store.dispatch(setUserSchedule(revisedUserSchedule));
+    }
+  }
+
+  private async refreshScheduleIfNeeded() {
+    const {
+      user: { username, password },
+      dates: { semesterOneStart, semesterTwoStart, semesterTwoEnd },
+      day: { refreshedSemesterOne, refreshedSemesterTwo },
+    } = store.getState();
+    const now = new Date();
+
+    if (semesterOneStart === null || semesterTwoStart === null || semesterTwoEnd === null) {
+      return;
+    }
+
+    if (isAfter(now, semesterTwoEnd)) {
+      store.dispatch(setRefreshed([false, false]));
+      await store.dispatch(fetchDates(now.getFullYear()));
+    } else if (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo) {
+      store.dispatch(setRefreshed([true, true]));
+      await store.dispatch(fetchUserInfo(username, password));
+    } else if (isAfter(now, semesterOneStart) && !refreshedSemesterOne) {
+      store.dispatch(setRefreshed([true, false]));
+      await store.dispatch(fetchUserInfo(username, password));
     }
   }
 
@@ -127,24 +162,17 @@ export default class App extends Component<{}, AppComponentState> {
     if (isLoggedIn) {
       await this.silentlyUpdateData();
       await this.rehydrateProfilePhoto();
+      await this.refreshScheduleIfNeeded();
       this.updateDayScheduleIfNeeded();
     }
     this.setState({ rehydrated: true });
   }
 
   private renderApp = () => {
-    if (this.state.rehydrated) {
-      const { user: { username, password } } = store.getState();
-      const isLoggedIn = username.length > 0 && password.length > 0;
-      const AppContainer = this.createNavigationContainer(isLoggedIn);
-      return (<Themer><AppContainer /></Themer>);
-    }
-    return (
-      <>
-        <StatusBar barStyle="dark-content" />
-        <Loading />
-      </>
-    );
+    const { user: { username, password } } = store.getState();
+    const isLoggedIn = username.length > 0 && password.length > 0;
+    const AppContainer = this.createNavigationContainer(isLoggedIn);
+    return (<Themer><AppContainer /></Themer>);
   }
 
   public componentDidMount() {
@@ -158,7 +186,11 @@ export default class App extends Component<{}, AppComponentState> {
   public render() {
     return (
       <Provider store={store}>
-        <PersistGate persistor={persistor} onBeforeLift={this.handleRehydrate}>
+        <PersistGate
+          loading={<Loading />}
+          persistor={persistor}
+          onBeforeLift={this.handleRehydrate}
+        >
           {this.renderApp()}
         </PersistGate>
       </Provider>
