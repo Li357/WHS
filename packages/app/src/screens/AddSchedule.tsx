@@ -13,7 +13,10 @@ import { RawTeacherData } from '../types/schedule';
 import { reportError, notify } from '../utils/utils';
 import TeacherItem from '../components/add-schedule/TeacherItem';
 import CurrentTeacherItem from '../components/add-schedule/CurrentTeacherItem';
-import { FORM_BORDER_RADIUS, FORM_MARGIN_VERTICAL, SMALLTEXT_SIZE, FORM_PADDING_HORIZONTAL, LARGE_ICON_SIZE } from '../constants/style';
+import {
+  FORM_BORDER_RADIUS, FORM_MARGIN_VERTICAL, FORM_PADDING_HORIZONTAL,
+  SMALLTEXT_SIZE, LARGE_ICON_SIZE,
+} from '../constants/style';
 import { AppState } from '../types/store';
 import { addTeacherSchedule, setTeacherSchedules } from '../actions/creators';
 import { getUserScheduleFromHTML, parseHTMLFromURL } from '../utils/process-info';

@@ -1,7 +1,7 @@
 import {
   ScheduleInfo, ModNumber, ScheduleItem, ClassItem, DaySchedule, Schedule,
 } from '../types/schedule';
-import { DashboardInfoGetter, DashboardInfo } from '../types/dashboard-info';
+import { DashboardInfoGetter } from '../types/dashboard-info';
 import { formatDuration } from './duration';
 import { isHalfMod, getModNameFromModNumber, isScheduleEmpty } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';

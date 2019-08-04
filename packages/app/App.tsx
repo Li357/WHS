@@ -19,7 +19,7 @@ import Themer from './src/components/common/Themer';
 import { store, persistor } from './src/utils/store';
 import { fetchDates, fetchSchoolPicture, fetchUserInfo } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
-import { setUserInfo, setDaySchedule, setUserSchedule, setRefreshed } from './src/actions/creators';
+import { setUserInfo, setDaySchedule, setUserSchedule } from './src/actions/creators';
 import { getScheduleTypeOnDate, isScheduleEmpty } from './src/utils/query-schedule';
 import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
 import { insert } from './src/utils/utils';
