@@ -80,8 +80,8 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   });
 
   const cards = dashboardInfo.map((getter, index) => {
-    const { crossSectioned, ...info } = getter(countdown, scheduleInfo, endCountdown);
-    const Card = crossSectioned ? CrossSectionedCard : InfoCard;
+    const info = getter(countdown, scheduleInfo, endCountdown);
+    const Card = info.title === 'Cross Sectioned' ? CrossSectionedCard : InfoCard;
     return (<Card key={index} {...info} />);
   });
   return (<>{cards}</>);

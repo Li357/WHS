@@ -21,6 +21,7 @@ const CardItemContainer = styled.View`
   overflow: hidden;
   border-radius: ${CARD_BORDER_RADIUS};
   zIndex: 2;
+  border: ${CARD_BORDER_WIDTH} solid ${({ theme }) => theme.borderColor}
 `;
 
 const Body = styled.View`
