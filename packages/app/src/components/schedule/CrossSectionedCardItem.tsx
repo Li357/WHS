@@ -18,13 +18,16 @@ const EmptyBlock = styled.View`
   background-color: ${({ theme }) => theme.foregroundColor};
 `;
 
-const DetailsContainer = styled.View<{ topBorder: boolean, bottomBorder: boolean }>`
+// height: 0 is a hack since flexBasis doesn't seem to work.
+const DetailsContainer = styled.View<{ topBorder: boolean, bottomBorder: boolean, annotation: boolean }>`
+  height: 0;
   justify-content: center;
   align-items: center;
   border-top-width: ${({ topBorder }) => topBorder ? BORDER_WIDTH : 0};
   border-top-color: ${({ theme }) => theme.borderColor};
   border-bottom-width: ${({ bottomBorder }) => bottomBorder ? BORDER_WIDTH : 0};
   border-bottom-color: ${({ theme }) => theme.borderColor};
+  background-color: ${({ theme, annotation }) => annotation ? theme.foregroundColor : theme.backgroundColor};
 `;
 
 const ColumnItem = styled.View`
@@ -44,7 +47,7 @@ export default function CrossSectionedCardItem({ first, scheduleItem }: CrossSec
   const crossSectionedEndMod = classMods.slice(-1)[0] + 1;
 
   const createColumn = (
-    { title, body, startMod, endMod, length, sourceId }: ClassItem,
+    { title, body, startMod, endMod, length, sourceId, sourceType }: ClassItem,
     index: number,
     array: CrossSectionedColumn,
   ) => {
@@ -62,6 +65,7 @@ export default function CrossSectionedCardItem({ first, scheduleItem }: CrossSec
       <ColumnItem key={sourceId} style={{ flex: modItemFlex + flexBetweenNext }}>
         {index === 0 && prefix !== 0 && <EmptyBlock style={{ flex: prefixFlex }} />}
         <DetailsContainer
+          annotation={sourceType === 'annotation'}
           topBorder={startMod !== crossSectionedStartMod}
           bottomBorder={nextItem !== undefined || endMod !== crossSectionedEndMod}
           style={{ flex: modItemFlex }}

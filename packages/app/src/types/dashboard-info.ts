@@ -4,7 +4,6 @@ export interface DashboardInfo {
   title: string;
   subtitle?: string;
   name?: string;
-  crossSectioned?: boolean;
   scheduleItem?: ScheduleItem;
 }
 

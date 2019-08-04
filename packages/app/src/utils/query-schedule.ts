@@ -124,7 +124,7 @@ export function containsDate(queryDate: Date, dates: Date[]) {
  * @param omitBreak whether or not to stop from returning SCHEDULES.BREAK (used in schedule display)
  */
 export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBreak = false): DayScheduleType {
-  const { semesterOneEnd, semesterTwoEnd } = dates;
+  const { semesterOneStart, semesterOneEnd, semesterTwoEnd } = dates;
   if (semesterOneEnd !== null && semesterTwoEnd !== null) {
     const semesterOneFinalsOne = subDays(semesterOneEnd, 1);
     const semesterTwoFinalsOne = subDays(semesterTwoEnd, 1);
@@ -139,7 +139,11 @@ export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBr
   const day = queryDate.getDay();
   if (!omitBreak) {
     // Always let summer/break take precedence over weekend
-    // TODO: Check for summer
+    // If the date is after semesterTwoEnd, they will be refreshed anyways
+    if (semesterOneStart !== null && isBefore(queryDate, semesterOneStart)) {
+      return 'SUMMER';
+    }
+
     if (containsDate(queryDate, dates.noSchool)) {
       return 'BREAK';
     }
@@ -198,6 +202,14 @@ export function getCountdown(date: Date, { current, next }: ScheduleInfo, daySch
  */
 export function isHalfMod(modNumber: ModNumber) {
   return modNumber >= ModNumber.FOUR && modNumber <= ModNumber.ELEVEN;
+}
+
+/**
+ * Checks if processed schedule is completely empty
+ * @param schedule processed schedule
+ */
+export function isScheduleEmpty(schedule: Schedule) {
+  return schedule.every((dayUserSchedule) => dayUserSchedule.length === 0);
 }
 
 /**

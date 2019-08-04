@@ -11,6 +11,7 @@ export const SUBTEXT_FONT = Platform.select({ ios: 'SFProDisplay-Medium', androi
 export const SUBTEXT_SIZE = 20;
 export const SMALLTEXT_FONT = SUBTEXT_FONT;
 export const SMALLTEXT_SIZE = 15;
+export const LARGE_ICON_SIZE = 100;
 export const BORDER_WIDTH = '1px';
 
 export const SCREEN_MARGIN_HORIZONTAL = wp2px('10%');

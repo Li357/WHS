@@ -15,7 +15,6 @@ interface InfoProps {
 }
 
 export default function Info({ daySchedule, userSchedule }: InfoProps) {
-  // TODO: add AppState event listeners
   const now = new Date();
   const [scheduleInfo, setScheduleInfo] = useState(() => getScheduleInfoAtTime(now, daySchedule, userSchedule));
   const [countdown, setCountdown] = useState(() => getCountdown(now, scheduleInfo, daySchedule));
@@ -81,8 +80,8 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   });
 
   const cards = dashboardInfo.map((getter, index) => {
-    const { crossSectioned, ...info } = getter(countdown, scheduleInfo, endCountdown);
-    const Card = crossSectioned ? CrossSectionedCard : InfoCard;
+    const info = getter(countdown, scheduleInfo, endCountdown);
+    const Card = info.title === 'Cross Sectioned' ? CrossSectionedCard : InfoCard;
     return (<Card key={index} {...info} />);
   });
   return (<>{cards}</>);

@@ -1,10 +1,12 @@
 import { ThunkAction } from 'redux-thunk';
 import fetch from 'react-native-fetch-polyfill';
+import { isAfter } from 'date-fns';
 
 import {
   AppState,
   SetUserCredentialsAction, SetUserInfoAction, SetUserScheduleAction, SetTeacherSchedulesAction,
   SetDatesAction,
+  SetRefreshedAction,
 } from '../types/store';
 import {
   getLoginURL, parseHTMLFromURL, getUserScheduleFromHTML, getUserInfoFromHTML, getLoginError, getSchoolPictureFromHTML,
@@ -12,7 +14,9 @@ import {
   getDates,
 } from '../utils/process-info';
 import { getProfilePhoto, setProfilePhoto } from '../utils/manage-photos';
-import { setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials, setDates } from './creators';
+import {
+  setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials, setDates, setRefreshed,
+} from './creators';
 import { LoginError } from '../utils/error';
 import { FETCH_TIMEOUT, DATE_TYPES, SETTING_TYPES } from '../constants/fetch';
 import { getSchoolYearFromDate } from '../utils/query-schedule';
@@ -22,9 +26,14 @@ export function fetchUserInfo(username: string, password: string) {
     Promise<void>,
     AppState,
     undefined,
-    SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction
+    SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction |
+    SetTeacherSchedulesAction | SetRefreshedAction
   > = async (dispatch, getState) => {
-    const { user } = getState();
+    const {
+      user,
+      dates: { semesterOneStart, semesterTwoStart, semesterTwoEnd },
+      day: { refreshedSemesterOne, refreshedSemesterTwo },
+    } = getState();
     // FIXME: two fetches are needed to clear the current user when another logs in
     // if we are not doing a manual refresh, clear the current user
     const loginURL = getLoginURL(username, password);
@@ -44,6 +53,17 @@ export function fetchUserInfo(username: string, password: string) {
     const profilePhoto = await getProfilePhoto(username) || info.schoolPicture;
     await setProfilePhoto(username, profilePhoto);
     const refreshedTeacherSchedules = await getTeacherSchedules(user.teacherSchedules);
+
+    if (semesterOneStart !== null && semesterTwoStart !== null && semesterTwoEnd !== null) {
+      const now = new Date();
+      if (isAfter(now, semesterTwoEnd)) {
+        dispatch(setRefreshed([false, false]));
+      } else if (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo) {
+        dispatch(setRefreshed([true, true]));
+      } else if (isAfter(now, semesterOneStart) && !refreshedSemesterOne) {
+        dispatch(setRefreshed([true, false]));
+      }
+    }
 
     dispatch(setUserInfo({ ...info, profilePhoto }));
     dispatch(setUserSchedule(schedule));
