@@ -1,9 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.whs">
+  package="com.li357.whs">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <permission
+      android:name="${applicationId}.permission.C2D_MESSAGE"
+      android:protectionLevel="signature" />
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
       android:name=".MainApplication"
@@ -23,9 +30,28 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
       <meta-data
         android:name="com.bugsnag.android.API_KEY"
         android:value="3fb4434641f5a8e78c8a1ca4ad968cc5" />
+      
+      <meta-data
+        android:name="com.dieam.reactnativepushnotification.notification_channel_name"
+        android:value="Next class" />
+      <meta-data
+        android:name="com.dieam.reactnativepushnotification.notification_channel_description"
+        android:value="The next mod and class on your schedule" />
+      <meta-data
+        android:name="com.dieam.reactnativepushnotification.notification_color"
+        android:resource="@android:color/accent" />
+
+      <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+      <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+        <intent-filter>
+          <action android:name="android.intent.action.BOOT_COMPLETED" />
+        </intent-filter>
+      </receiver>
+      <service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationRegistrationService" />
     </application>
 
 </manifest>

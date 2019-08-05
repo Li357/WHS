@@ -67,9 +67,10 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
       case 'active':
         batch(() => {
           const openDate = new Date();
-          setScheduleInfo(getScheduleInfoAtTime(openDate, daySchedule, userSchedule));
-          setCountdown(getCountdown(openDate, scheduleInfo, daySchedule));
-          setDashboardInfo(getDashboardInfo(daySchedule, userSchedule, scheduleInfo));
+          const newScheduleInfo = getScheduleInfoAtTime(openDate, daySchedule, userSchedule);
+          setScheduleInfo(newScheduleInfo);
+          setCountdown(getCountdown(openDate, newScheduleInfo, daySchedule));
+          setDashboardInfo(getDashboardInfo(daySchedule, userSchedule, newScheduleInfo));
           setInactive(false);
         });
     }
@@ -77,7 +78,7 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   useEffect(() => {
     RNAppState.addEventListener('change', updateInfo);
     return () => RNAppState.removeEventListener('change', updateInfo);
-  });
+  }, [daySchedule, userSchedule]);
 
   const cards = dashboardInfo.map((getter, index) => {
     const info = getter(countdown, scheduleInfo, endCountdown);

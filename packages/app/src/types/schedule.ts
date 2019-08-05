@@ -1,3 +1,5 @@
+import { DayScheduleType } from './store';
+
 interface RawClassItemData {
   courseId: string;
 }

@@ -1,8 +1,9 @@
-package com.whs;
+package com.li357.whs;
 
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.bugsnag.BugsnagReactNative;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -37,6 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativePushNotificationPackage(),
             new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG),
             BugsnagReactNative.getPackage(),
             new VectorIconsPackage(),

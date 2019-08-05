@@ -5,6 +5,7 @@ import {
 import { sortByProps, insert, getWithFallback, splice } from './utils';
 import { getModNameFromModNumber, getOccupiedMods } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
+import { NO_HOMEROOM } from '../constants/fetch';
 
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item
@@ -147,12 +148,19 @@ export function interpolateCrossSectionedItems(userDaySchedule: ClassItem[], day
  * @param day day of the current schedule
  */
 export function interpolateOpenItems(userDaySchedule: UserDaySchedule, day: number): UserDaySchedule {
+  // TODO: Fix tests
+  if (userDaySchedule.length === 0) {
+    // allows for check against empty schedules or else will show up as open day, see isScheduleEmpty
+    return userDaySchedule;
+  }
+
   let transformed = [...userDaySchedule];
   let index = 0;
   let indexShift = 0; // every insert shifts indices by one to the right
 
-  while (index < userDaySchedule.length) {
-    const prevEndMod = getWithFallback(userDaySchedule[index - 1], ['endMod'], 0);
+  while (index <= userDaySchedule.length) {
+    // TODO: Tests for open mod first item on wed
+    const prevEndMod = getWithFallback(userDaySchedule[index - 1], ['endMod'], day === 3 ? 1 : 0);
     const currentStartMod = getWithFallback(userDaySchedule[index], ['startMod'], 15);
 
     if (prevEndMod < currentStartMod) {
@@ -249,6 +257,7 @@ export function getFinalsSchedule(userDaySchedule: UserDaySchedule, day: number)
 export function processSchedule(rawSchedule: RawSchedule) {
   return rawSchedule
     .reduce((userDaySchedules: ClassItem[][], rawItem) => {
+      // TODO: tests for no homeroom
       userDaySchedules[rawItem.day - 1].push(convertToClassItem(rawItem));
       return userDaySchedules;
     }, [[], [], [], [], []])

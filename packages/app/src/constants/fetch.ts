@@ -1,5 +1,7 @@
 import { DateListType, YearSettingType } from '@whs/server';
 
+export const PACKAGE_NAME = 'com.li357.whs';
+
 export const SCHOOL_WEBSITE = 'https://westside-web.azurewebsites.net';
 export const LOGIN_URL = `${SCHOOL_WEBSITE}/account/login`;
 export const SEARCH_URL = `${SCHOOL_WEBSITE}/api/search`;
@@ -28,5 +30,6 @@ export const SCHOOL_PICTURE_BLANK_SYMBOL = '@@blank-user';
 
 export const SCHEDULE_SELECTOR = 'body > script:not([src])';
 export const SCHEDULE_REGEX = /'(.+)';$/;
+export const NO_HOMEROOM_TITLE = 'No Homeroom';
 
 export const LOGIN_ERROR_SELECTOR = '.alert.alert-danger';

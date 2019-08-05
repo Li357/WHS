@@ -109,11 +109,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.whs"
+        applicationId "com.li357.whs"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "3.0"
     }
     splits {
         abi {
@@ -156,6 +156,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-push-notification')
     implementation project(':react-native-code-push')
     implementation project(':bugsnag-react-native')
     implementation project(':react-native-vector-icons')

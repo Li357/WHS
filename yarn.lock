@@ -1941,6 +1941,13 @@
     shell-quote "1.6.1"
     ws "^1.1.0"
 
+"@react-native-community/push-notification-ios@^1.0.1", "@react-native-community/push-notification-ios@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/push-notification-ios/-/push-notification-ios-1.0.2.tgz#541bc8ce088d726c4a98fff0e261b4d0f555cacf"
+  integrity sha512-9lWaw+zBGvT8Yw9HZmiLkYbnmF5AzrWexYh2qmRt/shpfZawCTPmPBrq09N7JhiPV4g/gEbeLXlndxl1JQeB0g==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-navigation/core@~3.4.1":
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-3.4.2.tgz#bec563e94fde40fbab3730cdc97f22afbb2a1498"
@@ -2063,6 +2070,11 @@
   integrity sha512-GmK8AKu8i+s+EChK/uZ5IbrXPcPaQKWaNSGevDT/7o3gFObwSUQwqb1jMqxuo+YPvj0ckGzINI+EO7EHcmJjKg==
   dependencies:
     "@types/express" "*"
+
+"@types/deep-diff@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/deep-diff/-/deep-diff-1.0.0.tgz#7eba3202a99b3a207f758f351f7f86387269fc40"
+  integrity sha512-ENsJcujGbCU/oXhDfQ12mSo/mCBWodT2tpARZKmatoSrf8+cGRCPi0KVj3I0FORhYZfLXkewXu7AoIWqiBLkNw==
 
 "@types/events@*":
   version "3.0.0"
@@ -2214,6 +2226,11 @@
   dependencies:
     "@types/react" "*"
     "@types/react-native" "*"
+
+"@types/react-native-push-notification@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react-native-push-notification/-/react-native-push-notification-3.0.5.tgz#9e80a3015cae9ffb3b4a2601ea655481f64da940"
+  integrity sha512-pIvo2I/i9vVisDGGxP/stAbZ8ODnwHhPWEU7GweWZU/mqwmUXDbAgq824AsDAzbeI1ApDLE7MdLDVjQDYueaqA==
 
 "@types/react-native-snap-carousel@^3.7.3":
   version "3.7.3"
@@ -12271,6 +12288,13 @@ react-native-progress@^3.6.0:
   integrity sha512-zzTe595xaaskyfR5OzaGrU4O0R+YkgdEw+EspgGD7wh8Hu0fs6ue3xLW+HEbTjOCn62pCRivwi3NxbpWNBCC7Q==
   dependencies:
     prop-types "^15.7.2"
+
+react-native-push-notification@^3.1.8:
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-3.1.8.tgz#18c0dbac93333676afb0f7c6c33f031b0ffb9774"
+  integrity sha512-cnehwFi8sNXE0Vth2PEybrhfyQNSe0Pe49AxqNHiwhIiGP0NQiOC1IVXoUaGpF+hpw+HdWoC7m2ZIRmckB03hw==
+  dependencies:
+    "@react-native-community/push-notification-ios" "^1.0.1"
 
 react-native-reanimated@^1.0.1:
   version "1.1.0"
