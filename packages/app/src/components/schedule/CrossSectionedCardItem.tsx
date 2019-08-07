@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import { CrossSectionedItem, CrossSectionedColumn, ClassItem } from '../../types/schedule';
 import { getOccupiedMods, isHalfMod } from '../../utils/query-schedule';
 import CardItem, { Title, BodyText } from './CardItem';
-import { sum } from '../../utils/utils';
+import { sum, last } from '../../utils/utils';
 import { BORDER_WIDTH } from '../../constants/style';
 
 const ColumnContainer = styled.View<{ last: boolean, empty: boolean }>`
@@ -44,7 +44,7 @@ export default function CrossSectionedCardItem({ first, scheduleItem }: CrossSec
   const classMods = getOccupiedMods(scheduleItem);
   const flexRatios = classMods.map((mod) => isHalfMod(mod) ? 1 : 2);
   const crossSectionedStartMod = classMods[0];
-  const crossSectionedEndMod = classMods.slice(-1)[0] + 1;
+  const crossSectionedEndMod = last(classMods) + 1;
 
   const createColumn = (
     { title, body, startMod, endMod, length, sourceId, sourceType }: ClassItem,

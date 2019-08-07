@@ -9,6 +9,7 @@ import * as SCHEDULES from '../../src/constants/schedules';
 import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem } from '../../src/types/schedule';
 import { processSchedule, convertToClassItem, getFinalsSchedule } from '../../src/utils/process-schedule';
 import rawSchedule from './test-schedules/raw.json';
+import { last } from '../../src/utils/utils';
 
 describe('schedule querying', () => {
   describe('convertTimeToDate', () => {
@@ -238,7 +239,7 @@ describe('schedule querying', () => {
     it('returns correct for current: CLASS, next: AFTER_SCHOOL', () => {
       expect(getInfo(new Date(2019, 4, 6, 15, 5))).toStrictEqual({
         current: ModNumber.FOURTEEN, next: ModNumber.AFTER_SCHOOL,
-        currentClass: schedule[0].slice(-1)[0], nextClass: null,
+        currentClass: last(schedule[0]), nextClass: null,
       });
     });
 
@@ -252,7 +253,7 @@ describe('schedule querying', () => {
 
       expect(info).toStrictEqual({
         current: ModNumber.FINALS_FOUR, next: ModNumber.AFTER_SCHOOL,
-        currentClass: finalsUserSchedule[0].slice(-1)[0], nextClass: null,
+        currentClass: last(finalsUserSchedule[0]), nextClass: null,
       });
     });
 

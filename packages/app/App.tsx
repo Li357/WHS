@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { AppState as RNAppState, AppStateStatus } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
@@ -26,7 +25,7 @@ import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-sche
 import { insert } from './src/utils/utils';
 import Settings from './src/screens/Settings';
 import AddSchedule from './src/screens/AddSchedule';
-import NotificationManager from './src/utils/notifications';
+import registerNotificationScheduler, { scheduleNotifications } from './src/utils/notifications';
 
 interface AppComponentState {
   rehydrated: boolean;
@@ -164,9 +163,8 @@ export default class App extends Component<{}, AppComponentState> {
       await this.rehydrateProfilePhoto();
       await this.refreshScheduleIfNeeded();
       this.updateDayScheduleIfNeeded();
-
-      const { user: { schedule }, dates } = store.getState();
-      // TODO: new NotificationManager().registerNotifications(schedule, dates);
+      registerNotificationScheduler();
+      await scheduleNotifications();
     }
     this.setState({ rehydrated: true });
   }

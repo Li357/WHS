@@ -3,6 +3,7 @@ package com.li357.whs;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.bugsnag.BugsnagReactNative;
@@ -38,6 +39,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNBackgroundFetchPackage(),
             new ReactNativePushNotificationPackage(),
             new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG),
             BugsnagReactNative.getPackage(),

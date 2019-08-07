@@ -34,7 +34,6 @@
       <meta-data
         android:name="com.bugsnag.android.API_KEY"
         android:value="3fb4434641f5a8e78c8a1ca4ad968cc5" />
-      
       <meta-data
         android:name="com.dieam.reactnativepushnotification.notification_channel_name"
         android:value="Next class" />

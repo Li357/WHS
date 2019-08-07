@@ -1,6 +1,8 @@
 import { DateListType, YearSettingType } from '@whs/server';
 
 export const PACKAGE_NAME = 'com.li357.whs';
+export const IOS_MAX_NOTIFICATIONS = 64;
+export const MAX_NOTIFICATION_SETUP_TIMEOUT = 25000;
 
 export const SCHOOL_WEBSITE = 'https://westside-web.azurewebsites.net';
 export const LOGIN_URL = `${SCHOOL_WEBSITE}/account/login`;

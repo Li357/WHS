@@ -73,6 +73,14 @@ export function sum(arr: number[]) {
   return arr.reduce((a, b) => a + b, 0);
 }
 
+/**
+ * Gets last item of array
+ * @param arr array to get last item of
+ */
+export function last<T>(arr: T[]) {
+  return arr.slice(-1)[0];
+}
+
 export function notify(title: string, body: string) {
   Alert.alert(title, body, [{ text: 'OK' }]);
 }

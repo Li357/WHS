@@ -2227,10 +2227,10 @@
     "@types/react" "*"
     "@types/react-native" "*"
 
-"@types/react-native-push-notification@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@types/react-native-push-notification/-/react-native-push-notification-3.0.5.tgz#9e80a3015cae9ffb3b4a2601ea655481f64da940"
-  integrity sha512-pIvo2I/i9vVisDGGxP/stAbZ8ODnwHhPWEU7GweWZU/mqwmUXDbAgq824AsDAzbeI1ApDLE7MdLDVjQDYueaqA==
+"@types/react-native-push-notification@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@types/react-native-push-notification/-/react-native-push-notification-3.0.6.tgz#07fe6b0b45dc1128949d2925d8e9ae4ed35c4790"
+  integrity sha512-OmgCbcG1d16NKD08Y+ZPrbdiR4z7wig6cj65VSy8Vx4AHq2sTTkKc4V8e65nNDeFj4oscGFiJCljyRYZ5xb7bA==
 
 "@types/react-native-snap-carousel@^3.7.3":
   version "3.7.3"
@@ -6250,6 +6250,11 @@ fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
+
+fast-plist@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/fast-plist/-/fast-plist-0.1.2.tgz#a45aff345196006d406ca6cdcd05f69051ef35b8"
+  integrity sha1-pFr/NFGWAG1AbKbNzQX2kFHvNbg=
 
 fast-safe-stringify@^2.0.6:
   version "2.0.6"
@@ -12191,6 +12196,15 @@ react-native-animatable@^1.2.4:
   integrity sha512-rmah3KQ63ft8DxkzFUwJSuZeq+oSYwldoGF4DTOR5WM2WR5wiWLgBAtrAHlI3Di3by323uOR21s+MlqPcHz2Kw==
   dependencies:
     prop-types "^15.5.10"
+
+react-native-background-fetch@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-2.6.1.tgz#a38c298cf748ba332e51c724ad4d7af8677929af"
+  integrity sha512-/P6GceM1/OvTeHmnwEYJl89FAY2ExpAJfMC4Z1eYUIMwR93Vv2ZLEYa5FHyhItMMeg2ZzlEXmiZTVZ6IbYeb+A==
+  dependencies:
+    fast-plist "^0.1.2"
+    plist "^3.0.1"
+    xcode "^2.0.0"
 
 react-native-cheerio@^1.0.0-rc.4:
   version "1.0.0-rc.4"
