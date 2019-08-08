@@ -5,7 +5,6 @@ import {
 import { sortByProps, insert, getWithFallback, splice } from './utils';
 import { getModNameFromModNumber, getOccupiedMods } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
-import { NO_HOMEROOM } from '../constants/fetch';
 
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item

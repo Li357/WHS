@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from 'reselect';
+import Swiper from 'react-native-swiper';
 
 import authorizedRoute from '../components/common/authorizedRoute';
 import Profile from '../components/dashboard/Profile';
@@ -12,20 +13,17 @@ import { setUserInfo } from '../actions/creators';
 import { setProfilePhoto, removeProfilePhoto } from '../utils/manage-photos';
 import * as SCHEDULES from '../constants/schedules';
 import { reportError } from '../utils/utils';
+import { PROFILE_PHOTO_SIZE, PROFILE_HEIGHT } from '../constants/style';
 
 const dayScheduleSelector = createSelector(
   ({ day }: AppState) => day.schedule,
   (dayScheduleType: DayScheduleType) => SCHEDULES[dayScheduleType],
 );
 export default authorizedRoute('', function Dashboard() {
-  const [showingDetails, setShowingDetails] = useState(false);
   const userInfo = useSelector((state: AppState) => state.user);
+  const { accentColor, borderColor } = useSelector((state: AppState) => state.theme);
   const daySchedule = useSelector(dayScheduleSelector);
   const dispatch = useDispatch();
-
-  const toggleDetails = () => {
-    setShowingDetails(!showingDetails);
-  };
 
   const selectPhoto = async (newPhoto: string, base64: boolean = true) => {
     if (newPhoto.length > 0) {
@@ -46,14 +44,14 @@ export default authorizedRoute('', function Dashboard() {
     await removeProfilePhoto(username);
   };
 
-  const DetailsHeader = (<Details userInfo={userInfo} onPress={toggleDetails} />);
-  const ProfileHeader = (
-    <Profile userInfo={userInfo} onPress={toggleDetails} onPhotoSelect={selectPhoto} onPhotoReset={resetPhoto} />
-  );
-
+  const DetailsHeader = (<Details userInfo={userInfo} />);
+  const ProfileHeader = (<Profile userInfo={userInfo} onPhotoSelect={selectPhoto} onPhotoReset={resetPhoto} />);
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      {showingDetails && !userInfo.isTeacher ? DetailsHeader : ProfileHeader}
+      <Swiper height={PROFILE_HEIGHT} loop={false} activeDotColor={accentColor} dotColor={borderColor}>
+        {ProfileHeader}
+        {DetailsHeader}
+      </Swiper>
       <Info daySchedule={daySchedule} userSchedule={userInfo.schedule} />
     </ScrollView>
   );
