@@ -2,6 +2,7 @@ import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differ
 
 import { DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule, ScheduleItem } from '../types/schedule';
 import { DatesState, DayScheduleType } from '../types/store';
+import { last } from './utils';
 
 /**
  * Converts a `h:mm` time (from a day schedule timpair) to a date for comparison
@@ -27,7 +28,7 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
   }
 
   const dayStart = convertTimeToDate(daySchedule[0][0], date);
-  const dayEnd = convertTimeToDate(daySchedule.slice(-1)[0][1], date);
+  const dayEnd = convertTimeToDate(last(daySchedule)[1], date);
   if (isBefore(date, dayStart)) {
     return { current: ModNumber.BEFORE_SCHOOL, next: daySchedule[0][2] };
   } else if (isAfter(date, dayEnd)) {

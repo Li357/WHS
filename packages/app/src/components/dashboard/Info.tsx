@@ -8,6 +8,7 @@ import { getDashboardInfo } from '../../utils/dashboard-info';
 import InfoCard from './InfoCard';
 import CrossSectionedCard from './CrossSectionedCard';
 import { DaySchedule, Schedule, ModNumber } from '../../types/schedule';
+import { last } from '../../utils/utils';
 
 interface InfoProps {
   daySchedule: DaySchedule;
@@ -21,7 +22,7 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   const [dashboardInfo, setDashboardInfo] = useState(() => getDashboardInfo(daySchedule, userSchedule, scheduleInfo));
 
   const dayEnd = scheduleInfo.current !== ModNumber.UNKNOWN
-    ? convertTimeToDate(daySchedule.slice(-1)[0][1])
+    ? convertTimeToDate(last(daySchedule)[1])
     : now;
   const [endCountdown, setEndCountdown] = useState(() => (
     Math.max(0, differenceInSeconds(dayEnd, now))
@@ -67,9 +68,10 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
       case 'active':
         batch(() => {
           const openDate = new Date();
-          setScheduleInfo(getScheduleInfoAtTime(openDate, daySchedule, userSchedule));
-          setCountdown(getCountdown(openDate, scheduleInfo, daySchedule));
-          setDashboardInfo(getDashboardInfo(daySchedule, userSchedule, scheduleInfo));
+          const newScheduleInfo = getScheduleInfoAtTime(openDate, daySchedule, userSchedule);
+          setScheduleInfo(newScheduleInfo);
+          setCountdown(getCountdown(openDate, newScheduleInfo, daySchedule));
+          setDashboardInfo(getDashboardInfo(daySchedule, userSchedule, newScheduleInfo));
           setInactive(false);
         });
     }
@@ -77,7 +79,7 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   useEffect(() => {
     RNAppState.addEventListener('change', updateInfo);
     return () => RNAppState.removeEventListener('change', updateInfo);
-  });
+  }, [daySchedule, userSchedule]);
 
   const cards = dashboardInfo.map((getter, index) => {
     const info = getter(countdown, scheduleInfo, endCountdown);

@@ -1,4 +1,4 @@
-package com.whs;
+package com.li357.whs;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

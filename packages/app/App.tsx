@@ -25,11 +25,10 @@ import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-sche
 import { insert } from './src/utils/utils';
 import Settings from './src/screens/Settings';
 import AddSchedule from './src/screens/AddSchedule';
+import registerNotificationScheduler, { scheduleNotifications } from './src/utils/notifications';
 
 interface AppComponentState {
   rehydrated: boolean;
-  syncStatus: codePush.SyncStatus;
-  syncProgress: number;
 }
 
 @codePush({
@@ -40,8 +39,6 @@ interface AppComponentState {
 export default class App extends Component<{}, AppComponentState> {
   public state = {
     rehydrated: false,
-    syncStatus: codePush.SyncStatus.UP_TO_DATE,
-    syncProgress: 0,
   };
 
   private rehydrateProfilePhoto = async () => {
@@ -166,6 +163,8 @@ export default class App extends Component<{}, AppComponentState> {
       await this.rehydrateProfilePhoto();
       await this.refreshScheduleIfNeeded();
       this.updateDayScheduleIfNeeded();
+      registerNotificationScheduler();
+      await scheduleNotifications();
     }
     this.setState({ rehydrated: true });
   }

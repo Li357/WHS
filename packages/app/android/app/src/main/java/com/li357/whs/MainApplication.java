@@ -1,21 +1,20 @@
-package com.whs;
+package com.li357.whs;
 
 import android.app.Application;
-
+import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
+import com.facebook.react.PackageList;
+import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
-import com.microsoft.codepush.react.CodePush;
-import com.bugsnag.BugsnagReactNative;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.swmansion.reanimated.ReanimatedPackage;
-import com.rnfs.RNFSPackage;
-import fr.bamlab.rnimageresizer.ImageResizerPackage;
-import com.imagepicker.ImagePickerPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
+import com.microsoft.codepush.react.CodePush;
+import com.bugsnag.BugsnagReactNative;
+import com.rnfs.RNFSPackage;
+import fr.bamlab.rnimageresizer.ImageResizerPackage;
+import com.imagepicker.ImagePickerPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,18 +34,14 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG),
-            BugsnagReactNative.getPackage(),
-            new VectorIconsPackage(),
-            new ReanimatedPackage(),
-            new RNFSPackage(),
-            new ImageResizerPackage(),
-            new ImagePickerPackage(),
-            new RNGestureHandlerPackage(),
-            new AsyncStoragePackage()
-      );
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+      packages.add(new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG));
+      packages.add(BugsnagReactNative.getPackage());
+      packages.add(new RNBackgroundFetchPackage());
+      packages.add(new RNFSPackage());
+      packages.add(new ImageResizerPackage());
+      packages.add(new ImagePickerPackage());
+      return packages;
     }
 
     @Override
