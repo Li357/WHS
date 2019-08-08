@@ -1,6 +1,6 @@
 import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds } from 'date-fns';
 
-import { 
+import {
   DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule,
   ScheduleItem, ClassItem,
 } from '../types/schedule';
