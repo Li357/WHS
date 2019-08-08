@@ -42,7 +42,7 @@
         android:value="The next mod and class on your schedule" />
       <meta-data
         android:name="com.dieam.reactnativepushnotification.notification_color"
-        android:resource="@android:color/accent" />
+        android:resource="@color/accent" />
 
       <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
       <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
