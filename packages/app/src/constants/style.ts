@@ -1,5 +1,5 @@
 /** Contains non-theme layout styles */
-import { Platform, Dimensions } from 'react-native';
+import { Platform } from 'react-native';
 
 import { hp2px, wp2px, wp, hp } from '../utils/style';
 

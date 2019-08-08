@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -13,7 +13,7 @@ import { setUserInfo } from '../actions/creators';
 import { setProfilePhoto, removeProfilePhoto } from '../utils/manage-photos';
 import * as SCHEDULES from '../constants/schedules';
 import { reportError } from '../utils/utils';
-import { PROFILE_PHOTO_SIZE, PROFILE_HEIGHT } from '../constants/style';
+import { PROFILE_HEIGHT } from '../constants/style';
 
 const dayScheduleSelector = createSelector(
   ({ day }: AppState) => day.schedule,

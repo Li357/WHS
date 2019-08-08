@@ -3,7 +3,7 @@ import {
   RawSchedule, UserDaySchedule, RawClassItem, ModNumber,
 } from '../types/schedule';
 import { sortByProps, insert, getWithFallback, splice } from './utils';
-import { getModNameFromModNumber, getOccupiedMods } from './query-schedule';
+import { getModNameFromModNumber, getOccupiedMods, isDuplicateItem } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
 
 /**
@@ -125,7 +125,11 @@ export function interpolateCrossSectionedItems(userDaySchedule: ClassItem[], day
         if (availableColumn > -1) {
           currentBlockColumns[availableColumn].push(current);
         } else {
-          currentBlockColumns.push([current]);
+          // filters out duplicate cross-section items for staff members
+          const isDuplicate = prev !== undefined && isDuplicateItem(prev, current);
+          if (!isDuplicate) {
+            currentBlockColumns.push([current]);
+          }
         }
       }
       currentBlockEndMod = current.endMod;
