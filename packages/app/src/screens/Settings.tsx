@@ -16,6 +16,7 @@ import { notify } from '../utils/utils';
 import ButtonGroup from '../components/drawer/ButtonGroup';
 import client from '../utils/bugsnag';
 import { SUBTEXT_SIZE } from '../constants/style';
+import { scheduleNotifications } from '../utils/notifications';
 
 const SettingIcon = styled(Icon)`
   font-size: ${SUBTEXT_SIZE};
@@ -37,6 +38,7 @@ export default authorizedRoute('Settings', function Settings() {
     setRefreshing(true);
     try {
       await dispatch(fetchUserInfo(username, password));
+      await scheduleNotifications(true);
       notify('Success', 'Your information has been refreshed.');
     } catch (error) {
       notify('Error', error);

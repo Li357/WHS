@@ -56,7 +56,11 @@ export function scheduleNotificationForScheduleItem(
   });
 }
 
-export async function scheduleNotifications() {
+export async function scheduleNotifications(clear = false) {
+  if (clear) {
+    PushNotification.cancelAllLocalNotifications();
+  }
+
   const start = Date.now();
   const currentNotifications: object[] = await new Promise((resolve) => {
     if (Platform.OS === 'android') {
@@ -113,6 +117,11 @@ function onRefreshFailure(status: BackgroundFetchStatus) {
   return AsyncStorage.setItem(REFRESH_STATUS_KEY, status.toString());
 }
 
+export async function notificationScheduler() {
+  const status = await scheduleNotifications();
+  BackgroundFetch.finish(status);
+}
+
 export default function registerNotificationScheduler() {
   PushNotification.configure({
     permissions: {
@@ -120,14 +129,12 @@ export default function registerNotificationScheduler() {
       sound: true,
     },
   });
-
+  BackgroundFetch.stop();
   BackgroundFetch.configure({
     minimumFetchInterval: 40,
     stopOnTerminate: false,
     startOnBoot: true,
     requiredNetworkType: BackgroundFetch.NETWORK_TYPE_ANY,
-  }, async () => {
-    const status = await scheduleNotifications();
-    BackgroundFetch.finish(status);
-  }, onRefreshFailure);
+    enableHeadless: true,
+  }, notificationScheduler, onRefreshFailure);
 }

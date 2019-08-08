@@ -20,6 +20,7 @@ import {
 import { LoginError } from '../utils/error';
 import { FETCH_TIMEOUT, DATE_TYPES, SETTING_TYPES } from '../constants/fetch';
 import { getSchoolYearFromDate } from '../utils/query-schedule';
+import { scheduleNotifications } from '../utils/notifications';
 
 export function fetchUserInfo(username: string, password: string) {
   const fetchUserInfoThunk: ThunkAction<
