@@ -151,18 +151,11 @@ export function interpolateCrossSectionedItems(userDaySchedule: ClassItem[], day
  * @param day day of the current schedule
  */
 export function interpolateOpenItems(userDaySchedule: UserDaySchedule, day: number): UserDaySchedule {
-  // TODO: Fix tests
-  if (userDaySchedule.length === 0) {
-    // allows for check against empty schedules or else will show up as open day, see isScheduleEmpty
-    return userDaySchedule;
-  }
-
   let transformed = [...userDaySchedule];
   let index = 0;
   let indexShift = 0; // every insert shifts indices by one to the right
 
   while (index <= userDaySchedule.length) {
-    // TODO: Tests for open mod first item on wed
     const prevEndMod = getWithFallback(userDaySchedule[index - 1], ['endMod'], day === 3 ? 1 : 0);
     const currentStartMod = getWithFallback(userDaySchedule[index], ['startMod'], 15);
 
@@ -192,6 +185,10 @@ function splitClassItem({ title, body, startMod, endMod, day, sourceType }: Clas
  * @param day to interpolate assembly on
  */
 export function interpolateAssembly(userDaySchedule: UserDaySchedule, day: number): UserDaySchedule {
+  if (userDaySchedule.length === 0) {
+    return userDaySchedule;
+  }
+
   const assemblyMod = SCHEDULES.ASSEMBLY.findIndex((triplet) => triplet[2] === ModNumber.ASSEMBLY)!;
   const itemIndex = userDaySchedule.findIndex((scheduleItem) => (
     getOccupiedMods(scheduleItem).includes(assemblyMod)
@@ -205,8 +202,8 @@ export function interpolateAssembly(userDaySchedule: UserDaySchedule, day: numbe
     const [firstColumns, secondColumns] = crossSectionedItem.columns.reduce((
       [first, second]: [CrossSectionedColumn[], CrossSectionedColumn[]],
       column,
-      ) => {
-      const splitIndex = column.findIndex(({ startMod, endMod }) => endMod > ModNumber.ASSEMBLY);
+    ) => {
+      const splitIndex = column.findIndex(({ endMod }) => endMod > ModNumber.ASSEMBLY);
       const columnItem = column[splitIndex];
       // mod in column traverses assembly
       if (columnItem.startMod < ModNumber.ASSEMBLY) {
@@ -258,12 +255,17 @@ export function getFinalsSchedule(userDaySchedule: UserDaySchedule, day: number)
  * @param rawSchedule raw schedule as fetched from WHS scheduler website
  */
 export function processSchedule(rawSchedule: RawSchedule) {
+  const emptySchedule = [[], [], [], [], []];
+  if (rawSchedule.length === 0) {
+    // empty schedules (i.e. some staff members or new students)
+    return emptySchedule;
+  }
+
   return rawSchedule
     .reduce((userDaySchedules: ClassItem[][], rawItem) => {
-      // TODO: tests for no homeroom
       userDaySchedules[rawItem.day - 1].push(convertToClassItem(rawItem));
       return userDaySchedules;
-    }, [[], [], [], [], []])
+    }, emptySchedule)
     .map((userDaySchedule, index) => {
       const scheduleDay = index + 1;
       const sorted = sortByProps(userDaySchedule, ['startMod', 'length']);

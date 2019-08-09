@@ -74,6 +74,15 @@ describe('action creators', () => {
     expect(creators.setDaySchedule(payload)).toEqual(expectedAction);
   });
 
+  it('should create action to set refreshed', () => {
+    const payload: [boolean, boolean] = [true, false];
+    const expectedAction = {
+      type: DayActions.SET_REFRESHED,
+      payload,
+    };
+    expect(creators.setRefreshed(payload)).toEqual(expectedAction);
+  });
+
   it('should create action to set theme', () => {
     const payload = Theme.DARK;
     const expectedAction = {

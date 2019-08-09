@@ -4,6 +4,7 @@ import {
   interpolateOpenItems,
   processSchedule,
   convertToClassItem,
+  interpolateAssembly,
 } from '../../src/utils/process-schedule';
 import { ClassItem, ScheduleItem, RawSchedule } from '../../src/types/schedule';
 import crossSectionedSchedules from './test-schedules/cross-sectioned.json';
@@ -11,6 +12,8 @@ import openSchedules from './test-schedules/open.json';
 import rawSchedules from './test-schedules/raw.json';
 
 describe('schedule processing', () => {
+  const createOpenDay = (day: number) => [createOpenItem(day === 3 ? 1 : 0, 15, day)];
+
   describe('utility functions', () => {
     it('should generate expected sourceId', () => {
       expect(generateSourceId(1, 10, 3)).toEqual(30110000);
@@ -56,7 +59,8 @@ describe('schedule processing', () => {
     describe('interpolateCrossSectionedItems', () => {
       const schedules: Record<string, ClassItem[]> = crossSectionedSchedules;
       const {
-        none, single, double, oneAndTwoHalves, consecutive, nonConsecutive, nonConsecutiveWithBetween, partialOverlap,
+        none, single, double, oneAndTwoHalves, consecutive,
+        nonConsecutive, nonConsecutiveWithBetween, partialOverlap, duplicates,
       } = schedules;
 
       const flankWithClassItems = (withCrossSections: ClassItem[]) => {
@@ -150,11 +154,11 @@ describe('schedule processing', () => {
         ]);
 
         // tslint:disable-next-line: trailing-comma
-        const [, , between, , ] = nonConsecutiveWithBetween;
-        expect(interpolateCrossSectionedItems(nonConsecutiveWithBetween, first.day)).toEqual([
-          createCrossSectionedItem([[first], [second]], first.startMod, second.endMod, first.day),
+        const [firstB, secondB, between, thirdB, fourthB] = nonConsecutiveWithBetween;
+        expect(interpolateCrossSectionedItems(nonConsecutiveWithBetween, firstB.day)).toEqual([
+          createCrossSectionedItem([[firstB], [secondB]], firstB.startMod, secondB.endMod, firstB.day),
           between,
-          createCrossSectionedItem([[third], [fourth]], third.startMod, fourth.endMod, first.day),
+          createCrossSectionedItem([[thirdB], [fourthB]], thirdB.startMod, fourthB.endMod, firstB.day),
         ]);
       });
 
@@ -170,6 +174,13 @@ describe('schedule processing', () => {
           firstFlank,
           createCrossSectionedItem([[first, third], [second]], first.startMod, third.endMod, first.day),
           secondFlank,
+        ]);
+      });
+
+      it('handles duplicate items for staff members', () => {
+        const [firstCopy, , , , , annotation] = duplicates;
+        expect(interpolateCrossSectionedItems(duplicates, firstCopy.day)).toEqual([
+          createCrossSectionedItem([[firstCopy], [annotation]], firstCopy.startMod, annotation.endMod, firstCopy.day),
         ]);
       });
     });
@@ -223,13 +234,19 @@ describe('schedule processing', () => {
         ]);
       });
 
-      it('handles empty schedule', () => {
-        expect(interpolateOpenItems([], 1)).toEqual([createOpenItem(0, 15, 1)]);
+      it('handles empty schedule for regular/wednesday', () => {
+        const day = 1;
+        expect(interpolateOpenItems([], day)).toEqual(createOpenDay(day));
+
+        const wednesday = 3;
+        expect(interpolateOpenItems([], wednesday)).toEqual(createOpenDay(wednesday));
       });
     });
 
     describe('interpolateAssembly', () => {
-      it.todo('ignores schedule if empty');
+      it('ignores schedule if empty', () => {
+        expect(interpolateAssembly([], 1)).toEqual([]);
+      });
 
       it.todo('injects correct schedule item');
 
@@ -241,12 +258,12 @@ describe('schedule processing', () => {
 
       it.todo('handles regular injection');
     });
+  });
 
-    describe('getFinalsSchedule', () => {
-      it.todo('ignores schedule if empty');
+  describe('getFinalsSchedule', () => {
+    it.todo('ignores schedule if empty');
 
-      it.todo('returns final schedule with homeroom');
-    });
+    it.todo('returns final schedule with homeroom');
   });
 
   describe('convertToClassItem', () => {
@@ -268,10 +285,13 @@ describe('schedule processing', () => {
   describe('processSchedule', () => {
     const schedules: Record<string, RawSchedule> = rawSchedules;
     const { groupByDay, sortByModThenLength } = schedules;
-    const createOpenDay = (day: number) => [createOpenItem(0, 15, day)];
 
     it('converts raw schedule into 5-length array of day schedules', () => {
       expect(processSchedule([])).toHaveLength(5);
+    });
+
+    it('returns empty schedule for empty raw class item array', () => {
+      expect(processSchedule([])).toEqual([[], [], [], [], []]);
     });
 
     it('groups schedule items into separate arrays by day', () => {

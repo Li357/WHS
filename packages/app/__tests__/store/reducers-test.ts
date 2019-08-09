@@ -120,11 +120,19 @@ describe('reducers', () => {
         ...initialDayState,
         schedule: dummyDayScheduleType,
       };
-
       expect(dayReducer(
         initialDayState,
         creators.setDaySchedule(dummyDayScheduleType),
       )).toEqual(expectedState);
+    });
+
+    it('should handle SET_REFRESHED', () => {
+      const expectedState = {
+        ...initialDayState,
+        refreshedSemesterOne: true,
+        refreshedSemesterTwo: false,
+      };
+      expect(dayReducer(initialDayState, creators.setRefreshed([true, false]))).toEqual(expectedState);
     });
   });
 
@@ -181,6 +189,8 @@ describe('reducers', () => {
         },
         day: {
           schedule: dummyDayScheduleType,
+          refreshedSemesterOne: true,
+          refreshedSemesterTwo: true,
         },
         theme: darkTheme,
         dates: {

@@ -1,4 +1,5 @@
-import { insert, sortByProps, getWithFallback, splice } from '../../src/utils/utils';
+import { insert, sortByProps, getWithFallback, splice, sum, last, reportError } from '../../src/utils/utils';
+import client from '../../src/utils/bugsnag';
 
 describe('array utils', () => {
   describe('splice', () => {
@@ -127,6 +128,31 @@ describe('array utils', () => {
       expect(getWithFallback(obj, ['a', 'c'], 0)).toEqual(0);
       expect(getWithFallback(obj, ['a', 'b'], 0)).toEqual(0);
       expect(getWithFallback(obj, ['a', 'b', 'c', 'd'], 0)).toEqual(0);
+    });
+  });
+
+  describe('sum', () => {
+    it('should sum the array', () => {
+      expect(sum([])).toBe(0);
+      expect(sum([0, 1, 3])).toBe(4);
+    });
+  });
+
+  describe('last', () => {
+    it('should handle empty array', () => {
+      expect(last([])).toBe(undefined);
+    });
+
+    it('should return last item', () => {
+      expect(last([1, 2])).toBe(2);
+    });
+  });
+
+  describe('reportError', () => {
+    it('should alert and notify bugsnag', () => {
+      const error = new Error('Test Error');
+      reportError(error);
+      expect(client.notify.mock.calls[0]).toEqual([error]);
     });
   });
 });

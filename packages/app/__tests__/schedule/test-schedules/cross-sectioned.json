@@ -38,7 +38,7 @@
     {
       "sourceId": 10102000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 2",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -62,7 +62,7 @@
     {
       "sourceId": 10102000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 2",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -73,7 +73,7 @@
     {
       "sourceId": 10102000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 3",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -132,7 +132,7 @@
     {
       "sourceId": 10102000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 2",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -143,7 +143,7 @@
     {
       "sourceId": 10203000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 3",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -154,7 +154,7 @@
     {
       "sourceId": 10203000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 4",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -165,7 +165,7 @@
     {
       "sourceId": 10304000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 5",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -176,7 +176,7 @@
     {
       "sourceId": 10305000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 6",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -200,7 +200,7 @@
     {
       "sourceId": 10102000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 2",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -211,7 +211,7 @@
     {
       "sourceId": 10304000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 3",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -222,7 +222,7 @@
     {
       "sourceId": 10304000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 4",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -235,7 +235,7 @@
     {
       "sourceId": 10102000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 1",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -246,7 +246,7 @@
     {
       "sourceId": 10102000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 2",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -257,7 +257,7 @@
     {
       "sourceId": 10203000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 3",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -268,7 +268,7 @@
     {
       "sourceId": 10304000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 4",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -279,7 +279,7 @@
     {
       "sourceId": 10304000,
       "sourceType": "course",
-      "title": "Test",
+      "title": "Test 5",
       "body": "",
       "roomNumber": "",
       "day": 1,
@@ -321,6 +321,102 @@
       "startMod": 7,
       "length": 1,
       "endMod": 8
+    }
+  ],
+  "duplicates": [
+    {
+      "sourceId": 29833,
+      "sourceType": "course",
+      "title": "Test Duplicate",
+      "body": "",
+      "roomNumber": "",
+      "sectionNumber": 1,
+      "phaseNumber": 1,
+      "day": 3,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2,
+      "data": {
+        "courseId": "321"
+      }
+    },
+    {
+      "sourceId": 29841,
+      "sourceType": "course",
+      "title": "Test Duplicate",
+      "body": "",
+      "roomNumber": "",
+      "sectionNumber": 3,
+      "phaseNumber": 1,
+      "day": 3,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2,
+      "data": {
+        "courseId": "321"
+      }
+    },
+    {
+      "sourceId": 29845,
+      "sourceType": "course",
+      "title": "Test Duplicate",
+      "body": "",
+      "roomNumber": "",
+      "sectionNumber": 2,
+      "phaseNumber": 1,
+      "day": 3,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2,
+      "data": {
+        "courseId": "321"
+      }
+    },
+    {
+      "sourceId": 29850,
+      "sourceType": "course",
+      "title": "Test Duplicate",
+      "body": "",
+      "roomNumber": "",
+      "sectionNumber": 6,
+      "phaseNumber": 1,
+      "day": 3,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2,
+      "data": {
+        "courseId": "321"
+      }
+    },
+    {
+      "sourceId": 29854,
+      "sourceType": "course",
+      "title": "Test Duplicate",
+      "body": "",
+      "roomNumber": "",
+      "sectionNumber": 5,
+      "phaseNumber": 1,
+      "day": 3,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2,
+      "data": {
+        "courseId": "321"
+      }
+    },
+    {
+      "sourceId": 32648,
+      "sourceType": "annotation",
+      "title": "Alternate",
+      "body": "",
+      "roomNumber": "",
+      "sectionNumber": 0,
+      "phaseNumber": 0,
+      "day": 3,
+      "startMod": 1,
+      "length": 1,
+      "endMod": 2,
+      "data": null
     }
   ]
 }
