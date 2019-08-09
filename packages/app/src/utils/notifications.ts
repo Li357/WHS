@@ -128,7 +128,7 @@ export async function notificationScheduler() {
   BackgroundFetch.finish(status);
 }
 
-export default function registerNotificationScheduler() {
+export default async function registerNotificationScheduler() {
   PushNotification.configure({
     onNotification: (notification) => {
       notification.finish(PushNotificationIOS.FETCH_RESULT_NO_DATA);
@@ -138,13 +138,16 @@ export default function registerNotificationScheduler() {
       sound: true,
     },
   });
-
   BackgroundFetch.stop();
-  BackgroundFetch.configure({
-    minimumFetchInterval: 40,
-    stopOnTerminate: false,
-    startOnBoot: true,
-    requiredNetworkType: BackgroundFetch.NETWORK_TYPE_ANY,
-    enableHeadless: true,
-  }, notificationScheduler);
+
+  const { badge } = await checkForPermissions();
+  if (badge) {
+    BackgroundFetch.configure({
+      minimumFetchInterval: 40,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      requiredNetworkType: BackgroundFetch.NETWORK_TYPE_ANY,
+      enableHeadless: true,
+    }, notificationScheduler);
+  }
 }

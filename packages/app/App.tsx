@@ -99,7 +99,7 @@ export default class App extends Component<{}, AppComponentState> {
       await store.dispatch(fetchUserInfo(username, password));
       await scheduleNotifications(true);
     }
-    registerNotificationScheduler();
+    await registerNotificationScheduler();
   }
 
   private silentlyUpdateData = async () => {
