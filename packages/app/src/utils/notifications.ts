@@ -130,6 +130,9 @@ export async function notificationScheduler() {
 
 export default function registerNotificationScheduler() {
   PushNotification.configure({
+    onNotification: (notification) => {
+      notification.finish(PushNotificationIOS.FETCH_RESULT_NO_DATA);
+    },
     permissions: {
       alert: true,
       sound: true,
