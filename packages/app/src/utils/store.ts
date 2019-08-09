@@ -1,5 +1,5 @@
 import { applyMiddleware, createStore, Middleware } from 'redux';
-import { persistStore, persistReducer, createTransform } from 'redux-persist';
+import { persistStore, persistReducer, createTransform, createMigrate, PersistedState } from 'redux-persist';
 import { PersistPartial } from 'redux-persist/es/persistReducer';
 import AsyncStorage from '@react-native-community/async-storage';
 import thunk, { ThunkDispatch } from 'redux-thunk';
@@ -8,7 +8,7 @@ import { createLogger } from 'redux-logger';
 import {
   AppState, AppAction,
   UserState,
-  DatesState, SerializedDatesState,
+  DatesState, SerializedDatesState, MiscellaneousActions,
 } from '../types/store';
 import rootReducer from '../reducers/root';
 
@@ -63,12 +63,21 @@ const dateTransform = createTransform<DatesState, SerializedDatesState>(
   { whitelist: ['dates'] },
 );
 
+const migrations = {
+  // v-1 (WHS v1 and v2) --> v3
+  3: (state: PersistedState & AppState) => ({
+    ...state,
+    ...rootReducer(undefined, { type: MiscellaneousActions.OTHER }),
+  }),
+};
+
 const persistConfig = {
   key: 'root',
   version: 3,
   storage: AsyncStorage,
   timeout: 0,
   transforms: [profilePhotoTransform, dateTransform],
+  migrate: createMigrate(migrations, { debug: true }),
 };
 const persistedReducer = persistReducer<AppState, AppAction>(persistConfig, rootReducer);
 

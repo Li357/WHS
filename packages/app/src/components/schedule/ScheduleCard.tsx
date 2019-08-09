@@ -25,7 +25,8 @@ import { sum } from '../../utils/utils';
 const ScheduleCardContainer = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.backgroundColor};
-  border-radius: ${CARD_BORDER_RADIUS};
+  border-top-left-radius: ${CARD_BORDER_RADIUS};
+  border-top-right-radius: ${CARD_BORDER_RADIUS};
   border: ${BORDER_WIDTH} solid ${({ theme }) => theme.borderColor};
   overflow: hidden;
 `;

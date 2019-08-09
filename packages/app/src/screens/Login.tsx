@@ -1,4 +1,5 @@
 import React, { memo, useState } from 'react';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components/native';
 import { NavigationScreenProps } from 'react-navigation';
@@ -15,6 +16,8 @@ import { getScheduleTypeOnDate } from '../utils/query-schedule';
 import { setDaySchedule } from '../actions/creators';
 import WHS from '../../assets/images/WHS.png';
 import { reportError } from '../utils/utils';
+import { hp } from '../utils/style';
+import { scheduleNotifications } from '../utils/notifications';
 
 const LoginScreen = styled(Screen)`
   align-items: center;
@@ -50,6 +53,7 @@ export default memo(function Login(props: NavigationScreenProps) {
     try {
       const now = new Date();
       await dispatch(fetchUserInfo(username, password));
+      await scheduleNotifications(true);
       dispatch(setDaySchedule(getScheduleTypeOnDate(now, dates)));
       props.navigation.navigate('Dashboard');
     } catch (error) {
@@ -60,16 +64,31 @@ export default memo(function Login(props: NavigationScreenProps) {
   };
 
   const canLogin = username.length > 0 && password.length > 0 && !loading;
+  const containerStyle = { flex: 1 };
 
   return (
-    <LoginScreen>
-      <Image source={WHS} resizeMode="contain" />
-      <Header>Login to WHS</Header>
-      <Input placeholder="Username" value={username} onChangeText={setUsername} error={error} />
-      <Input placeholder="Password" value={password} onChangeText={setPassword} error={error} secureTextEntry={true} />
-      <Button onPress={handleLogin} disabled={!canLogin}>
-        {loading ? <CircleSnail size={SUBTEXT_SIZE} color={theme.foregroundColor} /> : 'Login'}
-      </Button>
-    </LoginScreen>
+    <KeyboardAvoidingView
+      behavior="position"
+      style={containerStyle}
+      contentContainerStyle={containerStyle}
+      keyboardVerticalOffset={-hp('20%')}
+      enabled={Platform.OS === 'ios'}
+    >
+      <LoginScreen>
+        <Image source={WHS} resizeMode="contain" />
+        <Header>Login to WHS</Header>
+        <Input placeholder="Username" value={username} onChangeText={setUsername} error={error} />
+        <Input
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          error={error}
+          secureTextEntry={true}
+        />
+        <Button onPress={handleLogin} disabled={!canLogin}>
+          {loading ? <CircleSnail size={SUBTEXT_SIZE} color={theme.foregroundColor} /> : 'Login'}
+        </Button>
+      </LoginScreen>
+    </KeyboardAvoidingView>
   );
 });

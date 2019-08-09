@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Switch as RNSwitch } from 'react-native';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/native';

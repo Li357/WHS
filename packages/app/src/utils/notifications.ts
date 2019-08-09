@@ -1,8 +1,7 @@
 import { Platform } from 'react-native';
-import PushNotification from 'react-native-push-notification';
-import AsyncStorage from '@react-native-community/async-storage';
+import PushNotification, { PushNotificationPermissions } from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import BackgroundFetch, { BackgroundFetchStatus } from 'react-native-background-fetch';
+import BackgroundFetch from 'react-native-background-fetch';
 import { max, eachWeekOfInterval, setDay, format, subMinutes } from 'date-fns';
 
 import { ClassItem, ScheduleItem, DaySchedule } from '../types/schedule';
@@ -12,7 +11,6 @@ import * as SCHEDULES from '../constants/schedules';
 import {
   NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT,
 } from '../constants/fetch';
-import { REFRESH_STATUS_KEY } from '../constants/store';
 import { last } from './utils';
 
 export function scheduleNotificationForScheduleItem(
@@ -56,7 +54,23 @@ export function scheduleNotificationForScheduleItem(
   });
 }
 
-export async function scheduleNotifications() {
+function checkForPermissions(): Promise<PushNotificationPermissions> {
+  return new Promise((resolve) => {
+    PushNotification.checkPermissions((permissions) => resolve(permissions));
+  });
+}
+
+export async function scheduleNotifications(clear = false) {
+  const permissions = await checkForPermissions();
+  if (!permissions.badge) {
+    PushNotification.cancelAllLocalNotifications();
+    return BackgroundFetch.FETCH_RESULT_NO_DATA;
+  }
+
+  if (clear) {
+    PushNotification.cancelAllLocalNotifications();
+  }
+
   const start = Date.now();
   const currentNotifications: object[] = await new Promise((resolve) => {
     if (Platform.OS === 'android') {
@@ -87,7 +101,7 @@ export async function scheduleNotifications() {
           const userDaySchedule = schedule[day - 1];
           const dayScheduleType = getScheduleTypeOnDate(weekday, dates);
           if (['FINALS', 'BREAK', 'WEEKEND', 'SUMMER'].includes(dayScheduleType)) {
-            return;
+            return BackgroundFetch.FETCH_RESULT_NO_DATA;
           }
 
           const daySchedule = SCHEDULES[dayScheduleType];
@@ -109,25 +123,31 @@ export async function scheduleNotifications() {
   return BackgroundFetch.FETCH_RESULT_NO_DATA;
 }
 
-function onRefreshFailure(status: BackgroundFetchStatus) {
-  return AsyncStorage.setItem(REFRESH_STATUS_KEY, status.toString());
+export async function notificationScheduler() {
+  const status = await scheduleNotifications();
+  BackgroundFetch.finish(status);
 }
 
-export default function registerNotificationScheduler() {
+export default async function registerNotificationScheduler() {
   PushNotification.configure({
+    onNotification: (notification) => {
+      notification.finish(PushNotificationIOS.FETCH_RESULT_NO_DATA);
+    },
     permissions: {
       alert: true,
       sound: true,
     },
   });
+  BackgroundFetch.stop();
 
-  BackgroundFetch.configure({
-    minimumFetchInterval: 40,
-    stopOnTerminate: false,
-    startOnBoot: true,
-    requiredNetworkType: BackgroundFetch.NETWORK_TYPE_ANY,
-  }, async () => {
-    const status = await scheduleNotifications();
-    BackgroundFetch.finish(status);
-  }, onRefreshFailure);
+  const { badge } = await checkForPermissions();
+  if (badge) {
+    BackgroundFetch.configure({
+      minimumFetchInterval: 40,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      requiredNetworkType: BackgroundFetch.NETWORK_TYPE_ANY,
+      enableHeadless: true,
+    }, notificationScheduler);
+  }
 }

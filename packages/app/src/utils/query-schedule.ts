@@ -1,6 +1,9 @@
 import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds } from 'date-fns';
 
-import { DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule, ScheduleItem } from '../types/schedule';
+import {
+  DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule,
+  ScheduleItem, ClassItem,
+} from '../types/schedule';
 import { DatesState, DayScheduleType } from '../types/store';
 import { last } from './utils';
 
@@ -211,6 +214,15 @@ export function isHalfMod(modNumber: ModNumber) {
  */
 export function isScheduleEmpty(schedule: Schedule) {
   return schedule.every((dayUserSchedule) => dayUserSchedule.length === 0);
+}
+
+/**
+ * Checks if two schedule items are essentially the same
+ * @param a first schedule item
+ * @param b second schedule item
+ */
+export function isDuplicateItem(a: ClassItem, b: ClassItem) {
+  return a.title === b.title && a.startMod === b.startMod && a.length === b.length && a.day === b.day;
 }
 
 /**

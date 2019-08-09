@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import { ScrollView } from 'react-native';
 import { DrawerItemsProps } from 'react-navigation';
 import { useDispatch, useSelector } from 'react-redux';
+import PushNotification from 'react-native-push-notification';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { DRAWER_MARGIN_HORIZONTAL, SUBTEXT_SIZE } from '../../constants/style';
@@ -29,6 +30,7 @@ export default function Drawer(props: DrawerItemsProps) {
   const dispatch = useDispatch();
   const logout = () => {
     dispatch(logOut());
+    PushNotification.cancelAllLocalNotifications();
     props.navigation.navigate('Login');
   };
 

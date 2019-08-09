@@ -6,6 +6,7 @@ import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { Transition } from 'react-native-reanimated';
 import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 import codePush from 'react-native-code-push';
+import PushNotification from 'react-native-push-notification';
 // https://github.com/kmagiera/react-native-gesture-handler/issues/320
 import 'react-native-gesture-handler';
 import { isAfter } from 'date-fns';
@@ -19,7 +20,7 @@ import Themer from './src/components/common/Themer';
 import { store, persistor } from './src/utils/store';
 import { fetchDates, fetchSchoolPicture, fetchUserInfo } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
-import { setUserInfo, setDaySchedule, setUserSchedule } from './src/actions/creators';
+import { setUserInfo, setDaySchedule, setUserSchedule, setRefreshed } from './src/actions/creators';
 import { getScheduleTypeOnDate, isScheduleEmpty } from './src/utils/query-schedule';
 import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
 import { insert } from './src/utils/utils';
@@ -75,7 +76,7 @@ export default class App extends Component<{}, AppComponentState> {
     }
   }
 
-  private refreshScheduleIfNeeded() {
+  private async refreshScheduleIfNeeded() {
     const {
       user: { username, password, schedule },
       dates: { semesterOneStart, semesterTwoStart, semesterTwoEnd },
@@ -86,25 +87,26 @@ export default class App extends Component<{}, AppComponentState> {
     if (semesterOneStart === null || semesterTwoStart === null || semesterTwoEnd === null) {
       return;
     }
-
-    if (isScheduleEmpty(schedule)) {
-      return store.dispatch(fetchUserInfo(username, password));
-    }
     if (isAfter(now, semesterTwoEnd)) {
-      return store.dispatch(fetchDates(now.getFullYear()));
+      await store.dispatch(fetchDates(now.getFullYear()));
+      store.dispatch(setRefreshed([false, false]));
+      return PushNotification.cancelAllLocalNotifications();
     }
 
     const shouldRefresh = (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo)
       || (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
-    if (shouldRefresh) {
-      return store.dispatch(fetchUserInfo(username, password));
+    if (isScheduleEmpty(schedule) || shouldRefresh) {
+      await store.dispatch(fetchUserInfo(username, password));
+      await scheduleNotifications(true);
     }
+    await registerNotificationScheduler();
   }
 
   private silentlyUpdateData = async () => {
     try {
       await store.dispatch(fetchSchoolPicture());
       await store.dispatch(fetchDates());
+      await scheduleNotifications(true);
     // tslint:disable-next-line: no-empty
     } catch {}
   }
@@ -163,8 +165,6 @@ export default class App extends Component<{}, AppComponentState> {
       await this.rehydrateProfilePhoto();
       await this.refreshScheduleIfNeeded();
       this.updateDayScheduleIfNeeded();
-      registerNotificationScheduler();
-      await scheduleNotifications();
     }
     this.setState({ rehydrated: true });
   }
