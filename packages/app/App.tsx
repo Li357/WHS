@@ -20,7 +20,7 @@ import Themer from './src/components/common/Themer';
 import { store, persistor } from './src/utils/store';
 import { fetchDates, fetchSchoolPicture, fetchUserInfo } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
-import { setUserInfo, setDaySchedule, setRefreshed, setUserSchedule } from './src/actions/creators';
+import { setUserInfo, setDaySchedule, setRefreshed } from './src/actions/creators';
 import { getScheduleTypeOnDate, isScheduleEmpty } from './src/utils/query-schedule';
 import Settings from './src/screens/Settings';
 import AddSchedule from './src/screens/AddSchedule';

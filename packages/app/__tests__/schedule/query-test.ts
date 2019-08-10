@@ -2,12 +2,15 @@ import { isSameMinute, addMinutes } from 'date-fns';
 
 import {
   isHalfMod, containsDate, getScheduleTypeOnDate, convertTimeToDate, getModAtTime, getClassAtMod,
-  getModNameFromModNumber, getSchoolYearFromDate, getScheduleInfoAtTime, getCountdown, isScheduleEmpty, getShortNameFromModNumber,
+  getModNameFromModNumber, getSchoolYearFromDate, getScheduleInfoAtTime, getCountdown,
+  isScheduleEmpty, getShortNameFromModNumber,
 } from '../../src/utils/query-schedule';
 import { DatesState } from '../../src/types/store';
 import * as SCHEDULES from '../../src/constants/schedules';
 import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem } from '../../src/types/schedule';
-import { processSchedule, convertToClassItem, getFinalsSchedule, createClassItem, createOpenItem, interpolateAssembly } from '../../src/utils/process-schedule';
+import {
+  processSchedule, convertToClassItem, getFinalsSchedule, createClassItem, interpolateAssembly,
+} from '../../src/utils/process-schedule';
 import rawSchedule from './test-schedules/raw.json';
 import { last } from '../../src/utils/utils';
 

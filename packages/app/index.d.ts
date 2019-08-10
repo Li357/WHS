@@ -16,4 +16,5 @@ declare module 'react-native-fetch-polyfill' {
   export default function fetchPolyfill(input?: string | Request, init?: RequestInit & Timeout): Promise<Response>;
 }
 
+declare module '@react-native-community/push-notification-ios';
 declare module '*.png';

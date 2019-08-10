@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import styled from 'styled-components/native';

@@ -152,7 +152,7 @@ describe('array utils', () => {
     it('should alert and notify bugsnag', () => {
       const error = new Error('Test Error');
       reportError(error);
-      expect(client.notify.mock.calls[0]).toEqual([error]);
+      expect((client.notify as jest.Mock<void, [Error]>).mock.calls[0]).toEqual([error]);
     });
   });
 });
