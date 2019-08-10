@@ -247,8 +247,11 @@ describe('schedule processing', () => {
     });
 
     describe('interpolateAssembly', () => {
-      const schedules: Record<string, RawClassItem[]> = assemblySchedules;
-      const { crossSectionWithCutsBefore, crossSectionWithCutsAfter } = schedules;
+      const schedules: Record<string, ClassItem[]> = assemblySchedules;
+      const { crossSectionWithCutsBefore, crossSectionWithCutsAfter, regular, longMod } = schedules;
+      const createAssemblyItem = (day: number) => (
+        createClassItem('Assembly', '', ModNumber.ASSEMBLY, ModNumber.FOUR, day, 'assembly')
+      );
 
       it('ignores schedule if empty', () => {
         expect(interpolateAssembly([], 1)).toEqual([]);
@@ -257,40 +260,66 @@ describe('schedule processing', () => {
       it('handles cross-section that has a class that cuts thru assembly before', () => {
         const day = 1;
         const [second, first] = crossSectionWithCutsBefore;
-        const [firstHalfOne] = splitClassItem(first, ModNumber.ASSEMBLY);
-        const [secondHalfOne, secondHalfTwo] = splitClassItem(first, ModNumber.ASSEMBLY);
-        const scheduleBefore = processSchedule(crossSectionWithCutsBefore);
+        const [firstHalfOne] = splitClassItem(first, ModNumber.THREE);
+        const [secondHalfOne, secondHalfTwo] = splitClassItem(second, ModNumber.THREE);
+        const scheduleBefore = processSchedule(crossSectionWithCutsBefore as RawClassItem[]);
         const withAssemblyAfter = interpolateAssembly(scheduleBefore[day - 1], day);
+
         expect(withAssemblyAfter).toEqual([
           createOpenItem(ModNumber.HOMEROOM, first.startMod, day),
-          createCrossSectionedItem([[firstHalfOne], [secondHalfOne]], first.startMod, ModNumber.ASSEMBLY, day),
-          createClassItem('Assembly', '', ModNumber.ASSEMBLY, ModNumber.FOUR, day, 'assembly'),
-          createCrossSectionedItem([[], [secondHalfTwo]], ModNumber.ASSEMBLY, second.endMod, day),
-          createOpenItem(second.endMod, 15, day),
+          createCrossSectionedItem([[firstHalfOne!], [secondHalfOne!]], first.startMod, ModNumber.THREE, day),
+          createAssemblyItem(day),
+          createCrossSectionedItem([[], [secondHalfTwo!]], ModNumber.THREE, second.endMod, day),
+          createOpenItem(second.endMod, ModNumber.FIFTEEN, day),
         ]);
       });
 
       it('handles cross-section that has a class that cuts thru assembly after', () => {
         const day = 1;
-        const [first, second] = crossSectionWithCutsAfter;
-        const [firstHalfOne] = splitClassItem(first, ModNumber.ASSEMBLY);
-        const [secondHalfOne, secondHalfTwo] = splitClassItem(first, ModNumber.ASSEMBLY);
-        const scheduleBefore = processSchedule(crossSectionWithCutsBefore);
-        const withAssemblyAfter = interpolateAssembly(scheduleBefore[day - 1], day);
-        expect(withAssemblyAfter).toEqual([
-          createOpenItem(ModNumber.HOMEROOM, first.startMod, day),
-          createCrossSectionedItem([[firstHalfOne], [secondHalfOne]], first.startMod, ModNumber.ASSEMBLY, day),
-          createClassItem('Assembly', '', ModNumber.ASSEMBLY, ModNumber.FOUR, day, 'assembly'),
-          createCrossSectionedItem([[], [secondHalfTwo]], ModNumber.ASSEMBLY, second.endMod, day),
-          createOpenItem(second.endMod, 15, day),
+        const [second, first] = crossSectionWithCutsAfter;
+        const [, firstHalfTwo] = splitClassItem(first, ModNumber.THREE);
+        const [secondHalfOne, secondHalfTwo] = splitClassItem(second, ModNumber.THREE);
+        const scheduleAfter = processSchedule(crossSectionWithCutsAfter as RawClassItem[]);
+        const withAssemblyBefore = interpolateAssembly(scheduleAfter[day - 1], day);
+
+        expect(withAssemblyBefore).toEqual([
+          createOpenItem(ModNumber.HOMEROOM, second.startMod, day),
+          createCrossSectionedItem([[secondHalfOne!], []], second.startMod, ModNumber.THREE, day),
+          createAssemblyItem(day),
+          createCrossSectionedItem([[secondHalfTwo!], [firstHalfTwo!]], ModNumber.THREE, first.endMod, day),
+          createOpenItem(first.endMod, ModNumber.FIFTEEN, day),
         ]);
       });
 
-      it.todo('handles cross-section without extra cuts');
+      it('handles cross-section without extra cuts', () => {
+        const day = 1;
+        const [first, second] = regular;
+        const schedule = processSchedule(regular as RawClassItem[]);
+        const withAssembly = interpolateAssembly(schedule[day - 1], day);
 
-      it.todo('handles long non-cross-sectioned mod during assembly');
+        expect(withAssembly).toEqual([
+          createOpenItem(ModNumber.HOMEROOM, first.startMod, day),
+          first,
+          createAssemblyItem(day),
+          second,
+          createOpenItem(second.endMod, ModNumber.FIFTEEN, day),
+        ]);
+      });
 
-      it.todo('handles regular injection');
+      it('handles long non-cross-sectioned mod during assembly', () => {
+        const day = 1;
+        const [first, second] = splitClassItem(longMod[0], ModNumber.THREE);
+        const schedule = processSchedule(longMod as RawClassItem[]);
+        const withAssembly = interpolateAssembly(schedule[day - 1], day);
+
+        expect(withAssembly).toEqual([
+          createOpenItem(ModNumber.HOMEROOM, first!.startMod, day),
+          first,
+          createAssemblyItem(day),
+          second,
+          createOpenItem(second!.endMod, ModNumber.FIFTEEN, day),
+        ]);
+      });
     });
   });
 

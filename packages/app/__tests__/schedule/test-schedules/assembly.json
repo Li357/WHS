@@ -1,7 +1,7 @@
 {
   "regular": [
     {
-      "sourceId": 10102000,
+      "sourceId": 10203000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
@@ -11,7 +11,7 @@
       "endMod": 3
     },
     {
-      "sourceId": 10203000,
+      "sourceId": 10304000,
       "sourceType": "course",
       "title": "Test",
       "body": "",
