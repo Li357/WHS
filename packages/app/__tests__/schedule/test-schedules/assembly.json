@@ -1,6 +1,111 @@
 {
-  "regular": [],
-  "crossSection": [],
-  "crossSectionWithCuts": [],
-  "longMod": []
+  "regular": [
+    {
+      "sourceId": 10102000,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 2,
+      "length": 1,
+      "endMod": 3
+    },
+    {
+      "sourceId": 10203000,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 1,
+      "endMod": 4
+    }
+  ],
+  "crossSection": [
+    {
+      "sourceId": 10102000,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 1,
+      "endMod": 4
+    },
+    {
+      "sourceId": 10102000,
+      "sourceType": "course",
+      "title": "Test 2",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 1,
+      "endMod": 4
+    }
+  ],
+  "crossSectionWithCutsBefore": [
+    {
+      "sourceId": 10102000,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 2,
+      "length": 2,
+      "endMod": 4
+    },
+    {
+      "sourceId": 10102000,
+      "sourceType": "course",
+      "title": "Test 2",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 2,
+      "length": 1,
+      "endMod": 3
+    }
+  ],
+  "crossSectionWithCutsAfter": [
+    {
+      "sourceId": 10102000,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 2,
+      "length": 2,
+      "endMod": 4
+    },
+    {
+      "sourceId": 10102000,
+      "sourceType": "course",
+      "title": "Test 2",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 3,
+      "length": 1,
+      "endMod": 4
+    }
+  ],
+  "longMod": [
+    {
+      "sourceId": 10102000,
+      "sourceType": "course",
+      "title": "Test",
+      "body": "",
+      "roomNumber": "",
+      "day": 1,
+      "startMod": 2,
+      "length": 3,
+      "endMod": 5
+    }
+  ]
 }

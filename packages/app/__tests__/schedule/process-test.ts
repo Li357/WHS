@@ -5,11 +5,14 @@ import {
   processSchedule,
   convertToClassItem,
   interpolateAssembly,
+  createClassItem,
+  splitClassItem,
 } from '../../src/utils/process-schedule';
-import { ClassItem, ScheduleItem, RawSchedule } from '../../src/types/schedule';
+import { ClassItem, ScheduleItem, RawSchedule, RawClassItem, ModNumber } from '../../src/types/schedule';
 import crossSectionedSchedules from './test-schedules/cross-sectioned.json';
 import openSchedules from './test-schedules/open.json';
 import rawSchedules from './test-schedules/raw.json';
+import assemblySchedules from './test-schedules/assembly.json';
 
 describe('schedule processing', () => {
   const createOpenDay = (day: number) => [createOpenItem(day === 3 ? 1 : 0, 15, day)];
@@ -243,14 +246,55 @@ describe('schedule processing', () => {
       });
     });
 
+    describe('splitClassItem', () => {
+      it('splits regular item', () => {
+
+      });
+
+      it('splits with assembly', () => {
+
+      });
+    });
+
     describe('interpolateAssembly', () => {
+      const schedules: Record<string, RawClassItem[]> = assemblySchedules;
+      const { crossSectionWithCutsBefore, crossSectionWithCutsAfter } = schedules;
+
       it('ignores schedule if empty', () => {
         expect(interpolateAssembly([], 1)).toEqual([]);
       });
 
-      it.todo('injects correct schedule item');
+      it('handles cross-section that has a class that cuts thru assembly before', () => {
+        const day = 1;
+        const [second, first] = crossSectionWithCutsBefore;
+        const [firstHalfOne] = splitClassItem(first, ModNumber.ASSEMBLY);
+        const [secondHalfOne, secondHalfTwo] = splitClassItem(first, ModNumber.ASSEMBLY);
+        const scheduleBefore = processSchedule(crossSectionWithCutsBefore);
+        const withAssemblyAfter = interpolateAssembly(scheduleBefore[day - 1], day);
+        expect(withAssemblyAfter).toEqual([
+          createOpenItem(ModNumber.HOMEROOM, first.startMod, day),
+          createCrossSectionedItem([[firstHalfOne], [secondHalfOne]], first.startMod, ModNumber.ASSEMBLY, day),
+          createClassItem('Assembly', '', ModNumber.ASSEMBLY, ModNumber.FOUR, day, 'assembly'),
+          createCrossSectionedItem([[], [secondHalfTwo]], ModNumber.ASSEMBLY, second.endMod, day),
+          createOpenItem(second.endMod, 15, day),
+        ]);
+      });
 
-      it.todo('handles cross-section that has a class that cuts thru assembly');
+      it('handles cross-section that has a class that cuts thru assembly after', () => {
+        const day = 1;
+        const [first, second] = crossSectionWithCutsAfter;
+        const [firstHalfOne] = splitClassItem(first, ModNumber.ASSEMBLY);
+        const [secondHalfOne, secondHalfTwo] = splitClassItem(first, ModNumber.ASSEMBLY);
+        const scheduleBefore = processSchedule(crossSectionWithCutsBefore);
+        const withAssemblyAfter = interpolateAssembly(scheduleBefore[day - 1], day);
+        expect(withAssemblyAfter).toEqual([
+          createOpenItem(ModNumber.HOMEROOM, first.startMod, day),
+          createCrossSectionedItem([[firstHalfOne], [secondHalfOne]], first.startMod, ModNumber.ASSEMBLY, day),
+          createClassItem('Assembly', '', ModNumber.ASSEMBLY, ModNumber.FOUR, day, 'assembly'),
+          createCrossSectionedItem([[], [secondHalfTwo]], ModNumber.ASSEMBLY, second.endMod, day),
+          createOpenItem(second.endMod, 15, day),
+        ]);
+      });
 
       it.todo('handles cross-section without extra cuts');
 

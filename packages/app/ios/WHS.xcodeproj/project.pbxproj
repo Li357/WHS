@@ -24,6 +24,8 @@
 		917978CC08124D7FA79111D5 /* SFProDisplay-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 083014EC86BB491AB7D492D3 /* SFProDisplay-Bold.otf */; };
 		9E41C4F31F424D5C920AF245 /* blank-user.png in Resources */ = {isa = PBXBuildFile; fileRef = 39D83C8E3DFE4820A78D4B79 /* blank-user.png */; };
 		A326B96BEB7944269461252A /* SFProDisplay-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6DC2F8035E0E401FA10D257F /* SFProDisplay-Medium.otf */; };
+		B2A40FDC22FE132300BBDC82 /* WHSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A40FDB22FE132300BBDC82 /* WHSUITests.swift */; };
+		B2A40FE522FE186D00BBDC82 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A40FE422FE186D00BBDC82 /* SnapshotHelper.swift */; };
 		E04384F28BE1472F8EC92D8B /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 265A4DE1F760497698860C73 /* RNBackgroundFetch+AppDelegate.m */; };
 		E4499A6A2DCA4E48B6D7454C /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3804A7F7028489DAF35530F /* MaterialIcons.ttf */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
@@ -44,6 +46,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "WHS-tvOS";
+		};
+		B2A40FDE22FE132300BBDC82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = WHS;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -88,6 +97,10 @@
 		92B7809E49FF44039076DA80 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		97266B077B264924A4CE20A2 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		9A58134EBB994E378D2E441D /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		B2A40FD922FE132300BBDC82 /* WHSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WHSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2A40FDB22FE132300BBDC82 /* WHSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHSUITests.swift; sourceTree = "<group>"; };
+		B2A40FDD22FE132300BBDC82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2A40FE422FE186D00BBDC82 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		BCB915AD82364B47B9BCD61E /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		C03F16D93AED4B38B1BDFFA0 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		C129573065EF4551A9CE78C9 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -127,6 +140,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2D02E48D1E0B4A5D006451C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2A40FD622FE132300BBDC82 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -222,6 +242,7 @@
 				13B07FAE1A68108700A75B9A /* WHS */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* WHSTests */,
+				B2A40FDA22FE132300BBDC82 /* WHSUITests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				6F30DEE5CC3546DE8505EAB4 /* Resources */,
@@ -240,6 +261,7 @@
 				00E356EE1AD99517003FC87E /* WHSTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* WHS-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* WHS-tvOSTests.xctest */,
+				B2A40FD922FE132300BBDC82 /* WHSUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -263,6 +285,16 @@
 				504F847CAC4944FC97577881 /* libCodePush.a */,
 			);
 			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		B2A40FDA22FE132300BBDC82 /* WHSUITests */ = {
+			isa = PBXGroup;
+			children = (
+				B2A40FE422FE186D00BBDC82 /* SnapshotHelper.swift */,
+				B2A40FDB22FE132300BBDC82 /* WHSUITests.swift */,
+				B2A40FDD22FE132300BBDC82 /* Info.plist */,
+			);
+			path = WHSUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -343,12 +375,31 @@
 			productReference = 2D02E4901E0B4A5D006451C7 /* WHS-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		B2A40FD822FE132300BBDC82 /* WHSUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B2A40FE322FE132300BBDC82 /* Build configuration list for PBXNativeTarget "WHSUITests" */;
+			buildPhases = (
+				B2A40FD522FE132300BBDC82 /* Sources */,
+				B2A40FD622FE132300BBDC82 /* Frameworks */,
+				B2A40FD722FE132300BBDC82 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B2A40FDF22FE132300BBDC82 /* PBXTargetDependency */,
+			);
+			name = WHSUITests;
+			productName = WHSUITests;
+			productReference = B2A40FD922FE132300BBDC82 /* WHSUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1010;
 				LastUpgradeCheck = 940;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
@@ -373,6 +424,12 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 2D02E47A1E0B4A5D006451C7;
 					};
+					B2A40FD822FE132300BBDC82 = {
+						CreatedOnToolsVersion = 10.1;
+						DevelopmentTeam = 6MCT7GBTT7;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "WHS" */;
@@ -393,6 +450,7 @@
 				00E356ED1AD99517003FC87E /* WHSTests */,
 				2D02E47A1E0B4A5D006451C7 /* WHS-tvOS */,
 				2D02E48F1E0B4A5D006451C7 /* WHS-tvOSTests */,
+				B2A40FD822FE132300BBDC82 /* WHSUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -428,6 +486,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		2D02E48E1E0B4A5D006451C7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2A40FD722FE132300BBDC82 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -587,6 +652,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B2A40FD522FE132300BBDC82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B2A40FDC22FE132300BBDC82 /* WHSUITests.swift in Sources */,
+				B2A40FE522FE186D00BBDC82 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -599,6 +673,11 @@
 			isa = PBXTargetDependency;
 			target = 2D02E47A1E0B4A5D006451C7 /* WHS-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
+		};
+		B2A40FDF22FE132300BBDC82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 13B07F861A680F5B00A75B9A /* WHS */;
+			targetProxy = B2A40FDE22FE132300BBDC82 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1146,6 +1225,91 @@
 			};
 			name = Staging;
 		};
+		B2A40FE022FE132300BBDC82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6MCT7GBTT7;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = WHSUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.li357.WHSUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WHS;
+			};
+			name = Debug;
+		};
+		B2A40FE122FE132300BBDC82 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6MCT7GBTT7;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = WHSUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.li357.WHSUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WHS;
+			};
+			name = Release;
+		};
+		B2A40FE222FE132300BBDC82 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6MCT7GBTT7;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = WHSUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.li357.WHSUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WHS;
+			};
+			name = Staging;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1195,6 +1359,16 @@
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
 				B251CDA122F352E900384947 /* Staging */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B2A40FE322FE132300BBDC82 /* Build configuration list for PBXNativeTarget "WHSUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B2A40FE022FE132300BBDC82 /* Debug */,
+				B2A40FE122FE132300BBDC82 /* Release */,
+				B2A40FE222FE132300BBDC82 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

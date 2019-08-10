@@ -65,6 +65,7 @@ export enum ModNumber {
   TWELVE,
   THIRTEEN,
   FOURTEEN,
+  FIFTEEN, // used for endMod of last mod
 
   ASSEMBLY,
   FINALS_ONE,

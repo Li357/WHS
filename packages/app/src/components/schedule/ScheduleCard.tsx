@@ -80,7 +80,7 @@ function getDayProgress(date: Date, daySchedule: DaySchedule) {
     case ModNumber.AFTER_SCHOOL:
       return 1;
     case ModNumber.PASSING_PERIOD:
-      searchMod = next - 1;
+      searchMod = next === ModNumber.ASSEMBLY ? ModNumber.TWO : next - 1;
   }
 
   const index = daySchedule.findIndex(([, , mod]) => mod === searchMod);
@@ -95,6 +95,8 @@ function getDayProgress(date: Date, daySchedule: DaySchedule) {
   const end = convertTimeToDate(endTime, date);
   const partialCompletionRatio = Math.min(1, differenceInSeconds(date, start) / differenceInSeconds(end, start));
   const partialHeight = modHeights[index] * partialCompletionRatio;
+
+  console.log(modHeights, finishedHeight, index, daySchedule, searchMod);
   return (finishedHeight + partialHeight) / totalHeight;
 }
 
@@ -116,19 +118,21 @@ const makeCardDayScheduleSelector = () => createSelector(
     const isFinals = scheduleType === 'FINALS';
 
     let userDaySchedule;
-    if (daySchedule === SCHEDULES.ASSEMBLY && !isCurrentDay) {
+    if (daySchedule === SCHEDULES.ASSEMBLY) {
       userDaySchedule = interpolateAssembly(schedule, day);
-    } else if (daySchedule === SCHEDULES.FINALS && !isCurrentDay) {
+    } else if (daySchedule === SCHEDULES.FINALS) {
       userDaySchedule = getFinalsSchedule(schedule, day);
     } else {
       userDaySchedule = schedule.filter((scheduleItem) => (scheduleItem as ClassItem).title !== 'No Homeroom');
     }
+    console.log(day, userDaySchedule);
 
     const cardDaySchedule = daySchedule.map(([start, end, modNumber]) => {
       const startTime = formatTime(start);
       const endTime = formatTime(end);
+      const isAssembly = modNumber === ModNumber.ASSEMBLY;
       return createClassItem(
-        `${startTime} - ${endTime}`, '', modNumber, modNumber + 1, day, 'course',
+        `${startTime} - ${endTime}`, '', modNumber, isAssembly ? ModNumber.FOUR : modNumber + 1, day, 'course',
       );
     });
     return { cardDate, cardDaySchedule, daySchedule, userDaySchedule, isCurrentDay, isFinals };

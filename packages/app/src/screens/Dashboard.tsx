@@ -12,17 +12,39 @@ import { AppState, DayScheduleType } from '../types/store';
 import { setUserInfo } from '../actions/creators';
 import { setProfilePhoto, removeProfilePhoto } from '../utils/manage-photos';
 import * as SCHEDULES from '../constants/schedules';
-import { reportError } from '../utils/utils';
+import { reportError, insert } from '../utils/utils';
 import { PROFILE_HEIGHT } from '../constants/style';
+import { interpolateAssembly, getFinalsSchedule } from '../utils/process-schedule';
 
 const dayScheduleSelector = createSelector(
   ({ day }: AppState) => day.schedule,
   (dayScheduleType: DayScheduleType) => SCHEDULES[dayScheduleType],
 );
+const scheduleSelector = createSelector(
+  ({ user }: AppState) => user.schedule,
+  ({ day }: AppState) => day.schedule,
+  (schedule, dayScheduleType) => {
+    const now = new Date();
+    const day = now.getDay();
+
+    let revisedUserDaySchedule;
+    switch (dayScheduleType) {
+      case 'ASSEMBLY':
+        revisedUserDaySchedule = interpolateAssembly(schedule[day - 1], day);
+        break;
+      case 'FINALS':
+        revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1], day);
+        break;
+      default:
+    }
+    return insert(schedule, [revisedUserDaySchedule], day - 1);
+  },
+);
 export default authorizedRoute('', function Dashboard() {
   const userInfo = useSelector((state: AppState) => state.user);
   const { accentColor, borderColor } = useSelector((state: AppState) => state.theme);
   const daySchedule = useSelector(dayScheduleSelector);
+  const userSchedule = useSelector(scheduleSelector);
   const dispatch = useDispatch();
 
   const selectPhoto = async (newPhoto: string, base64: boolean = true) => {
@@ -52,7 +74,7 @@ export default authorizedRoute('', function Dashboard() {
         {ProfileHeader}
         {DetailsHeader}
       </Swiper>
-      <Info daySchedule={daySchedule} userSchedule={userInfo.schedule} />
+      <Info daySchedule={daySchedule} userSchedule={userSchedule} />
     </ScrollView>
   );
 });

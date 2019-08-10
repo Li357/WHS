@@ -66,6 +66,16 @@
                ReferencedContainer = "container:WHS.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B2A40FD822FE132300BBDC82"
+               BuildableName = "WHSUITests.xctest"
+               BlueprintName = "WHSUITests"
+               ReferencedContainer = "container:WHS.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
