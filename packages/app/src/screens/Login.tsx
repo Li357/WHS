@@ -17,7 +17,7 @@ import { setDaySchedule } from '../actions/creators';
 import WHS from '../../assets/images/WHS.png';
 import { reportError } from '../utils/utils';
 import { hp } from '../utils/style';
-import { scheduleNotifications } from '../utils/notifications';
+import registerNotificationScheduler, { scheduleNotifications } from '../utils/notifications';
 
 const LoginScreen = styled(Screen)`
   align-items: center;
@@ -53,6 +53,7 @@ export default memo(function Login(props: NavigationScreenProps) {
     try {
       const now = new Date();
       await dispatch(fetchUserInfo(username, password));
+      await registerNotificationScheduler();
       await scheduleNotifications(true);
       dispatch(setDaySchedule(getScheduleTypeOnDate(now, dates)));
       props.navigation.navigate('Dashboard');

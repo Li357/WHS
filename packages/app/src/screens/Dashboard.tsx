@@ -36,11 +36,12 @@ const scheduleSelector = createSelector(
         revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1], day);
         break;
       default:
+        return schedule;
     }
     return insert(schedule, [revisedUserDaySchedule], day - 1);
   },
 );
-export default authorizedRoute('', function Dashboard() {
+export default authorizedRoute('', function Dashboard({ navigation }) {
   const userInfo = useSelector((state: AppState) => state.user);
   const { accentColor, borderColor } = useSelector((state: AppState) => state.theme);
   const daySchedule = useSelector(dayScheduleSelector);
@@ -74,7 +75,7 @@ export default authorizedRoute('', function Dashboard() {
         {ProfileHeader}
         {DetailsHeader}
       </Swiper>
-      <Info daySchedule={daySchedule} userSchedule={userSchedule} />
+      <Info daySchedule={daySchedule} userSchedule={userSchedule} navigation={navigation} />
     </ScrollView>
   );
 });

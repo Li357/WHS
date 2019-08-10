@@ -2,6 +2,7 @@ import { Alert } from 'react-native';
 import { addDays, subDays, format } from 'date-fns';
 
 import client from './bugsnag';
+import { NETWORK_REQUEST_FAILED_MSG, NETWORK_REQUEST_FAILED } from '../constants/fetch';
 
 /**
  * Split array without mutation
@@ -87,7 +88,8 @@ export function notify(title: string, body: string) {
 }
 
 export function reportError(error: Error) {
-  notify('Error', error.message);
+  const message = error.message === NETWORK_REQUEST_FAILED ? NETWORK_REQUEST_FAILED_MSG : error.message;
+  notify('Error', message);
   client.notify(error);
 }
 

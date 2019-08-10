@@ -9,13 +9,15 @@ import InfoCard from './InfoCard';
 import CrossSectionedCard from './CrossSectionedCard';
 import { DaySchedule, Schedule, ModNumber } from '../../types/schedule';
 import { last } from '../../utils/utils';
+import { NavigationProp } from '../../types/utils';
 
 interface InfoProps {
   daySchedule: DaySchedule;
   userSchedule: Schedule;
+  navigation: NavigationProp;
 }
 
-export default function Info({ daySchedule, userSchedule }: InfoProps) {
+export default function Info({ daySchedule, userSchedule, navigation }: InfoProps) {
   const now = new Date();
   const [scheduleInfo, setScheduleInfo] = useState(() => getScheduleInfoAtTime(now, daySchedule, userSchedule));
   const [countdown, setCountdown] = useState(() => getCountdown(now, scheduleInfo, daySchedule));
@@ -79,6 +81,14 @@ export default function Info({ daySchedule, userSchedule }: InfoProps) {
   useEffect(() => {
     RNAppState.addEventListener('change', updateInfo);
     return () => RNAppState.removeEventListener('change', updateInfo);
+  }, [daySchedule, userSchedule]);
+  useEffect(() => {
+    const willBlurSubscription = navigation.addListener('willBlur', () => updateInfo('inactive'));
+    const willFocusSubscription = navigation.addListener('willFocus', () => updateInfo('active'));
+    return () => {
+      willBlurSubscription.remove();
+      willFocusSubscription.remove();
+    };
   }, [daySchedule, userSchedule]);
 
   const cards = dashboardInfo.map((getter, index) => {

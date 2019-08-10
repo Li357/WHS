@@ -21,6 +21,7 @@ import CrossSectionedCardItem from './CrossSectionedCardItem';
 import Subtext from '../common/Subtext';
 import { formatTime } from '../../utils/duration';
 import { sum } from '../../utils/utils';
+import { NavigationProp } from '../../types/utils';
 
 const ScheduleCardContainer = styled.View`
   flex: 1;
@@ -95,13 +96,12 @@ function getDayProgress(date: Date, daySchedule: DaySchedule) {
   const end = convertTimeToDate(endTime, date);
   const partialCompletionRatio = Math.min(1, differenceInSeconds(date, start) / differenceInSeconds(end, start));
   const partialHeight = modHeights[index] * partialCompletionRatio;
-
-  console.log(modHeights, finishedHeight, index, daySchedule, searchMod);
   return (finishedHeight + partialHeight) / totalHeight;
 }
 
 interface ScheduleCardProps {
   schedule: ScheduleItem[];
+  navigation: NavigationProp;
 }
 
 const makeCardDayScheduleSelector = () => createSelector(
@@ -125,7 +125,6 @@ const makeCardDayScheduleSelector = () => createSelector(
     } else {
       userDaySchedule = schedule.filter((scheduleItem) => (scheduleItem as ClassItem).title !== 'No Homeroom');
     }
-    console.log(day, userDaySchedule);
 
     const cardDaySchedule = daySchedule.map(([start, end, modNumber]) => {
       const startTime = formatTime(start);
@@ -138,7 +137,7 @@ const makeCardDayScheduleSelector = () => createSelector(
     return { cardDate, cardDaySchedule, daySchedule, userDaySchedule, isCurrentDay, isFinals };
   },
 );
-export default function ScheduleCard({ schedule }: ScheduleCardProps) {
+export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps) {
   const cardDayScheduleSelector = useMemo(makeCardDayScheduleSelector, []);
   const {
     cardDate,
@@ -161,6 +160,10 @@ export default function ScheduleCard({ schedule }: ScheduleCardProps) {
   useEffect(() => {
     RNAppState.addEventListener('change', updateDayProgress);
     return () => RNAppState.removeEventListener('change', updateDayProgress);
+  }, [isCurrentDay, daySchedule]);
+  useEffect(() => {
+    const willFocusSubscription = navigation.addListener('willFocus', () => updateDayProgress('active'));
+    return () => willFocusSubscription.remove();
   }, [isCurrentDay, daySchedule]);
 
   const formattedDay = `${format(cardDate, ' iiii')} `;

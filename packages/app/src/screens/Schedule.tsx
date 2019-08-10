@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import styled from 'styled-components/native';
@@ -42,7 +42,7 @@ export default authorizedRoute(
     }
 
     const renderItem = ({ item }: { item: ScheduleItem[], index: number }) => (
-      <ScheduleCard schedule={item} />
+      <ScheduleCard schedule={item} navigation={navigation} />
     );
     const currentDay = new Date().getDay();
 
