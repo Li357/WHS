@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { DateListType, YearSettingType } from '@whs/server';
 
 export const PACKAGE_NAME = 'com.li357.whs';
@@ -15,7 +16,7 @@ export const TEACHER_URL = `${SCHOOL_WEBSITE}/teachers`;
 
 const API_VERSION = 'v3';
 export const SERVER_URL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:5000'
+  ? Platform.select({ ios: 'http://localhost:5000', android: 'http://10.0.2.2:5000' })
   : 'https://whs-server.herokuapp.com'; // TODO: More dynamic system for production server
 export const DATES_URL = `${SERVER_URL}/api/${API_VERSION}/dates`;
 export const FETCH_TIMEOUT = 5000;

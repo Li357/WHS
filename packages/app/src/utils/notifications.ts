@@ -12,6 +12,7 @@ import {
   NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT,
 } from '../constants/fetch';
 import { last } from './utils';
+import { injectAssemblyOrFinalsIfNeeded } from './process-schedule';
 
 export function scheduleNotificationForScheduleItem(
   scheduleItem: ScheduleItem, daySchedule: DaySchedule, fireDate: Date,
@@ -98,8 +99,8 @@ export async function scheduleNotifications(clear = false) {
       for (const sunday of sundaysUntilEnd) {
         for (const day of [1, 2, 3, 4, 5]) {
           const weekday = setDay(sunday, day, { weekStartsOn: lastNotificationDay });
-          const userDaySchedule = schedule[day - 1];
           const dayScheduleType = getScheduleTypeOnDate(weekday, dates);
+          const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
           if (['FINALS', 'BREAK', 'WEEKEND', 'SUMMER'].includes(dayScheduleType)) {
             return BackgroundFetch.FETCH_RESULT_NO_DATA;
           }

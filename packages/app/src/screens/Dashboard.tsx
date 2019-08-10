@@ -12,9 +12,9 @@ import { AppState, DayScheduleType } from '../types/store';
 import { setUserInfo } from '../actions/creators';
 import { setProfilePhoto, removeProfilePhoto } from '../utils/manage-photos';
 import * as SCHEDULES from '../constants/schedules';
-import { reportError, insert } from '../utils/utils';
+import { reportError, splice } from '../utils/utils';
 import { PROFILE_HEIGHT } from '../constants/style';
-import { interpolateAssembly, getFinalsSchedule } from '../utils/process-schedule';
+import { injectAssemblyOrFinalsIfNeeded } from '../utils/process-schedule';
 
 const dayScheduleSelector = createSelector(
   ({ day }: AppState) => day.schedule,
@@ -26,19 +26,8 @@ const scheduleSelector = createSelector(
   (schedule, dayScheduleType) => {
     const now = new Date();
     const day = now.getDay();
-
-    let revisedUserDaySchedule;
-    switch (dayScheduleType) {
-      case 'ASSEMBLY':
-        revisedUserDaySchedule = interpolateAssembly(schedule[day - 1], day);
-        break;
-      case 'FINALS':
-        revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1], day);
-        break;
-      default:
-        return schedule;
-    }
-    return insert(schedule, [revisedUserDaySchedule], day - 1);
+    const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
+    return splice(schedule, day - 1, 1, [revisedUserDaySchedule]);
   },
 );
 export default authorizedRoute('', function Dashboard({ navigation }) {
