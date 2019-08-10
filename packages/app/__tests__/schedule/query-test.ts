@@ -7,7 +7,7 @@ import {
 import { DatesState } from '../../src/types/store';
 import * as SCHEDULES from '../../src/constants/schedules';
 import { ModNumber, RawSchedule, ClassItem, CrossSectionedItem } from '../../src/types/schedule';
-import { processSchedule, convertToClassItem, getFinalsSchedule, createClassItem, createOpenItem } from '../../src/utils/process-schedule';
+import { processSchedule, convertToClassItem, getFinalsSchedule, createClassItem, createOpenItem, interpolateAssembly } from '../../src/utils/process-schedule';
 import rawSchedule from './test-schedules/raw.json';
 import { last } from '../../src/utils/utils';
 
@@ -172,6 +172,20 @@ describe('schedule querying', () => {
         phaseNumber: 1,
         data: null,
       },
+      {
+        sourceId: 6,
+        sourceType: 'course',
+        title: 'Test 5',
+        body: 'Test Body 5',
+        roomNumber: 'Body 5',
+        day: 5,
+        startMod: 2,
+        length: 3,
+        endMod: 5,
+        sectionNumber: 1,
+        phaseNumber: 1,
+        data: null,
+      },
     ];
     const processed = processSchedule(schedule);
 
@@ -203,14 +217,19 @@ describe('schedule querying', () => {
       const day = 4;
       const dayFinalsSchedule = getFinalsSchedule([], day);
       expect(getClassAtMod(ModNumber.HOMEROOM, dayFinalsSchedule)).toEqual(
-        createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.FINALS_ONE, day, 'homeroom')
+        createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.FINALS_ONE, day, 'homeroom'),
       );
       expect(getClassAtMod(ModNumber.FINALS_ONE, dayFinalsSchedule)).toEqual(createClassItem(
-        getModNameFromModNumber(ModNumber.FINALS_ONE), '', ModNumber.FINALS_ONE, ModNumber.FINALS_ONE + 1, day, 'finals'
+        getModNameFromModNumber(ModNumber.FINALS_ONE), '',
+        ModNumber.FINALS_ONE, ModNumber.FINALS_ONE + 1, day, 'finals',
       ));
     });
 
-    it.todo('returns correct for assembly');
+    it('returns correct for assembly', () => {
+      const day = 5;
+      const withAssembly = interpolateAssembly(processed[day - 1], day);
+      expect((getClassAtMod(ModNumber.ASSEMBLY, withAssembly) as ClassItem).title).toBe('Assembly');
+    });
 
     it('returns null instead of undefined if not found', () => {
       expect(getClassAtMod(ModNumber.BEFORE_SCHOOL, processed[2])).toBe(null);
