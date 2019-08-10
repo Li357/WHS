@@ -6,7 +6,7 @@
     "start": "npx react-native start",
     "run:android": "npx react-native run-android",
     "run:ios": "npx react-native run-ios",
-    "test": "npx jest '__tests__\\/(?!.*utils).*$'",
+    "test": "npx jest '__tests__\\/(?!.*test-utils).*$'",
     "test:watch": "yarn test --watch",
     "test:coverage": "yarn test --coverage --coverageReporters=text-lcov",
     "lint": "npx tslint -p tsconfig.json src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}"

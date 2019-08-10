@@ -9,7 +9,7 @@ import codePush from 'react-native-code-push';
 import PushNotification from 'react-native-push-notification';
 // https://github.com/kmagiera/react-native-gesture-handler/issues/320
 import 'react-native-gesture-handler';
-import { isAfter } from 'date-fns';
+import { isAfter, isBefore } from 'date-fns';
 
 import Drawer from './src/components/drawer/Drawer';
 import Login from './src/screens/Login';
@@ -20,13 +20,12 @@ import Themer from './src/components/common/Themer';
 import { store, persistor } from './src/utils/store';
 import { fetchDates, fetchSchoolPicture, fetchUserInfo } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
-import { setUserInfo, setDaySchedule, setUserSchedule, setRefreshed } from './src/actions/creators';
+import { setUserInfo, setDaySchedule, setRefreshed } from './src/actions/creators';
 import { getScheduleTypeOnDate, isScheduleEmpty } from './src/utils/query-schedule';
-import { getFinalsSchedule, interpolateAssembly } from './src/utils/process-schedule';
-import { insert } from './src/utils/utils';
 import Settings from './src/screens/Settings';
 import AddSchedule from './src/screens/AddSchedule';
 import registerNotificationScheduler, { scheduleNotifications } from './src/utils/notifications';
+import { reportScheduleCaution } from './src/utils/utils';
 
 interface AppComponentState {
   rehydrated: boolean;
@@ -50,7 +49,7 @@ export default class App extends Component<{}, AppComponentState> {
 
   private updateDayScheduleIfNeeded(newStatus: AppStateStatus = 'active') {
     if (newStatus === 'active') {
-      const { dates, day: { schedule: dayScheduleType }, user: { schedule } } = store.getState();
+      const { dates, day: { schedule: dayScheduleType } } = store.getState();
       const now = new Date();
 
       const newDayScheduleType = getScheduleTypeOnDate(now, dates);
@@ -58,21 +57,6 @@ export default class App extends Component<{}, AppComponentState> {
         return;
       }
       store.dispatch(setDaySchedule(newDayScheduleType));
-
-      const day = now.getDay();
-      let revisedUserDaySchedule;
-      switch (newDayScheduleType) {
-        case 'ASSEMBLY':
-          revisedUserDaySchedule = interpolateAssembly(schedule[day - 1], day);
-          break;
-        case 'FINALS':
-          revisedUserDaySchedule = getFinalsSchedule(schedule[day - 1], day);
-          break;
-        default:
-          return;
-      }
-      const revisedUserSchedule = insert(schedule, [revisedUserDaySchedule], day - 1);
-      store.dispatch(setUserSchedule(revisedUserSchedule));
     }
   }
 
@@ -165,6 +149,11 @@ export default class App extends Component<{}, AppComponentState> {
       await this.rehydrateProfilePhoto();
       await this.refreshScheduleIfNeeded();
       this.updateDayScheduleIfNeeded();
+
+      const { dates: { semesterOneStart } } = store.getState();
+      if (semesterOneStart !== null && isBefore(new Date(), semesterOneStart)) {
+        reportScheduleCaution(semesterOneStart);
+      }
     }
     this.setState({ rehydrated: true });
   }

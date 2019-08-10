@@ -6,7 +6,7 @@ import {
 } from '../../src/utils/process-info';
 import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL, SCHOOL_WEBSITE } from '../../src/constants/fetch';
 import { processSchedule } from '../../src/utils/process-schedule';
-import { getStudent$, getError$, getNew$, getTeacher$, fetchMock, open, TEST_HTML_DIR } from '../utils/fetch';
+import { getStudent$, getError$, getNew$, getTeacher$, fetchMock, open, TEST_HTML_DIR } from '../test-utils/fetch';
 import { TeacherSchedule } from '../../src/types/schedule';
 
 fetchMock.config.fetch = fetch;

@@ -1,4 +1,4 @@
-import { formatDuration } from '../../src/utils/duration';
+import { formatDuration, formatTime } from '../../src/utils/duration';
 
 describe('duration utils', () => {
   describe('formatDuration', () => {
@@ -25,6 +25,19 @@ describe('duration utils', () => {
     it('doesn\'t skip a second due to rounding errors', () => {
       expect(formatDuration(28024)).toBe('7:47:04');
       expect(formatDuration(28023)).toBe('7:47:03');
+    });
+  });
+
+  describe('formatTime', () => {
+    it('formats hours <= 12', () => {
+      expect(formatTime('12:50')).toBe('12:50');
+      expect(formatTime('3:23')).toBe('3:23');
+    });
+
+    it('formats hours > 12', () => {
+      expect(formatTime('13:50')).toBe('1:50');
+      expect(formatTime('23:25')).toBe('11:25');
+      expect(formatTime('24:34')).toBe('12:34');
     });
   });
 });

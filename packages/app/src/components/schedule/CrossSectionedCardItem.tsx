@@ -10,7 +10,7 @@ import { BORDER_WIDTH } from '../../constants/style';
 const ColumnContainer = styled.View<{ last: boolean, empty: boolean }>`
   flex: 1;
   border-right-color: ${({ theme }) => theme.borderColor};
-  border-right-width: ${({ last }) => last ? 0 : BORDER_WIDTH};
+  border-right-width: ${({ last: lastItem }) => lastItem ? 0 : BORDER_WIDTH};
   background-color: ${({ theme, empty }) => empty ? theme.foregroundColor : theme.backgroundColor};
 `;
 

@@ -4,6 +4,10 @@ export const PACKAGE_NAME = 'com.li357.whs';
 export const IOS_MAX_NOTIFICATIONS = 64;
 export const MAX_NOTIFICATION_SETUP_TIMEOUT = 25000;
 
+export const NETWORK_REQUEST_FAILED = 'Network request failed';
+export const NETWORK_REQUEST_FAILED_MSG = `An error occurred while fetching data. \
+Please check your internet connection.`;
+
 export const SCHOOL_WEBSITE = 'https://westside-web.azurewebsites.net';
 export const LOGIN_URL = `${SCHOOL_WEBSITE}/account/login`;
 export const SEARCH_URL = `${SCHOOL_WEBSITE}/api/search`;

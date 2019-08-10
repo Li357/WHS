@@ -6,7 +6,7 @@ import { DateSchema } from '@whs/server';
 
 import { AppState, UserActions, UserAction, AppAction, DatesActions, SetDatesAction } from '../../src/types/store';
 import { LOGIN_URL, DATES_URL } from '../../src/constants/fetch';
-import { fetchMock, open, TEST_HTML_DIR } from '../utils/fetch';
+import { fetchMock, open, TEST_HTML_DIR } from '../test-utils/fetch';
 import { fetchUserInfo, fetchSchoolPicture, fetchDates } from '../../src/actions/async';
 import { processSchedule } from '../../src/utils/process-schedule';
 import { initialUserState, initialDayState, initialDatesState } from '../../src/constants/store';

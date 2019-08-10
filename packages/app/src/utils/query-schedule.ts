@@ -151,10 +151,10 @@ export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBr
     if (containsDate(queryDate, dates.noSchool)) {
       return 'BREAK';
     }
+  }
 
-    if (day > 5 || day < 1) {
-      return 'WEEKEND';
-    }
+  if (day > 5 || day < 1) {
+    return 'WEEKEND';
   }
 
   if (containsDate(queryDate, dates.earlyDismissal)) {

@@ -20,7 +20,6 @@ interface DetailProps {
 
 export default function Details({ userInfo }: DetailProps) {
   const { dean, counselor, homeroom, id } = userInfo;
-  // TODO: Handle when details are larger than sanctioned height
   return (
     <DetailsContainer>
       <View>

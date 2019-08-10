@@ -4,13 +4,21 @@ import {
   interpolateOpenItems,
   processSchedule,
   convertToClassItem,
+  interpolateAssembly,
+  createClassItem,
+  splitClassItem,
+  getFinalsSchedule,
 } from '../../src/utils/process-schedule';
-import { ClassItem, ScheduleItem, RawSchedule } from '../../src/types/schedule';
+import { ClassItem, ScheduleItem, RawSchedule, RawClassItem, ModNumber } from '../../src/types/schedule';
 import crossSectionedSchedules from './test-schedules/cross-sectioned.json';
 import openSchedules from './test-schedules/open.json';
 import rawSchedules from './test-schedules/raw.json';
+import assemblySchedules from './test-schedules/assembly.json';
+import { getModNameFromModNumber } from '../../src/utils/query-schedule';
 
 describe('schedule processing', () => {
+  const createOpenDay = (day: number) => [createOpenItem(day === 3 ? 1 : 0, 15, day)];
+
   describe('utility functions', () => {
     it('should generate expected sourceId', () => {
       expect(generateSourceId(1, 10, 3)).toEqual(30110000);
@@ -56,7 +64,8 @@ describe('schedule processing', () => {
     describe('interpolateCrossSectionedItems', () => {
       const schedules: Record<string, ClassItem[]> = crossSectionedSchedules;
       const {
-        none, single, double, oneAndTwoHalves, consecutive, nonConsecutive, nonConsecutiveWithBetween, partialOverlap,
+        none, single, double, oneAndTwoHalves, consecutive,
+        nonConsecutive, nonConsecutiveWithBetween, partialOverlap, duplicates,
       } = schedules;
 
       const flankWithClassItems = (withCrossSections: ClassItem[]) => {
@@ -150,11 +159,11 @@ describe('schedule processing', () => {
         ]);
 
         // tslint:disable-next-line: trailing-comma
-        const [, , between, , ] = nonConsecutiveWithBetween;
-        expect(interpolateCrossSectionedItems(nonConsecutiveWithBetween, first.day)).toEqual([
-          createCrossSectionedItem([[first], [second]], first.startMod, second.endMod, first.day),
+        const [firstB, secondB, between, thirdB, fourthB] = nonConsecutiveWithBetween;
+        expect(interpolateCrossSectionedItems(nonConsecutiveWithBetween, firstB.day)).toEqual([
+          createCrossSectionedItem([[firstB], [secondB]], firstB.startMod, secondB.endMod, firstB.day),
           between,
-          createCrossSectionedItem([[third], [fourth]], third.startMod, fourth.endMod, first.day),
+          createCrossSectionedItem([[thirdB], [fourthB]], thirdB.startMod, fourthB.endMod, firstB.day),
         ]);
       });
 
@@ -170,6 +179,13 @@ describe('schedule processing', () => {
           firstFlank,
           createCrossSectionedItem([[first, third], [second]], first.startMod, third.endMod, first.day),
           secondFlank,
+        ]);
+      });
+
+      it('handles duplicate items for staff members', () => {
+        const [firstCopy, , , , , annotation] = duplicates;
+        expect(interpolateCrossSectionedItems(duplicates, firstCopy.day)).toEqual([
+          createCrossSectionedItem([[firstCopy], [annotation]], firstCopy.startMod, annotation.endMod, firstCopy.day),
         ]);
       });
     });
@@ -223,29 +239,115 @@ describe('schedule processing', () => {
         ]);
       });
 
-      it('handles empty schedule', () => {
-        expect(interpolateOpenItems([], 1)).toEqual([createOpenItem(0, 15, 1)]);
+      it('handles empty schedule for regular/wednesday', () => {
+        const day = 1;
+        expect(interpolateOpenItems([], day)).toEqual(createOpenDay(day));
+
+        const wednesday = 3;
+        expect(interpolateOpenItems([], wednesday)).toEqual(createOpenDay(wednesday));
       });
     });
 
     describe('interpolateAssembly', () => {
-      it.todo('ignores schedule if empty');
+      const schedules: Record<string, ClassItem[]> = assemblySchedules;
+      const { crossSectionWithCutsBefore, crossSectionWithCutsAfter, regular, longMod } = schedules;
+      const createAssemblyItem = (day: number) => (
+        createClassItem('Assembly', '', ModNumber.ASSEMBLY, ModNumber.FOUR, day, 'assembly')
+      );
 
-      it.todo('injects correct schedule item');
+      it('ignores schedule if empty', () => {
+        expect(interpolateAssembly([], 1)).toEqual([]);
+      });
 
-      it.todo('handles cross-section that has a class that cuts thru assembly');
+      it('handles cross-section that has a class that cuts thru assembly before', () => {
+        const day = 1;
+        const [second, first] = crossSectionWithCutsBefore;
+        const [firstHalfOne] = splitClassItem(first, ModNumber.THREE);
+        const [secondHalfOne, secondHalfTwo] = splitClassItem(second, ModNumber.THREE);
+        const scheduleBefore = processSchedule(crossSectionWithCutsBefore as RawClassItem[]);
+        const withAssemblyAfter = interpolateAssembly(scheduleBefore[day - 1], day);
 
-      it.todo('handles cross-section without extra cuts');
+        expect(withAssemblyAfter).toEqual([
+          createOpenItem(ModNumber.HOMEROOM, first.startMod, day),
+          createCrossSectionedItem([[firstHalfOne!], [secondHalfOne!]], first.startMod, ModNumber.THREE, day),
+          createAssemblyItem(day),
+          createCrossSectionedItem([[], [secondHalfTwo!]], ModNumber.THREE, second.endMod, day),
+          createOpenItem(second.endMod, ModNumber.FIFTEEN, day),
+        ]);
+      });
 
-      it.todo('handles long non-cross-sectioned mod during assembly');
+      it('handles cross-section that has a class that cuts thru assembly after', () => {
+        const day = 1;
+        const [second, first] = crossSectionWithCutsAfter;
+        const [, firstHalfTwo] = splitClassItem(first, ModNumber.THREE);
+        const [secondHalfOne, secondHalfTwo] = splitClassItem(second, ModNumber.THREE);
+        const scheduleAfter = processSchedule(crossSectionWithCutsAfter as RawClassItem[]);
+        const withAssemblyBefore = interpolateAssembly(scheduleAfter[day - 1], day);
 
-      it.todo('handles regular injection');
+        expect(withAssemblyBefore).toEqual([
+          createOpenItem(ModNumber.HOMEROOM, second.startMod, day),
+          createCrossSectionedItem([[secondHalfOne!], []], second.startMod, ModNumber.THREE, day),
+          createAssemblyItem(day),
+          createCrossSectionedItem([[secondHalfTwo!], [firstHalfTwo!]], ModNumber.THREE, first.endMod, day),
+          createOpenItem(first.endMod, ModNumber.FIFTEEN, day),
+        ]);
+      });
+
+      it('handles cross-section without extra cuts', () => {
+        const day = 1;
+        const [first, second] = regular;
+        const schedule = processSchedule(regular as RawClassItem[]);
+        const withAssembly = interpolateAssembly(schedule[day - 1], day);
+
+        expect(withAssembly).toEqual([
+          createOpenItem(ModNumber.HOMEROOM, first.startMod, day),
+          first,
+          createAssemblyItem(day),
+          second,
+          createOpenItem(second.endMod, ModNumber.FIFTEEN, day),
+        ]);
+      });
+
+      it('handles long non-cross-sectioned mod during assembly', () => {
+        const day = 1;
+        const [first, second] = splitClassItem(longMod[0], ModNumber.THREE);
+        const schedule = processSchedule(longMod as RawClassItem[]);
+        const withAssembly = interpolateAssembly(schedule[day - 1], day);
+
+        expect(withAssembly).toEqual([
+          createOpenItem(ModNumber.HOMEROOM, first!.startMod, day),
+          first,
+          createAssemblyItem(day),
+          second,
+          createOpenItem(second!.endMod, ModNumber.FIFTEEN, day),
+        ]);
+      });
+    });
+  });
+
+  describe('getFinalsSchedule', () => {
+    it('uses fallback homeroom', () => {
+      const day = 4;
+      const finals = getFinalsSchedule([], day);
+      const fallback = createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.FINALS_ONE, day, 'homeroom');
+      const expected = Array(4).fill(undefined).map((_, i) => {
+        const startMod = ModNumber.FINALS_ONE + i;
+        return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, fallback.day, 'finals');
+      });
+
+      expect(finals).toEqual([fallback, ...expected]);
     });
 
-    describe('getFinalsSchedule', () => {
-      it.todo('ignores schedule if empty');
+    it('returns final schedule with homeroom', () => {
+      const day = 5;
+      const homeroom = createClassItem('Homeroom', 'Rm 111', ModNumber.HOMEROOM, ModNumber.FINALS_ONE, day, 'homeroom');
+      const finals = getFinalsSchedule([homeroom], day);
+      const expected = Array(4).fill(undefined).map((_, i) => {
+        const startMod = ModNumber.FINALS_ONE + i;
+        return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, homeroom.day, 'finals');
+      });
 
-      it.todo('returns final schedule with homeroom');
+      expect(finals).toEqual([homeroom, ...expected]);
     });
   });
 
@@ -268,10 +370,13 @@ describe('schedule processing', () => {
   describe('processSchedule', () => {
     const schedules: Record<string, RawSchedule> = rawSchedules;
     const { groupByDay, sortByModThenLength } = schedules;
-    const createOpenDay = (day: number) => [createOpenItem(0, 15, day)];
 
     it('converts raw schedule into 5-length array of day schedules', () => {
       expect(processSchedule([])).toHaveLength(5);
+    });
+
+    it('returns empty schedule for empty raw class item array', () => {
+      expect(processSchedule([])).toEqual([[], [], [], [], []]);
     });
 
     it('groups schedule items into separate arrays by day', () => {

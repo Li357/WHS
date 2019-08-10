@@ -77,7 +77,7 @@ const persistConfig = {
   storage: AsyncStorage,
   timeout: 0,
   transforms: [profilePhotoTransform, dateTransform],
-  migrate: createMigrate(migrations, { debug: true }),
+  migrate: createMigrate(migrations, { debug: false }),
 };
 const persistedReducer = persistReducer<AppState, AppAction>(persistConfig, rootReducer);
 

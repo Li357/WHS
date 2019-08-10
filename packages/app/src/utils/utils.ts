@@ -1,6 +1,8 @@
 import { Alert } from 'react-native';
+import { addDays, subDays, format } from 'date-fns';
 
 import client from './bugsnag';
+import { NETWORK_REQUEST_FAILED_MSG, NETWORK_REQUEST_FAILED } from '../constants/fetch';
 
 /**
  * Split array without mutation
@@ -86,6 +88,20 @@ export function notify(title: string, body: string) {
 }
 
 export function reportError(error: Error) {
-  notify('Error', error.message);
+  const message = error.message === NETWORK_REQUEST_FAILED ? NETWORK_REQUEST_FAILED_MSG : error.message;
+  notify('Error', message);
   client.notify(error);
+}
+
+export function reportScheduleCaution(semesterOneStart: Date) {
+  // On the server-side, semesterOneStart represents the day of freshmen orientation
+  const schedulesFinalDate = format(subDays(semesterOneStart, 1), 'MMMM do');
+  // day where everyone goes to school
+  const firstDate = format(addDays(semesterOneStart, 1), 'MMMM do');
+
+  notify(
+    'Caution',
+    `Many schedules are changing and will not be considered final until ${schedulesFinalDate}. `
+    + `Please be sure to refresh your schedule so that you attend the correct classes starting ${firstDate}.`,
+  );
 }

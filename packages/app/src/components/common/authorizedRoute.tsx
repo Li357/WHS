@@ -1,11 +1,8 @@
 import React, { ComponentType } from 'react';
-import { NavigationParams, NavigationScreenProps, NavigationDrawerScreenOptions } from 'react-navigation';
 
 import Screen from './Screen';
 import Navbar from './Navbar';
-
-type NavigationProps = NavigationScreenProps<NavigationParams, NavigationDrawerScreenOptions>;
-type NavigationProp = NavigationProps['navigation'];
+import { NavigationProp, NavigationProps } from '../../types/utils';
 
 export default function authorizedRoute(
   name: string | ((props: NavigationProp) => string),

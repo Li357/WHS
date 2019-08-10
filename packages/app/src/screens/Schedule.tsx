@@ -42,7 +42,7 @@ export default authorizedRoute(
     }
 
     const renderItem = ({ item }: { item: ScheduleItem[], index: number }) => (
-      <ScheduleCard schedule={item} />
+      <ScheduleCard schedule={item} navigation={navigation} />
     );
     const currentDay = new Date().getDay();
 

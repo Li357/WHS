@@ -21,6 +21,7 @@ import CrossSectionedCardItem from './CrossSectionedCardItem';
 import Subtext from '../common/Subtext';
 import { formatTime } from '../../utils/duration';
 import { sum } from '../../utils/utils';
+import { NavigationProp } from '../../types/utils';
 
 const ScheduleCardContainer = styled.View`
   flex: 1;
@@ -80,7 +81,7 @@ function getDayProgress(date: Date, daySchedule: DaySchedule) {
     case ModNumber.AFTER_SCHOOL:
       return 1;
     case ModNumber.PASSING_PERIOD:
-      searchMod = next - 1;
+      searchMod = next === ModNumber.ASSEMBLY ? ModNumber.TWO : next - 1;
   }
 
   const index = daySchedule.findIndex(([, , mod]) => mod === searchMod);
@@ -100,6 +101,7 @@ function getDayProgress(date: Date, daySchedule: DaySchedule) {
 
 interface ScheduleCardProps {
   schedule: ScheduleItem[];
+  navigation: NavigationProp;
 }
 
 const makeCardDayScheduleSelector = () => createSelector(
@@ -116,9 +118,9 @@ const makeCardDayScheduleSelector = () => createSelector(
     const isFinals = scheduleType === 'FINALS';
 
     let userDaySchedule;
-    if (daySchedule === SCHEDULES.ASSEMBLY && !isCurrentDay) {
+    if (daySchedule === SCHEDULES.ASSEMBLY) {
       userDaySchedule = interpolateAssembly(schedule, day);
-    } else if (daySchedule === SCHEDULES.FINALS && !isCurrentDay) {
+    } else if (daySchedule === SCHEDULES.FINALS) {
       userDaySchedule = getFinalsSchedule(schedule, day);
     } else {
       userDaySchedule = schedule.filter((scheduleItem) => (scheduleItem as ClassItem).title !== 'No Homeroom');
@@ -127,14 +129,15 @@ const makeCardDayScheduleSelector = () => createSelector(
     const cardDaySchedule = daySchedule.map(([start, end, modNumber]) => {
       const startTime = formatTime(start);
       const endTime = formatTime(end);
+      const isAssembly = modNumber === ModNumber.ASSEMBLY;
       return createClassItem(
-        `${startTime} - ${endTime}`, '', modNumber, modNumber + 1, day, 'course',
+        `${startTime} - ${endTime}`, '', modNumber, isAssembly ? ModNumber.FOUR : modNumber + 1, day, 'course',
       );
     });
     return { cardDate, cardDaySchedule, daySchedule, userDaySchedule, isCurrentDay, isFinals };
   },
 );
-export default function ScheduleCard({ schedule }: ScheduleCardProps) {
+export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps) {
   const cardDayScheduleSelector = useMemo(makeCardDayScheduleSelector, []);
   const {
     cardDate,
@@ -157,6 +160,10 @@ export default function ScheduleCard({ schedule }: ScheduleCardProps) {
   useEffect(() => {
     RNAppState.addEventListener('change', updateDayProgress);
     return () => RNAppState.removeEventListener('change', updateDayProgress);
+  }, [isCurrentDay, daySchedule]);
+  useEffect(() => {
+    const willFocusSubscription = navigation.addListener('willFocus', () => updateDayProgress('active'));
+    return () => willFocusSubscription.remove();
   }, [isCurrentDay, daySchedule]);
 
   const formattedDay = `${format(cardDate, ' iiii')} `;
