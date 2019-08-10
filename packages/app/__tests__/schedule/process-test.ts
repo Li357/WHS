@@ -7,12 +7,14 @@ import {
   interpolateAssembly,
   createClassItem,
   splitClassItem,
+  getFinalsSchedule,
 } from '../../src/utils/process-schedule';
 import { ClassItem, ScheduleItem, RawSchedule, RawClassItem, ModNumber } from '../../src/types/schedule';
 import crossSectionedSchedules from './test-schedules/cross-sectioned.json';
 import openSchedules from './test-schedules/open.json';
 import rawSchedules from './test-schedules/raw.json';
 import assemblySchedules from './test-schedules/assembly.json';
+import { getModNameFromModNumber } from '../../src/utils/query-schedule';
 
 describe('schedule processing', () => {
   const createOpenDay = (day: number) => [createOpenItem(day === 3 ? 1 : 0, 15, day)];
@@ -324,9 +326,29 @@ describe('schedule processing', () => {
   });
 
   describe('getFinalsSchedule', () => {
-    it.todo('ignores schedule if empty');
+    it('uses fallback homeroom', () => {
+      const day = 4;
+      const finals = getFinalsSchedule([], day);
+      const fallback = createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.FINALS_ONE, day, 'homeroom');
+      const expected = Array(4).fill(undefined).map((_, i) => {
+        const startMod = ModNumber.FINALS_ONE + i;
+        return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, fallback.day, 'finals');
+      });
 
-    it.todo('returns final schedule with homeroom');
+      expect(finals).toEqual([fallback, ...expected]);
+    });
+
+    it('returns final schedule with homeroom', () => {
+      const day = 5;
+      const homeroom = createClassItem('Homeroom', 'Rm 111', ModNumber.HOMEROOM, ModNumber.FINALS_ONE, day, 'homeroom');
+      const finals = getFinalsSchedule([homeroom], day);
+      const expected = Array(4).fill(undefined).map((_, i) => {
+        const startMod = ModNumber.FINALS_ONE + i;
+        return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, homeroom.day, 'finals');
+      });
+
+      expect(finals).toEqual([homeroom, ...expected]);
+    });
   });
 
   describe('convertToClassItem', () => {
