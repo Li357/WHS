@@ -246,16 +246,6 @@ describe('schedule processing', () => {
       });
     });
 
-    describe('splitClassItem', () => {
-      it('splits regular item', () => {
-
-      });
-
-      it('splits with assembly', () => {
-
-      });
-    });
-
     describe('interpolateAssembly', () => {
       const schedules: Record<string, RawClassItem[]> = assemblySchedules;
       const { crossSectionWithCutsBefore, crossSectionWithCutsAfter } = schedules;

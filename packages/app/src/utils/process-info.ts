@@ -132,6 +132,10 @@ export async function getTeacherSchedules(teacherSchedules: TeacherSchedule[]): 
 export async function getDates(type: DateType, year: number): Promise<DateSchema[]> {
   const response = await fetch(`${DATES_URL}?year=${year}&type=${type}`, {
     timeout: FETCH_TIMEOUT,
+    headers: {
+      'Pragma': 'no-cache',
+      'Cache-Control': 'no-cache',
+    },
   });
   if (!response.ok) {
     throw new NetworkError('Fetch for dates was not successful!');
