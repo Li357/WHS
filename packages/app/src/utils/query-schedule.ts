@@ -153,10 +153,6 @@ export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBr
     }
   }
 
-  if (day > 5 || day < 1) {
-    return 'WEEKEND';
-  }
-
   if (containsDate(queryDate, dates.earlyDismissal)) {
     return 'EARLY_DISMISSAL';
   }
@@ -170,6 +166,10 @@ export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBr
       return 'LATE_START_WEDNESDAY';
     }
     return 'LATE_START';
+  }
+
+  if (day > 5 || day < 1) {
+    return 'WEEKEND';
   }
 
   if (day === 3) {

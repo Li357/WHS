@@ -24,6 +24,10 @@ const scheduleSelector = createSelector(
   ({ user }: AppState) => user.schedule,
   ({ day }: AppState) => day.schedule,
   (schedule, dayScheduleType) => {
+    if (['BREAK', 'SUMMER', 'WEEKEND'].includes(dayScheduleType)) {
+      return schedule;
+    }
+
     const now = new Date();
     const day = now.getDay();
     const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);

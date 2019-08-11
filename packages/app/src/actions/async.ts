@@ -7,6 +7,7 @@ import {
   SetUserCredentialsAction, SetUserInfoAction, SetUserScheduleAction, SetTeacherSchedulesAction,
   SetDatesAction,
   SetRefreshedAction,
+  DatesState,
 } from '../types/store';
 import {
   getLoginURL, parseHTMLFromURL, getUserScheduleFromHTML, getUserInfoFromHTML, getLoginError, getSchoolPictureFromHTML,
@@ -75,7 +76,7 @@ export function fetchUserInfo(username: string, password: string) {
 
 export function fetchSchoolPicture(username: string = '', password: string = '') {
   const fetchSchoolPictureThunk: ThunkAction<
-    Promise<void>,
+    Promise<string>,
     AppState,
     undefined,
     SetUserInfoAction
@@ -86,13 +87,14 @@ export function fetchSchoolPicture(username: string = '', password: string = '')
     );
     const schoolPicture = getSchoolPictureFromHTML($);
     dispatch(setUserInfo({ schoolPicture }));
+    return schoolPicture;
   };
   return fetchSchoolPictureThunk;
 }
 
 export function fetchDates(year?: number) {
   const fetchDatesThunk: ThunkAction<
-    Promise<void>,
+    Promise<DatesState>,
     AppState,
     undefined,
     SetDatesAction
@@ -113,8 +115,7 @@ export function fetchDates(year?: number) {
       const [setting] = await getDates(type, year!);
       return setting ? new Date(setting.date) : null;
     }));
-
-    dispatch(setDates({
+    const datesState = {
       assembly,
       noSchool,
       earlyDismissal,
@@ -123,7 +124,10 @@ export function fetchDates(year?: number) {
       semesterOneEnd,
       semesterTwoStart,
       semesterTwoEnd,
-    }));
+    };
+
+    dispatch(setDates(datesState));
+    return datesState;
   };
   return fetchDatesThunk;
 }
