@@ -45,8 +45,11 @@ export default memo(function Login(props: NavigationScreenProps) {
     setLoading(true);
     // If dates fail to be fetched, this is not a problem as they are refetched on app start
     // Fetch dates first b/c the latter sets credentials and makes user "logged in"
+
+    // workaround since dates from useSelector doesn't seem to be updated
+    let updatedDates = dates;
     try {
-      await dispatch(fetchDates());
+      updatedDates = await dispatch(fetchDates());
     // tslint:disable-next-line: no-empty
     } catch (error) {}
 
@@ -55,7 +58,8 @@ export default memo(function Login(props: NavigationScreenProps) {
       await dispatch(fetchUserInfo(username, password));
       await registerNotificationScheduler();
       await scheduleNotifications(true);
-      dispatch(setDaySchedule(getScheduleTypeOnDate(now, dates)));
+
+      dispatch(setDaySchedule(getScheduleTypeOnDate(now, updatedDates)));
       props.navigation.navigate('Dashboard');
     } catch (error) {
       setError(true);

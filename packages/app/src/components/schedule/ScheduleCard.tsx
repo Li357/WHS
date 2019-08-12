@@ -15,7 +15,7 @@ import { ClassItem, CrossSectionedItem, ScheduleItem, DaySchedule, ModNumber } f
 import { AppState } from '../../types/store';
 import { getScheduleTypeOnDate, getModAtTime, isHalfMod, convertTimeToDate } from '../../utils/query-schedule';
 import * as SCHEDULES from '../../constants/schedules';
-import { interpolateAssembly, getFinalsSchedule, createClassItem } from '../../utils/process-schedule';
+import { interpolateAssembly, getFinalsSchedule, createClassItem, injectAssemblyOrFinalsIfNeeded } from '../../utils/process-schedule';
 import ClassCardItem from './ClassCardItem';
 import CrossSectionedCardItem from './CrossSectionedCardItem';
 import Subtext from '../common/Subtext';
@@ -117,14 +117,9 @@ const makeCardDayScheduleSelector = () => createSelector(
     const isCurrentDay = currentDay === day;
     const isFinals = scheduleType === 'FINALS';
 
-    let userDaySchedule;
-    if (daySchedule === SCHEDULES.ASSEMBLY) {
-      userDaySchedule = interpolateAssembly(schedule, day);
-    } else if (daySchedule === SCHEDULES.FINALS) {
-      userDaySchedule = getFinalsSchedule(schedule, day);
-    } else {
-      userDaySchedule = schedule.filter((scheduleItem) => (scheduleItem as ClassItem).title !== 'No Homeroom');
-    }
+    const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule, scheduleType, day);
+    const userDaySchedule = revisedUserDaySchedule
+      .filter((scheduleItem) => (scheduleItem as ClassItem).title !== 'No Homeroom');
 
     const cardDaySchedule = daySchedule.map(([start, end, modNumber]) => {
       const startTime = formatTime(start);

@@ -1,5 +1,5 @@
 import { applyMiddleware, createStore, Middleware } from 'redux';
-import { persistStore, persistReducer, createTransform, createMigrate, PersistedState } from 'redux-persist';
+import { persistStore, persistReducer, createTransform, createMigrate } from 'redux-persist';
 import { PersistPartial } from 'redux-persist/es/persistReducer';
 import AsyncStorage from '@react-native-community/async-storage';
 import thunk, { ThunkDispatch } from 'redux-thunk';
@@ -65,10 +65,7 @@ const dateTransform = createTransform<DatesState, SerializedDatesState>(
 
 const migrations = {
   // v-1 (WHS v1 and v2) --> v3
-  3: (state: PersistedState & AppState) => ({
-    ...state,
-    ...rootReducer(undefined, { type: MiscellaneousActions.OTHER }),
-  }),
+  3: () => rootReducer(undefined, { type: MiscellaneousActions.OTHER }),
 };
 
 const persistConfig = {
@@ -77,7 +74,7 @@ const persistConfig = {
   storage: AsyncStorage,
   timeout: 0,
   transforms: [profilePhotoTransform, dateTransform],
-  migrate: createMigrate(migrations, { debug: false }),
+  migrate: createMigrate(migrations),
 };
 const persistedReducer = persistReducer<AppState, AppAction>(persistConfig, rootReducer);
 

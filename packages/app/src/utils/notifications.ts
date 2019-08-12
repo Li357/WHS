@@ -12,6 +12,7 @@ import {
   NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT,
 } from '../constants/fetch';
 import { last } from './utils';
+import { injectAssemblyOrFinalsIfNeeded } from './process-schedule';
 
 export function scheduleNotificationForScheduleItem(
   scheduleItem: ScheduleItem, daySchedule: DaySchedule, fireDate: Date,
@@ -62,7 +63,7 @@ function checkForPermissions(): Promise<PushNotificationPermissions> {
 
 export async function scheduleNotifications(clear = false) {
   const permissions = await checkForPermissions();
-  if (!permissions.badge) {
+  if (!permissions.alert) {
     PushNotification.cancelAllLocalNotifications();
     return BackgroundFetch.FETCH_RESULT_NO_DATA;
   }
@@ -98,17 +99,17 @@ export async function scheduleNotifications(clear = false) {
       for (const sunday of sundaysUntilEnd) {
         for (const day of [1, 2, 3, 4, 5]) {
           const weekday = setDay(sunday, day, { weekStartsOn: lastNotificationDay });
-          const userDaySchedule = schedule[day - 1];
           const dayScheduleType = getScheduleTypeOnDate(weekday, dates);
+          const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
           if (['FINALS', 'BREAK', 'WEEKEND', 'SUMMER'].includes(dayScheduleType)) {
-            return BackgroundFetch.FETCH_RESULT_NO_DATA;
+            continue;
           }
 
           const daySchedule = SCHEDULES[dayScheduleType];
           for (const scheduleItem of userDaySchedule) {
             // Background fetches only allowed 30 seconds by iOS
             if (Date.now() - start >= MAX_NOTIFICATION_SETUP_TIMEOUT) {
-              return BackgroundFetch.FETCH_RESULT_NO_DATA;
+              return BackgroundFetch.FETCH_RESULT_NEW_DATA;
             }
             if (count === IOS_MAX_NOTIFICATIONS - noCurrentNotifications) {
               return BackgroundFetch.FETCH_RESULT_NEW_DATA;
@@ -140,8 +141,8 @@ export default async function registerNotificationScheduler() {
   });
   BackgroundFetch.stop();
 
-  const { badge } = await checkForPermissions();
-  if (badge) {
+  const { alert } = await checkForPermissions();
+  if (alert) {
     BackgroundFetch.configure({
       minimumFetchInterval: 40,
       stopOnTerminate: false,

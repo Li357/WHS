@@ -5,6 +5,7 @@ import {
 import { sortByProps, insert, getWithFallback, splice } from './utils';
 import { getModNameFromModNumber, isDuplicateItem } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
+import { DayScheduleType } from '../types/store';
 
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item
@@ -274,6 +275,22 @@ export function getFinalsSchedule(userDaySchedule: UserDaySchedule, day: number)
     return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, homeroom.day, 'finals');
   });
   return [homeroom, ...finals];
+}
+
+/**
+ * Utility function to add assemblies/finals when needed to current schedule
+ */
+export function injectAssemblyOrFinalsIfNeeded(
+  userDaySchedule: UserDaySchedule, dayScheduleType: DayScheduleType, day: number,
+) {
+  switch (dayScheduleType) {
+    case 'ASSEMBLY':
+      return interpolateAssembly(userDaySchedule, day);
+    case 'FINALS':
+      return getFinalsSchedule(userDaySchedule, day);
+    default:
+      return userDaySchedule;
+  }
 }
 
 /**
