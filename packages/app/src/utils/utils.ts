@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { addDays, subDays, format } from 'date-fns';
+import { subDays, format } from 'date-fns';
 
 import client from './bugsnag';
 import { NETWORK_REQUEST_FAILED_MSG, NETWORK_REQUEST_FAILED } from '../constants/fetch';
@@ -94,10 +94,12 @@ export function reportError(error: Error) {
 }
 
 export function reportScheduleCaution(semesterOneStart: Date) {
-  // On the server-side, semesterOneStart represents the day of freshmen orientation
-  const schedulesFinalDate = format(subDays(semesterOneStart, 1), 'MMMM do');
+  // On the server-side, semesterOneStart represents the day everyone goes to school
+  // 1 day before is freshmen orientation day
+  // 2 days before is when schedules are final
+  const schedulesFinalDate = format(subDays(semesterOneStart, 2), 'MMMM do');
   // day where everyone goes to school
-  const firstDate = format(addDays(semesterOneStart, 1), 'MMMM do');
+  const firstDate = format(semesterOneStart, 'MMMM do');
 
   notify(
     'Caution',
