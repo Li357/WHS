@@ -94,12 +94,12 @@ apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture = false
+def enableSeparateBuildPerCPUArchitecture = true
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 
 def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
@@ -127,6 +127,16 @@ android {
             include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
+    signingConfigs {
+        release {
+            if (project.hasProperty('WHSAPP_RELEASE_STORE_FILE')) {
+                storeFile file(WHSAPP_RELEASE_STORE_FILE)
+                storePassword WHSAPP_RELEASE_STORE_PASSWORD
+                keyAlias WHSAPP_RELEASE_KEY_ALIAS
+                keyPassword WHSAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
     buildTypes {
         debug {
             buildConfigField "String", "CODEPUSH_KEY", '""'
@@ -136,12 +146,14 @@ android {
         releaseStaging {
             buildConfigField "String", "CODEPUSH_KEY", '"' + CODEPUSH_STAGING_KEY + '"'
             matchingFallbacks = ["release"]
+            applicationIdSuffix ".staging"
         }
 
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             buildConfigField "String", "CODEPUSH_KEY", '"' + CODEPUSH_PRODUCTION_KEY + '"'
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
