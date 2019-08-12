@@ -82,13 +82,20 @@ export default memo(function Login(props: NavigationScreenProps) {
       <LoginScreen>
         <Image source={WHS} resizeMode="contain" />
         <Header>Login to WHS</Header>
-        <Input placeholder="Username" value={username} onChangeText={setUsername} error={error} />
+        <Input
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+          error={error}
+          textContentType="username"
+        />
         <Input
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
           error={error}
           secureTextEntry={true}
+          textContentType="password"
         />
         <Button onPress={handleLogin} disabled={!canLogin}>
           {loading ? <CircleSnail size={SUBTEXT_SIZE} color={theme.foregroundColor} /> : 'Login'}

@@ -3,6 +3,7 @@ import { subDays, format } from 'date-fns';
 
 import client from './bugsnag';
 import { NETWORK_REQUEST_FAILED_MSG, NETWORK_REQUEST_FAILED } from '../constants/fetch';
+import { LoginError, NetworkError } from './error';
 
 /**
  * Split array without mutation
@@ -88,9 +89,15 @@ export function notify(title: string, body: string) {
 }
 
 export function reportError(error: Error) {
-  const message = error.message === NETWORK_REQUEST_FAILED ? NETWORK_REQUEST_FAILED_MSG : error.message;
-  notify('Error', message);
-  client.notify(error);
+  if (error instanceof LoginError) {
+    return;
+  }
+
+  const didRequestFail = error.message === NETWORK_REQUEST_FAILED;
+  notify('Error', didRequestFail ? NETWORK_REQUEST_FAILED_MSG : error.message);
+  if (!didRequestFail) {
+    client.notify(error);
+  }
 }
 
 export function reportScheduleCaution(semesterOneStart: Date) {

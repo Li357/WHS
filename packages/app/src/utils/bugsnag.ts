@@ -1,4 +1,4 @@
-import { Configuration, Client, IMetadata } from 'bugsnag-react-native';
+import { Configuration, Client, IMetadata, IMetadataValue } from 'bugsnag-react-native';
 
 import { store } from './store';
 import { AppState, DatesState } from '../types/store';
@@ -14,22 +14,17 @@ function serializeState(state: AppState): IMetadata {
   const dateTypes = Object.keys(dates) as Array<keyof DatesState>;
   const serializedDates = dateTypes.reduce((serialized: { [type in keyof DatesState]?: string }, key) => {
     const value = dates[key];
-    if (value instanceof Date) {
-      serialized[key] = value.toString();
-    } else if (Array.isArray(value)) {
-      serialized[key] = value.map((date) => date.toString()).join(', ');
-    } else {
-      serialized[key] = undefined;
-    }
+    serialized[key] = value ? value.toString() : undefined;
     return serialized;
   }, {});
 
   return {
     type: 'state',
-    day: JSON.stringify(day),
+    // day consists of booleans and strings
+    day: day as unknown as IMetadataValue,
     dates: serializedDates,
-    theme: JSON.stringify(theme),
-    user: JSON.stringify(user),
+    theme: theme as unknown as IMetadataValue,
+    user: user as unknown as IMetadataValue,
   };
 }
 
