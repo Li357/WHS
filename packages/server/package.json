@@ -8,6 +8,7 @@
     "serve": "./node_modules/.bin/vue-cli-service serve",
     "build:frontend": "./node_modules/.bin/vue-cli-service build --dest dist/frontend",
     "build:backend": "npx tsc -p tsconfig.backend.json && rm -rf dist/shared && rm -rf dist/backend/types",
+    "build:backend:watch": "npx tsc -p tsconfig.backend.json -w && rm -rf dist/shared && rm -rf dist/backend/types",
     "build": "yarn build:frontend && yarn build:backend",
     "lint:frontend": "./node_modules/.bin/vue-cli-service lint",
     "lint:backend": "npx tslint -p tsconfig.backend.json",
