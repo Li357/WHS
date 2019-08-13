@@ -8,6 +8,7 @@ import {
   FORM_HEIGHT, FORM_BORDER_RADIUS, FORM_PADDING_HORIZONTAL, INPUT_BORDER_WIDTH, FORM_MARGIN_VERTICAL,
 } from '../../constants/style';
 import { AppState } from '../../types/store';
+import { darkTheme } from '../../constants/theme';
 
 const StyledInput = styled.TextInput<InputProps>`
   color: ${({ theme }) => theme.textColor};
@@ -29,5 +30,16 @@ interface InputProps {
 
 export default function Input(props: InputProps & TextInputProps) {
   const theme = useSelector((state: AppState) => state.theme);
-  return (<StyledInput selectionColor={theme.accentColor} autoCorrect={false} autoCapitalize="none" {...props} />);
+  // TODO: fix this
+  const isDarkTheme = JSON.stringify(theme) === JSON.stringify(darkTheme);
+
+  return (
+    <StyledInput
+      keyboardAppearance={isDarkTheme ? 'dark' : 'light'}
+      selectionColor={theme.accentColor}
+      autoCorrect={false}
+      autoCapitalize="none"
+      {...props}
+    />
+  );
 }

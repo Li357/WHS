@@ -107,13 +107,23 @@ export function fetchDates(year?: number) {
       assembly, noSchool, earlyDismissal, lateStart,
     ] = await Promise.all(DATE_TYPES.map(async (type) => {
       const dates = await getDates(type, year!);
-      return dates.map((dateObj) => new Date(dateObj.date));
+      return dates.map((dateObj) => {
+        const date = new Date(dateObj.date);
+        // guarantee comparison wrt only day
+        date.setHours(0, 0, 0, 0);
+        return date;
+      });
     }));
     const [
       semesterOneStart, semesterOneEnd, semesterTwoStart, semesterTwoEnd,
     ] = await Promise.all(SETTING_TYPES.map(async (type) => {
       const [setting] = await getDates(type, year!);
-      return setting ? new Date(setting.date) : null;
+      if (setting) {
+        const date = new Date(setting.date);
+        date.setHours(0, 0, 0, 0);
+        return date;
+      }
+      return null;
     }));
     const datesState = {
       assembly,

@@ -4025,6 +4025,22 @@ bugsnag-react-native@^2.22.2:
     promise "^7"
     prop-types "^15.6.0"
 
+bugsnag-sourcemaps@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/bugsnag-sourcemaps/-/bugsnag-sourcemaps-1.2.1.tgz#3f2b82664a7a0378a631a07836a5e436145993aa"
+  integrity sha512-t5kvbNV/jfIa+YRvRoVB0hvOL+4vE6QsOe+I9rbc2oPEzWZwgIVhUjSOrRRepLQIYo8p8lqqMzDger0SJG3fSQ==
+  dependencies:
+    concat-stream "^2.0.0"
+    form-data "^2.3.3"
+    glob "^7.1.4"
+    graceful-fs "^4.1.11"
+    kleur "^3.0.3"
+    meow "^3.7.0"
+    once "^1.4.0"
+    rc "^1.2.8"
+    read-pkg-up "^2.0.0"
+    run-parallel-limit "^1.0.5"
+
 builtin-modules@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
@@ -9298,7 +9314,7 @@ kleur@^2.0.1:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-2.0.2.tgz#b704f4944d95e255d038f0cb05fb8a602c55a300"
   integrity sha512-77XF9iTllATmG9lSlIv0qdQ2BQ/h9t0bJllHlbvsQ0zUWfU7Yi0S8L5JXzPZgkefIiajLmBJJ4BsMJmqcf7oxQ==
 
-kleur@^3.0.2:
+kleur@^3.0.2, kleur@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
@@ -9801,7 +9817,7 @@ memory-pager@^1.0.2:
   resolved "https://registry.yarnpkg.com/memory-pager/-/memory-pager-1.5.0.tgz#d8751655d22d384682741c972f2c3d6dfa3e66b5"
   integrity sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg==
 
-meow@^3.3.0:
+meow@^3.3.0, meow@^3.7.0:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/meow/-/meow-3.7.0.tgz#72cb668b425228290abbfa856892587308a801fb"
   integrity sha1-cstmi0JSKCkKu/qFaJJYcwioAfs=
@@ -12256,7 +12272,7 @@ raw-body@^2.2.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-rc@^1.2.7:
+rc@^1.2.7, rc@^1.2.8:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/rc/-/rc-1.2.8.tgz#cd924bf5200a075b83c188cd6b9e211b7fc0d3ed"
   integrity sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==
@@ -12412,7 +12428,7 @@ react-native-progress@^3.6.0:
 
 "react-native-push-notification@https://github.com/Li357/react-native-push-notification":
   version "3.1.8"
-  resolved "https://github.com/Li357/react-native-push-notification#5684befccdac346b9595c84e1d55f7eb14a618c0"
+  resolved "https://github.com/Li357/react-native-push-notification#81ac4aac36d9f54b0c24e9a49f4c5c629cafbf5d"
   dependencies:
     "@react-native-community/push-notification-ios" "^1.0.1"
 
@@ -13180,6 +13196,11 @@ run-async@^2.2.0:
   integrity sha1-A3GrSuC91yDUFm19/aZP96RFpsA=
   dependencies:
     is-promise "^2.1.0"
+
+run-parallel-limit@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/run-parallel-limit/-/run-parallel-limit-1.0.5.tgz#c29a4fd17b4df358cb52a8a697811a63c984f1b7"
+  integrity sha512-NsY+oDngvrvMxKB3G8ijBzIema6aYbQMD2bHOamvN52BysbIGTnEY2xsNyfrcr9GhY995/t/0nQN3R3oZvaDlg==
 
 run-queue@^1.0.0, run-queue@^1.0.3:
   version "1.0.3"

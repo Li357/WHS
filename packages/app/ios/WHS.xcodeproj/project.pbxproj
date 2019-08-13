@@ -23,12 +23,12 @@
 		917978CC08124D7FA79111D5 /* SFProDisplay-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 083014EC86BB491AB7D492D3 /* SFProDisplay-Bold.otf */; };
 		9E41C4F31F424D5C920AF245 /* blank-user.png in Resources */ = {isa = PBXBuildFile; fileRef = 39D83C8E3DFE4820A78D4B79 /* blank-user.png */; };
 		A326B96BEB7944269461252A /* SFProDisplay-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6DC2F8035E0E401FA10D257F /* SFProDisplay-Medium.otf */; };
+		B21224502301D0FC0081529C /* libPods-WHS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B212244F2301D0FC0081529C /* libPods-WHS.a */; };
 		B2A40FDC22FE132300BBDC82 /* WHSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A40FDB22FE132300BBDC82 /* WHSUITests.swift */; };
 		B2A40FE522FE186D00BBDC82 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A40FE422FE186D00BBDC82 /* SnapshotHelper.swift */; };
 		E04384F28BE1472F8EC92D8B /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 265A4DE1F760497698860C73 /* RNBackgroundFetch+AppDelegate.m */; };
 		E4499A6A2DCA4E48B6D7454C /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3804A7F7028489DAF35530F /* MaterialIcons.ttf */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
-		F7D74EF2DD6263B88D0C42EE /* libPods-WHS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF268BD0AA6C785BD05E7AA0 /* libPods-WHS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +95,7 @@
 		92B7809E49FF44039076DA80 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		97266B077B264924A4CE20A2 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		9A58134EBB994E378D2E441D /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		B212244F2301D0FC0081529C /* libPods-WHS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-WHS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A40FD922FE132300BBDC82 /* WHSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WHSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A40FDB22FE132300BBDC82 /* WHSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHSUITests.swift; sourceTree = "<group>"; };
 		B2A40FDD22FE132300BBDC82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -123,10 +124,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
+				7E63C0A322FB476D910104B3 /* TSBackgroundFetch.framework in Frameworks */,
 				727BCF8CB18A48EA9DF304DD /* libz.tbd in Frameworks */,
 				416C4A6BFC1C48F4A7AE5043 /* libCodePush.a in Frameworks */,
-				F7D74EF2DD6263B88D0C42EE /* libPods-WHS.a in Frameworks */,
-				7E63C0A322FB476D910104B3 /* TSBackgroundFetch.framework in Frameworks */,
+				B21224502301D0FC0081529C /* libPods-WHS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,6 +189,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B212244F2301D0FC0081529C /* libPods-WHS.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				0D0BF82E3B5A4ECB9879F2EB /* libz.tbd */,
 				DF268BD0AA6C785BD05E7AA0 /* libPods-WHS.a */,
@@ -742,7 +744,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6MCT7GBTT7;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
@@ -772,7 +778,11 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6MCT7GBTT7;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
@@ -1093,7 +1103,11 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6MCT7GBTT7;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",

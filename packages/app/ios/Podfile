@@ -26,6 +26,7 @@ target 'WHS' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   
+  pod 'RNBackgroundFetch', :path => '../node_modules/react-native-background-fetch'
   pod 'CodePush', :path => '../node_modules/react-native-code-push'
   pod 'BugsnagReactNative', :path => '../node_modules/bugsnag-react-native'
   pod 'RNFS', :path => '../node_modules/react-native-fs'

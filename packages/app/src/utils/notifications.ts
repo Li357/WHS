@@ -47,10 +47,10 @@ export function scheduleNotificationForScheduleItem(
     id, userInfo: { id },
     ticker: message,
     tag: `${PACKAGE_NAME}.id.${id}`,
-    largeIcon: '',
-    smallIcon: 'ic_launcher',
     visibility: 'public',
     ongoing: false,
+    // from my fork
+    firePast: false,
     date: subMinutes(convertTimeToDate(classStartTime, fireDate), 5),
   });
 }
