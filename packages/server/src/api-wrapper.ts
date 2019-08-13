@@ -2,7 +2,7 @@ import { LoginBody, DateSchemaWithoutID, DateType, DateSchema, YearSettingType }
 
 class API {
   private AUTH_API = '/api/auth';
-  private DATES_API = `/api/${this.version}/`;
+  private DATES_API = `/api/${this.version}`;
   private changes: object[] = [];
 
   constructor(public readonly version: string) {}
@@ -86,4 +86,4 @@ class API {
   }
 }
 
-export default new API('/v3');
+export default new API('v3');
