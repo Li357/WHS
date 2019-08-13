@@ -6,7 +6,7 @@ import { max, eachWeekOfInterval, setDay, format, subMinutes } from 'date-fns';
 
 import { ClassItem, ScheduleItem, DaySchedule } from '../types/schedule';
 import { store } from './store';
-import { getScheduleTypeOnDate, convertTimeToDate, getModAtTime, getClassAtMod, getScheduleInfoAtTime } from './query-schedule';
+import { getScheduleTypeOnDate, convertTimeToDate } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
 import {
   NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT,
@@ -106,7 +106,6 @@ export async function scheduleNotifications(clear = false) {
           }
 
           const daySchedule = SCHEDULES[dayScheduleType];
-          const { current, next } = getScheduleInfoAtTime(lastNotificationFireDate, daySchedule, schedule);
           for (const scheduleItem of userDaySchedule) {
             // Background fetches only allowed 30 seconds by iOS
             if (Date.now() - start >= MAX_NOTIFICATION_SETUP_TIMEOUT) {

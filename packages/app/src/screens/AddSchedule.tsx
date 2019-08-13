@@ -20,6 +20,7 @@ import {
 import { AppState } from '../types/store';
 import { addTeacherSchedule, setTeacherSchedules } from '../actions/creators';
 import { getUserScheduleFromHTML, parseHTMLFromURL } from '../utils/process-info';
+import client from '../utils/bugsnag';
 
 const ListContainer = styled.View`
   border-radius: ${FORM_BORDER_RADIUS};
@@ -76,6 +77,8 @@ export default authorizedRoute('Add Schedule', function AddSchedule() {
 
   const addSchedule = ({ firstName, lastName, id }: RawTeacherData) => async () => {
     setAddingTeacher(true);
+    client.leaveBreadcrumb(`Adding teacher schedule ${firstName} ${lastName}`);
+
     try {
       const name = `${firstName} ${lastName}`;
       const url = `${TEACHER_URL}/${id}`;
@@ -93,6 +96,8 @@ export default authorizedRoute('Add Schedule', function AddSchedule() {
 
   const removeSchedule = (name: string) => () => {
     setRemovingTeacher(true);
+    client.leaveBreadcrumb(`Remove teacher schedule ${name}`);
+
     const removed = teacherSchedules.filter((teacher) => teacher.name !== name);
     dispatch(setTeacherSchedules(removed));
     notify('Success', `${name}'s schedule removed.`);

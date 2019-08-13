@@ -36,6 +36,8 @@ export default authorizedRoute('Settings', function Settings() {
 
   const handleRefresh = async () => {
     setRefreshing(true);
+    client.leaveBreadcrumb('Manual refreshing');
+
     try {
       await dispatch(fetchUserInfo(username, password));
       await scheduleNotifications(true);
@@ -52,7 +54,10 @@ export default authorizedRoute('Settings', function Settings() {
   };
 
   const handleThemeChange = (newVal: boolean) => {
-    dispatch(setTheme(newVal ? Theme.DARK : Theme.LIGHT));
+    const newTheme = newVal ? Theme.DARK : Theme.LIGHT;
+    client.leaveBreadcrumb(`Changing theme to ${newTheme}`);
+
+    dispatch(setTheme(newTheme));
     setIsDarkTheme(newVal);
   };
 

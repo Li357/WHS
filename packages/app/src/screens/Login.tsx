@@ -16,6 +16,7 @@ import { getScheduleTypeOnDate } from '../utils/query-schedule';
 import { setDaySchedule } from '../actions/creators';
 import WHS from '../../assets/images/WHS.png';
 import { reportError } from '../utils/utils';
+import client from '../utils/bugsnag';
 import { hp } from '../utils/style';
 import registerNotificationScheduler, { scheduleNotifications } from '../utils/notifications';
 
@@ -43,6 +44,7 @@ export default memo(function Login(props: NavigationScreenProps) {
 
   const handleLogin = async () => {
     setLoading(true);
+    client.leaveBreadcrumb('Attempting to log in');
     // If dates fail to be fetched, this is not a problem as they are refetched on app start
     // Fetch dates first b/c the latter sets credentials and makes user "logged in"
 

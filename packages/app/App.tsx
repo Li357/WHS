@@ -9,7 +9,7 @@ import codePush from 'react-native-code-push';
 import PushNotification from 'react-native-push-notification';
 // https://github.com/kmagiera/react-native-gesture-handler/issues/320
 import 'react-native-gesture-handler';
-import { isAfter, isBefore } from 'date-fns';
+import { isAfter, isBefore, subDays } from 'date-fns';
 
 import Drawer from './src/components/drawer/Drawer';
 import Login from './src/screens/Login';
@@ -25,7 +25,8 @@ import { getScheduleTypeOnDate, isScheduleEmpty } from './src/utils/query-schedu
 import Settings from './src/screens/Settings';
 import AddSchedule from './src/screens/AddSchedule';
 import registerNotificationScheduler, { scheduleNotifications } from './src/utils/notifications';
-import { reportScheduleCaution } from './src/utils/utils';
+import { reportScheduleCaution, notify } from './src/utils/utils';
+import client from './src/utils/bugsnag';
 
 interface AppComponentState {
   rehydrated: boolean;
@@ -42,12 +43,16 @@ export default class App extends Component<{}, AppComponentState> {
   };
 
   private rehydrateProfilePhoto = async () => {
+    client.leaveBreadcrumb('Rehydrating profile photo');
+
     const { user: { username, schoolPicture } } = store.getState();
     const profilePhoto = await getProfilePhoto(username) || schoolPicture;
     store.dispatch(setUserInfo({ profilePhoto }));
   }
 
   private updateDayScheduleIfNeeded(newStatus: AppStateStatus = 'active') {
+    client.leaveBreadcrumb('Updating today\'s schedule if needed');
+
     if (newStatus === 'active') {
       const { dates, day: { schedule: dayScheduleType } } = store.getState();
       const now = new Date();
@@ -61,6 +66,8 @@ export default class App extends Component<{}, AppComponentState> {
   }
 
   private async refreshScheduleIfNeeded() {
+    client.leaveBreadcrumb('Refreshing schedule and notifications if needed');
+
     const {
       user: { username, password, schedule },
       dates: { semesterOneStart, semesterTwoStart, semesterTwoEnd },
@@ -72,6 +79,8 @@ export default class App extends Component<{}, AppComponentState> {
       return;
     }
     if (isAfter(now, semesterTwoEnd)) {
+      client.leaveBreadcrumb('Refreshing dates after end of year');
+
       await store.dispatch(fetchDates(now.getFullYear()));
       store.dispatch(setRefreshed([false, false]));
       return PushNotification.cancelAllLocalNotifications();
@@ -80,6 +89,8 @@ export default class App extends Component<{}, AppComponentState> {
     const shouldRefresh = (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo)
       || (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
     if (isScheduleEmpty(schedule) || shouldRefresh) {
+      client.leaveBreadcrumb('Refreshing semesters one/two');
+
       await store.dispatch(fetchUserInfo(username, password));
       await scheduleNotifications(true);
     }
@@ -87,12 +98,15 @@ export default class App extends Component<{}, AppComponentState> {
   }
 
   private silentlyUpdateData = async () => {
+    client.leaveBreadcrumb('Updating dates, school picture, and notifications');
+
     try {
       await store.dispatch(fetchSchoolPicture());
       await store.dispatch(fetchDates());
       await scheduleNotifications(true);
-    // tslint:disable-next-line: no-empty
-    } catch {}
+    } catch {
+      client.leaveBreadcrumb('Update failed silently');
+    }
   }
 
   private createNavigationContainer = (isLoggedIn: boolean) => {
@@ -141,24 +155,37 @@ export default class App extends Component<{}, AppComponentState> {
   }
 
   private handleRehydrate = async () => {
-    const { user: { username, password } } = store.getState();
-    const isLoggedIn = username.length > 0 && password.length > 0;
+    client.leaveBreadcrumb('Rehydrated!');
 
-    if (isLoggedIn) {
-      await this.silentlyUpdateData();
-      await this.rehydrateProfilePhoto();
-      await this.refreshScheduleIfNeeded();
-      this.updateDayScheduleIfNeeded();
+    try {
+      const { user: { username, password } } = store.getState();
+      const isLoggedIn = username.length > 0 && password.length > 0;
 
-      const { dates: { semesterOneStart } } = store.getState();
-      if (semesterOneStart !== null && isBefore(new Date(), semesterOneStart)) {
-        reportScheduleCaution(semesterOneStart);
+      if (isLoggedIn) {
+        await this.silentlyUpdateData();
+        await this.rehydrateProfilePhoto();
+        await this.refreshScheduleIfNeeded();
+        this.updateDayScheduleIfNeeded();
+
+        const { dates: { semesterOneStart } } = store.getState();
+        if (semesterOneStart !== null) {
+          const freshmenDay = subDays(semesterOneStart, 1);
+          if (isBefore(new Date(), freshmenDay)) {
+            client.leaveBreadcrumb('Reporting schedule caution');
+            reportScheduleCaution(semesterOneStart);
+          }
+        }
       }
+      this.setState({ rehydrated: true });
+    } catch (error) {
+      notify('Error', 'Something went wrong, please try restarting the app.');
+      client.notify(error);
     }
-    this.setState({ rehydrated: true });
   }
 
   private renderApp = () => {
+    client.leaveBreadcrumb('Rendering navigation container');
+
     const { user: { username, password } } = store.getState();
     const isLoggedIn = username.length > 0 && password.length > 0;
     const AppContainer = this.createNavigationContainer(isLoggedIn);

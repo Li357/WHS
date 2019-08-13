@@ -12,6 +12,7 @@ import { wp } from '../utils/style';
 import { SCREEN_MARGIN_HORIZONTAL, LARGE_ICON_SIZE } from '../constants/style';
 import { isScheduleEmpty } from '../utils/query-schedule';
 import { AppState } from '../types/store';
+import client from '../utils/bugsnag';
 
 const EmptyScreen = styled.View`
   height: 50%;
@@ -31,6 +32,8 @@ export default authorizedRoute(
     const theme = useSelector((state: AppState) => state.theme);
 
     if (isScheduleEmpty(schedule)) {
+      client.leaveBreadcrumb('Schedule is empty');
+
       return (
         <EmptyScreen>
           <Icon name="restore" size={LARGE_ICON_SIZE} color={theme.subtextColor} />
