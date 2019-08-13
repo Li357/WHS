@@ -9,12 +9,13 @@
     "test": "npx jest '__tests__\\/(?!.*test-utils).*$'",
     "test:watch": "yarn test --watch",
     "test:coverage": "yarn test --coverage --coverageReporters=text-lcov",
-    "lint": "npx tslint -p tsconfig.json src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}"
+    "lint": "npx tslint -p tsconfig.json src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}",
+    "postinstall": "npx jetify"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.4.2",
     "@react-native-community/push-notification-ios": "^1.0.2",
-    "bugsnag-react-native": "^2.22.2",
+    "bugsnag-react-native": "~2.22.2",
     "date-fns": "^2.0.0-alpha.1",
     "react": "16.8.6",
     "react-native": "0.60.4",
@@ -64,6 +65,7 @@
     "@types/styled-components": "^4.1.16",
     "@whs/server": "^3.0.0",
     "babel-jest": "^24.8.0",
+    "bugsnag-sourcemaps": "^1.2.1",
     "fetch-mock": "^7.3.3",
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.55.0",
