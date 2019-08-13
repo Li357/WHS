@@ -3,7 +3,7 @@ import { subDays, format } from 'date-fns';
 
 import client from './bugsnag';
 import { NETWORK_REQUEST_FAILED_MSG, NETWORK_REQUEST_FAILED } from '../constants/fetch';
-import { LoginError, NetworkError } from './error';
+import { LoginError } from './error';
 
 /**
  * Split array without mutation
