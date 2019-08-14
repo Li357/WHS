@@ -23,7 +23,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -42,9 +42,9 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>WHS wants to access your photo library.</string>
+	<string>WHS wants to access your photo library to pick a profile photo.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>WHS wants to use your camera.</string>
+	<string>WHS wants to use your camera to take a profile photo.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SFProDisplay-Bold.otf</string>
