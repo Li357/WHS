@@ -120,7 +120,7 @@ export default class YearSetting extends Vue {
   }
 
   private editSetting(setting: DateSchemaWithoutID) {
-    API.editSetting(this.settingType, this.settingType, setting);
+    API.editSetting(this.settingType, this.startYear, setting);
     this.setting = { ...setting, saved: false };
     this.$notify({
       title: 'Success',
