@@ -8,6 +8,7 @@ export const MAX_NOTIFICATION_SETUP_TIMEOUT = 25000;
 export const NETWORK_REQUEST_FAILED = 'Network request failed';
 export const NETWORK_REQUEST_FAILED_MSG = `An error occurred while fetching data. \
 Please check your internet connection.`;
+export const LOGIN_CREDENTIALS_CHANGED_MSG = 'Your login credentials have changed. Please try logging in again.';
 
 export const SCHOOL_WEBSITE = 'https://westside-web.azurewebsites.net';
 export const LOGIN_URL = `${SCHOOL_WEBSITE}/account/login`;

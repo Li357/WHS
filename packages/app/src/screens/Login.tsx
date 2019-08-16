@@ -19,6 +19,7 @@ import { reportError } from '../utils/utils';
 import client from '../utils/bugsnag';
 import { hp } from '../utils/style';
 import registerNotificationScheduler, { scheduleNotifications } from '../utils/notifications';
+import { LoginError } from '../utils/error';
 
 const LoginScreen = styled(Screen)`
   align-items: center;
@@ -66,7 +67,9 @@ export default memo(function Login(props: NavigationScreenProps) {
     } catch (error) {
       setError(true);
       setLoading(false);
-      reportError(error);
+      if (!(error instanceof LoginError)) {
+        reportError(error);
+      }
     }
   };
 
