@@ -10,6 +10,9 @@
     "test:watch": "yarn test --watch",
     "test:coverage": "yarn test --coverage --coverageReporters=text-lcov",
     "lint": "npx tslint -p tsconfig.json src/**/*.{ts,tsx} App.tsx __tests__/**/*.{ts,tsx}",
+    "upload-sourcemaps:base": "curl https://upload.bugsnag.com/react-native-source-map -F apiKey=3fb4434641f5a8e78c8a1ca4ad968cc5",
+    "upload-sourcemaps:android": "yarn upload-sourcemaps:base -F sourceMap=@build/android-release.bundle.map -F bundle=@build/android-release.bundle -F platform=android",
+    "upload-sourcemaps:ios": "yarn upload-sourcemaps:base -F sourceMap=@build/ios-release.bundle.map -F bundle=@build/ios-release.bundle -F platform=ios",
     "postinstall": "npx jetify"
   },
   "dependencies": {
