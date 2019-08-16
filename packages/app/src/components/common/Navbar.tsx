@@ -49,9 +49,10 @@ interface NavbarProps {
 }
 
 export default function Navbar(props: NavbarProps & NavigationScreenProps<NavigationParams, any>) {
+  const hitSlop = { top: 15, left: 15, bottom: 15, right: 15 };
   return (
     <NavbarContainer>
-      <HamburgerContainer onPress={props.navigation.openDrawer}>
+      <HamburgerContainer onPress={props.navigation.openDrawer} hitSlop={hitSlop}>
         <One />
         <Two />
         <Three />
