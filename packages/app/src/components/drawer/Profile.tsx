@@ -24,6 +24,7 @@ const ImageContainer = styled.View`
 `;
 
 const RightContainer = styled.View`
+  flex-shrink: 1;
   margin-left: ${PROFILE_INFO_MARGIN_LEFT};
 `;
 
