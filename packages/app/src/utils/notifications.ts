@@ -1,8 +1,7 @@
-import { Platform } from 'react-native';
 import PushNotification, { PushNotificationPermissions } from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import BackgroundFetch from 'react-native-background-fetch';
-import { max, eachWeekOfInterval, setDay, format, subMinutes } from 'date-fns';
+import { max, eachWeekOfInterval, setDay, format, subMinutes, isAfter, isSameDay } from 'date-fns';
 
 import { ClassItem, ScheduleItem, DaySchedule } from '../types/schedule';
 import { store } from './store';
@@ -11,7 +10,6 @@ import * as SCHEDULES from '../constants/schedules';
 import {
   NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT,
 } from '../constants/fetch';
-import { last } from './utils';
 import { injectAssemblyOrFinalsIfNeeded } from './process-schedule';
 import client from './bugsnag';
 
@@ -70,59 +68,53 @@ export async function scheduleNotifications() {
   }
 
   PushNotification.cancelAllLocalNotifications();
-
   const start = new Date();
-  const currentNotifications: object[] = await new Promise((resolve) => {
-    if (Platform.OS === 'android') {
-      return resolve([]);
-    }
-    PushNotificationIOS.getScheduledLocalNotifications((notifications: object[]) => {
-      resolve(notifications);
+  const { dates, user: { schedule }, day: { refreshedSemesterTwo } } = store.getState();
+  if (dates.semesterTwoEnd !== null && dates.semesterOneStart !== null && dates.semesterOneEnd) {
+    const sundaysUntilEnd = eachWeekOfInterval({
+      start: max([start, dates.semesterOneStart]),
+      end: dates.semesterTwoEnd,
     });
-  });
-  const noCurrentNotifications = currentNotifications.length;
 
-  if (noCurrentNotifications < IOS_MAX_NOTIFICATIONS) {
-    const { dates, user: { schedule } } = store.getState();
-    if (dates.semesterTwoEnd !== null && dates.semesterOneStart !== null) {
-      const sundaysUntilEnd = eachWeekOfInterval({
-        start: max([start, dates.semesterOneStart]),
-        end: dates.semesterTwoEnd,
-      });
+    let count = 0;
+    for (const sunday of sundaysUntilEnd) {
+      for (const day of [1, 2, 3, 4, 5]) {
+        const weekday = setDay(sunday, day, { weekStartsOn: start.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
+        // Don't schedule new notifications because schedule changes after semester one
+        if (isAfter(weekday, dates.semesterOneEnd) && !refreshedSemesterTwo) {
+          continue;
+        }
 
-      let count = 0;
-      for (const sunday of sundaysUntilEnd) {
-        for (const day of [1, 2, 3, 4, 5]) {
-          const weekday = setDay(sunday, day, { weekStartsOn: start.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
-          const dayScheduleType = getScheduleTypeOnDate(weekday, dates);
-          const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
-          if (['FINALS', 'BREAK', 'WEEKEND', 'SUMMER'].includes(dayScheduleType)) {
-            continue;
-          }
+        const dayScheduleType = getScheduleTypeOnDate(weekday, dates);
+        const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
+        if (['FINALS', 'BREAK', 'WEEKEND', 'SUMMER'].includes(dayScheduleType)) {
+          continue;
+        }
 
-          const daySchedule = SCHEDULES[dayScheduleType];
-          for (const scheduleItem of userDaySchedule) {
+        const daySchedule = SCHEDULES[dayScheduleType];
+        for (const scheduleItem of userDaySchedule) {
+          if (isSameDay(start, weekday)) {
             // only schedule notifications after current mod
             const { current, next } = getModAtTime(start, daySchedule);
-            if (scheduleItem.startMod <= current || scheduleItem.startMod <= next) {
+            if (scheduleItem.startMod <= current && scheduleItem.startMod <= next) {
               continue;
             }
-
-            // Background fetches only allowed 30 seconds by iOS
-            if (Date.now() - start.getTime() >= MAX_NOTIFICATION_SETUP_TIMEOUT) {
-              return BackgroundFetch.FETCH_RESULT_NEW_DATA;
-            }
-            if (count === IOS_MAX_NOTIFICATIONS - noCurrentNotifications) {
-              return BackgroundFetch.FETCH_RESULT_NEW_DATA;
-            }
-            scheduleNotificationForScheduleItem(scheduleItem, daySchedule, weekday);
-            count++;
           }
+
+          // Background fetches only allowed 30 seconds by iOS
+          if (Date.now() - start.getTime() >= MAX_NOTIFICATION_SETUP_TIMEOUT) {
+            return BackgroundFetch.FETCH_RESULT_NEW_DATA;
+          }
+          if (count === IOS_MAX_NOTIFICATIONS) {
+            return BackgroundFetch.FETCH_RESULT_NEW_DATA;
+          }
+          scheduleNotificationForScheduleItem(scheduleItem, daySchedule, weekday);
+          count++;
         }
       }
     }
   }
-  return BackgroundFetch.FETCH_RESULT_NO_DATA;
+  return BackgroundFetch.FETCH_RESULT_NEW_DATA;
 }
 
 export async function notificationScheduler() {
