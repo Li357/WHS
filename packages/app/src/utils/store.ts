@@ -11,6 +11,7 @@ import {
   DatesState, SerializedDatesState, MiscellaneousActions,
 } from '../types/store';
 import rootReducer from '../reducers/root';
+import { reportNotEnoughSpace } from './utils';
 
 // Do not persist the profile-photo, it will be manually rehydrated
 const profilePhotoTransform = createTransform<UserState, UserState>(
@@ -75,6 +76,7 @@ const persistConfig = {
   timeout: 0,
   transforms: [profilePhotoTransform, dateTransform],
   migrate: createMigrate(migrations),
+  writeFailHandler: reportNotEnoughSpace,
 };
 const persistedReducer = persistReducer<AppState, AppAction>(persistConfig, rootReducer);
 

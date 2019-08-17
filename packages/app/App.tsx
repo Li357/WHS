@@ -95,7 +95,7 @@ export default class App extends Component<{}, AppComponentState> {
         client.leaveBreadcrumb('Refreshing semesters one/two');
 
         await store.dispatch(fetchUserInfo(username, password));
-        await scheduleNotifications(true);
+        await scheduleNotifications();
       }
       await registerNotificationScheduler();
     } catch (error) {
@@ -113,7 +113,7 @@ export default class App extends Component<{}, AppComponentState> {
     try {
       await store.dispatch(fetchSchoolPicture());
       await store.dispatch(fetchDates());
-      await scheduleNotifications(true);
+      await scheduleNotifications();
     } catch {
       client.leaveBreadcrumb('Update failed silently');
     }
