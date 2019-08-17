@@ -42,7 +42,7 @@ export default authorizedRoute('Settings', function Settings() {
 
     try {
       await dispatch(fetchUserInfo(username, password));
-      await scheduleNotifications(true);
+      await scheduleNotifications();
       notify('Success', 'Your information has been refreshed.');
     } catch (error) {
       if (error instanceof LoginError) {

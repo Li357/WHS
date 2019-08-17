@@ -109,3 +109,11 @@ export function reportScheduleCaution(semesterOneStart: Date) {
     + `Please be sure to refresh your schedule so that you attend the correct classes starting ${firstDate}.`,
   );
 }
+
+export function reportNotEnoughSpace() {
+  notify(
+    'Error',
+    'There is not enough space on your phone to save your login, schedule, and other critical information.'
+    + 'Please clear up some space and retry logging in.',
+  );
+}

@@ -1,11 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
+import { reportNotEnoughSpace } from './utils';
+
 export function getProfilePhoto(username: string) {
   return AsyncStorage.getItem(`${username}:profile-photo`);
 }
 
-export function setProfilePhoto(username: string, newPhoto: string) {
-  return AsyncStorage.setItem(`${username}:profile-photo`, newPhoto);
+export async function setProfilePhoto(username: string, newPhoto: string) {
+  try {
+    await AsyncStorage.setItem(`${username}:profile-photo`, newPhoto);
+  } catch (error) {
+    reportNotEnoughSpace();
+  }
 }
 
 export function removeProfilePhoto(username: string) {

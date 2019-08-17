@@ -23,9 +23,8 @@ export default function Info({ daySchedule, userSchedule, navigation }: InfoProp
   const [countdown, setCountdown] = useState(() => getCountdown(now, scheduleInfo, daySchedule));
   const [dashboardInfo, setDashboardInfo] = useState(() => getDashboardInfo(daySchedule, userSchedule, scheduleInfo));
 
-  const dayEnd = scheduleInfo.current !== ModNumber.UNKNOWN
-    ? convertTimeToDate(last(daySchedule)[1])
-    : now;
+  const dayEndTime = daySchedule.length !== 0 ? convertTimeToDate(last(daySchedule)[1]) : now;
+  const dayEnd = scheduleInfo.current !== ModNumber.UNKNOWN ? dayEndTime : now;
   const [endCountdown, setEndCountdown] = useState(() => (
     Math.max(0, differenceInSeconds(dayEnd, now))
   ));
