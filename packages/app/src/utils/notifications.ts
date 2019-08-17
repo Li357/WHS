@@ -6,7 +6,7 @@ import { max, eachWeekOfInterval, setDay, format, subMinutes } from 'date-fns';
 
 import { ClassItem, ScheduleItem, DaySchedule } from '../types/schedule';
 import { store } from './store';
-import { getScheduleTypeOnDate, convertTimeToDate } from './query-schedule';
+import { getScheduleTypeOnDate, convertTimeToDate, getModAtTime } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
 import {
   NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT,
@@ -107,6 +107,12 @@ export async function scheduleNotifications(clear = false) {
 
           const daySchedule = SCHEDULES[dayScheduleType];
           for (const scheduleItem of userDaySchedule) {
+            // only schedule notifications after current mod
+            const { current, next } = getModAtTime(new Date(), daySchedule);
+            if (scheduleItem.startMod <= current || scheduleItem.startMod <= next) {
+              continue;
+            }
+
             // Background fetches only allowed 30 seconds by iOS
             if (Date.now() - start >= MAX_NOTIFICATION_SETUP_TIMEOUT) {
               return BackgroundFetch.FETCH_RESULT_NEW_DATA;

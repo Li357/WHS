@@ -177,8 +177,6 @@ export default class App extends Component<{}, AppComponentState> {
         await this.refreshScheduleIfNeeded();
         this.updateDayScheduleIfNeeded();
 
-        store.dispatch(setUserInfo({ name: 'Bruh Bruh Bruh Bruh' }));
-
         const { dates: { semesterOneStart } } = store.getState();
         if (semesterOneStart !== null) {
           const freshmenDay = subDays(semesterOneStart, 1);
