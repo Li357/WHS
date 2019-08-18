@@ -131,7 +131,7 @@ describe('async actions', () => {
 
       const store = mockStore(initialAppState);
       await store.dispatch(fetchDates(2019));
-      expect(store.getActions()).toEqual(expectedActions);
+      expect(JSON.stringify(store.getActions())).toEqual(JSON.stringify(expectedActions));
     });
   });
 });
