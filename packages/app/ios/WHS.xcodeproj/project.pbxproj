@@ -17,13 +17,11 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* WHSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* WHSTests.m */; };
 		416C4A6BFC1C48F4A7AE5043 /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 504F847CAC4944FC97577881 /* libCodePush.a */; };
-		41E1CCE0F35393C4560806F3 /* libPods-WHSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14376EF54E444A8B6B375865 /* libPods-WHSTests.a */; };
 		727BCF8CB18A48EA9DF304DD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D0BF82E3B5A4ECB9879F2EB /* libz.tbd */; };
 		7E63C0A322FB476D910104B3 /* TSBackgroundFetch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30004041F5CE45FE800A18C0 /* TSBackgroundFetch.framework */; };
 		917978CC08124D7FA79111D5 /* SFProDisplay-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 083014EC86BB491AB7D492D3 /* SFProDisplay-Bold.otf */; };
 		9E41C4F31F424D5C920AF245 /* blank-user.png in Resources */ = {isa = PBXBuildFile; fileRef = 39D83C8E3DFE4820A78D4B79 /* blank-user.png */; };
 		A326B96BEB7944269461252A /* SFProDisplay-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6DC2F8035E0E401FA10D257F /* SFProDisplay-Medium.otf */; };
-		B21224502301D0FC0081529C /* libPods-WHS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B212244F2301D0FC0081529C /* libPods-WHS.a */; };
 		B2A40FDC22FE132300BBDC82 /* WHSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A40FDB22FE132300BBDC82 /* WHSUITests.swift */; };
 		B2A40FE522FE186D00BBDC82 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A40FE422FE186D00BBDC82 /* SnapshotHelper.swift */; };
 		E04384F28BE1472F8EC92D8B /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 265A4DE1F760497698860C73 /* RNBackgroundFetch+AppDelegate.m */; };
@@ -69,7 +67,6 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = WHS/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = WHS/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = WHS/main.m; sourceTree = "<group>"; };
-		14376EF54E444A8B6B375865 /* libPods-WHSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WHSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1723ACC637A749E8AB4AE3DE /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		1D54E336F0805DC2E4CA572B /* Pods-WHSTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WHSTests.staging.xcconfig"; path = "Pods/Target Support Files/Pods-WHSTests/Pods-WHSTests.staging.xcconfig"; sourceTree = "<group>"; };
 		265A4DE1F760497698860C73 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
@@ -95,7 +92,6 @@
 		92B7809E49FF44039076DA80 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		97266B077B264924A4CE20A2 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		9A58134EBB994E378D2E441D /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
-		B212244F2301D0FC0081529C /* libPods-WHS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-WHS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A40FD922FE132300BBDC82 /* WHSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WHSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A40FDB22FE132300BBDC82 /* WHSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHSUITests.swift; sourceTree = "<group>"; };
 		B2A40FDD22FE132300BBDC82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -105,7 +101,6 @@
 		C129573065EF4551A9CE78C9 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		D2AA35D501761CE942990C41 /* Pods-WHS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WHS.release.xcconfig"; path = "Pods/Target Support Files/Pods-WHS/Pods-WHS.release.xcconfig"; sourceTree = "<group>"; };
 		D3804A7F7028489DAF35530F /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		DF268BD0AA6C785BD05E7AA0 /* libPods-WHS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WHS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0F86F282D9B42F0A15B8B5B /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -115,7 +110,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41E1CCE0F35393C4560806F3 /* libPods-WHSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,7 +121,6 @@
 				7E63C0A322FB476D910104B3 /* TSBackgroundFetch.framework in Frameworks */,
 				727BCF8CB18A48EA9DF304DD /* libz.tbd in Frameworks */,
 				416C4A6BFC1C48F4A7AE5043 /* libCodePush.a in Frameworks */,
-				B21224502301D0FC0081529C /* libPods-WHS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,11 +182,8 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B212244F2301D0FC0081529C /* libPods-WHS.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				0D0BF82E3B5A4ECB9879F2EB /* libz.tbd */,
-				DF268BD0AA6C785BD05E7AA0 /* libPods-WHS.a */,
-				14376EF54E444A8B6B375865 /* libPods-WHSTests.a */,
 				30004041F5CE45FE800A18C0 /* TSBackgroundFetch.framework */,
 			);
 			name = Frameworks;
@@ -328,6 +318,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				706777C9DFD12DA13E245588 /* [CP] Copy Pods Resources */,
+				E42E7DBB6B86046CC0BBE902 /* Upload Bugsnag dSYM */,
 			);
 			buildRules = (
 			);
@@ -534,7 +525,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-WHS/Pods-WHS-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-WHS/Pods-WHS-resources.sh",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -573,7 +564,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WHS/Pods-WHS-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WHS/Pods-WHS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BCCAD81255DC187D39C669D6 /* [CP] Check Pods Manifest.lock */ = {
@@ -610,6 +601,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E42E7DBB6B86046CC0BBE902 /* Upload Bugsnag dSYM */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Bugsnag dSYM";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env ruby";
+			shellScript = "# First, attempt to get the API key from an environment variable\napi_key = ENV[\"BUGSNAG_API_KEY\"]\n\n# If not present, attempt to lookup the value from the Info.plist\nif !api_key\n  default_info_plist_location = Dir.glob(\"./{ios/,}*/Info.plist\").reject {|path| path =~ /build|test/i }\n  plist_buddy_response = `/usr/libexec/PlistBuddy -c \"print :BugsnagAPIKey\" \"#{default_info_plist_location.first}\"`\n  api_key = plist_buddy_response if $?.success?\nend\n\nfork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"].each do |dsym|\n    curl_command = \"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} \"\n    curl_command += \"-F apiKey=#{Shellwords.escape(api_key)} \" if api_key\n    curl_command += \"https://upload.bugsnag.com/\"\n    system(curl_command)\n  end\nend\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
