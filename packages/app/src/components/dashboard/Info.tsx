@@ -70,9 +70,15 @@ export default function Info({ daySchedule, userSchedule, navigation }: InfoProp
         batch(() => {
           const openDate = new Date();
           const newScheduleInfo = getScheduleInfoAtTime(openDate, daySchedule, userSchedule);
+          const newDayEndTime = daySchedule.length !== 0 ? convertTimeToDate(last(daySchedule)[1]) : openDate;
+          const newDayEnd = newScheduleInfo.current !== ModNumber.UNKNOWN ? newDayEndTime : openDate;
+          const newEndCountdown = Math.max(0, differenceInSeconds(newDayEnd, openDate));
+
           setScheduleInfo(newScheduleInfo);
           setCountdown(getCountdown(openDate, newScheduleInfo, daySchedule));
+          setEndCountdown(newEndCountdown);
           setDashboardInfo(getDashboardInfo(daySchedule, userSchedule, newScheduleInfo));
+          setFinished(newEndCountdown === 0);
           setInactive(false);
         });
     }
