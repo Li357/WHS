@@ -143,11 +143,24 @@ export async function getDates(type: DateType, year: number): Promise<DateSchema
   return response.json();
 }
 
+/**
+ * Returns URL to query to fetch list of teachers
+ * @param query teacher name query
+ * @param limit number of results
+ * @param username of user
+ * @param password of user
+ */
 export function getTeacherSearchURL(query: string, limit: number, username: string, password: string) {
   const returnURL = encodeURIComponent(`${SEARCH_URL}?query=${query}&limit=${limit}`);
   return `${getLoginURL(username, password)}&ReturnUrl=${returnURL}`;
 }
 
+/**
+ * Returns URL to fetch teacher schedule
+ * @param id id of teacher to fetch
+ * @param username of user
+ * @param password of user
+ */
 export function getTeacherURL(id: number, username: string, password: string) {
   const returnURL = encodeURIComponent(`${TEACHER_URL}/${id}`);
   return `${getLoginURL(username, password)}&ReturnUrl=${returnURL}`;
