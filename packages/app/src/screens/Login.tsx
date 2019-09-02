@@ -60,7 +60,7 @@ export default memo(function Login(props: NavigationScreenProps) {
       const now = new Date();
       await dispatch(fetchUserInfo(username, password));
       await registerNotificationScheduler();
-      await scheduleNotifications(true);
+      await scheduleNotifications();
 
       dispatch(setDaySchedule(getScheduleTypeOnDate(now, updatedDates)));
       props.navigation.navigate('Dashboard');

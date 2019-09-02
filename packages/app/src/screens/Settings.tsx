@@ -34,6 +34,7 @@ export default authorizedRoute('Settings', function Settings() {
   const [isDarkTheme, setIsDarkTheme] = useState(JSON.stringify(theme) === JSON.stringify(darkTheme));
   const [refreshing, setRefreshing] = useState(false);
   const [reportingBug, setReportingBug] = useState(false);
+  const [reported, setReported] = useState(false);
   const [bugReport, setBugReport] = useState('');
 
   const handleRefresh = async () => {
@@ -56,7 +57,7 @@ export default authorizedRoute('Settings', function Settings() {
 
   const handleBugReport = () => {
     client.notify(new Error(bugReport));
-    closeDialog();
+    setReported(true);
   };
 
   const handleThemeChange = (newVal: boolean) => {
@@ -74,6 +75,28 @@ export default authorizedRoute('Settings', function Settings() {
     ? (<CircleSnail size={SUBTEXT_SIZE} color={theme.subtextColor} />)
     : (<SettingIcon name="refresh" />);
 
+  const reportDialogContent = [
+    <Dialog.Title key="0">Report Bug</Dialog.Title>,
+    (
+      <Dialog.Description key="1">
+        Please describe the bug. Note some anonymous diagnostic info is sent.
+      </Dialog.Description>
+    ),
+    <Dialog.Input key="2" value={bugReport} onChangeText={setBugReport} />,
+    <Dialog.Button key="3" label="Cancel" onPress={closeDialog} />,
+    <Dialog.Button key="4" label="Report" onPress={handleBugReport} />,
+  ];
+
+  const reportedContent = [
+    <Dialog.Title key="0">Reported</Dialog.Title>,
+    (
+      <Dialog.Description key="1">
+        Bug reported submitted. You may be contacted for further information.
+      </Dialog.Description>
+    ),
+    <Dialog.Button key="2" label="OK" onPress={closeDialog} />,
+  ];
+
   return (
     <>
       <ButtonGroup>
@@ -87,13 +110,7 @@ export default authorizedRoute('Settings', function Settings() {
         <Button onPress={openDialog} left={<SettingIcon name="warning" />}>Report Bug</Button>
       </ButtonGroup>
       <Switch value={isDarkTheme} onChange={handleThemeChange}>Dark Theme</Switch>
-      <Dialog.Container visible={reportingBug}>
-        <Dialog.Title>Report Bug</Dialog.Title>
-        <Dialog.Description>Please describe the bug. Note some anonymous diagnostic info is sent.</Dialog.Description>
-        <Dialog.Input value={bugReport} onChangeText={setBugReport} />
-        <Dialog.Button label="Cancel" onPress={closeDialog} />
-        <Dialog.Button label="Report" onPress={handleBugReport} />
-      </Dialog.Container>
+      <Dialog.Container visible={reportingBug}>{reported ? reportedContent : reportDialogContent}</Dialog.Container>
     </>
   );
 });
