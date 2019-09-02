@@ -2,7 +2,7 @@ import fetch from 'react-native-fetch-polyfill';
 
 import {
   getLoginURL, getLoginError, getSchoolPictureFromHTML, processName,
-  getUserScheduleFromHTML, getUserInfoFromHTML, getTeacherSchedules,
+  getUserScheduleFromHTML, getUserInfoFromHTML, getTeacherSchedules, getTeacherSearchURL, getTeacherURL,
 } from '../../src/utils/process-info';
 import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL, SCHOOL_WEBSITE } from '../../src/constants/fetch';
 import { processSchedule } from '../../src/utils/process-schedule';
@@ -140,6 +140,22 @@ describe('processing user info', () => {
         { url: `${SCHOOL_WEBSITE}/teachers/1`, name: 'Teacher 1', schedule: expectedTeacherSchedule },
         { url: `${SCHOOL_WEBSITE}/teachers/2`, name: 'Teacher 2', schedule: expectedTeacherSchedule },
       ]);
+    });
+  });
+
+  describe('getTeacherSearchURL', () => {
+    it('should return login url with return url', () => {
+      const url = getTeacherSearchURL('John', 10, 'Jeff', 'Smith');
+      expect(url).toEqual(
+        `${LOGIN_URL}?Username=Jeff&Password=Smith&ReturnUrl=%2Fapi%2Fsearch%3Fquery%3DJohn%26limit%3D10`,
+      );
+    });
+  });
+
+  describe('getTeacherURL', () => {
+    it('should return login url with return url', () => {
+      const url = getTeacherURL(320, 'Jeff', 'Smith');
+      expect(url).toEqual(`${LOGIN_URL}?Username=Jeff&Password=Smith&ReturnUrl=%2Fteachers%2F320`);
     });
   });
 });

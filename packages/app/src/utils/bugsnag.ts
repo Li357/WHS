@@ -29,7 +29,7 @@ function serializeState(state: AppState): IMetadata {
 }
 
 const config = new Configuration();
-config.codeBundleId = '3.0-b3';
+config.codeBundleId = '3.0-b4';
 config.notifyReleaseStages = ['production'];
 config.registerBeforeSendCallback((report) => {
   const state = store.getState();

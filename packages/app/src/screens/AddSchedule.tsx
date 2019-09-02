@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import authorizedRoute from '../components/common/authorizedRoute';
 import Input from '../components/common/Input';
 import Subtext from '../components/common/Subtext';
-import { TEACHER_URL, FETCH_TIMEOUT, SEARCH_URL } from '../constants/fetch';
+import { FETCH_TIMEOUT, TEACHER_FETCH_LIMIT } from '../constants/fetch';
 import { RawTeacherData } from '../types/schedule';
 import { reportError, notify } from '../utils/utils';
 import TeacherItem from '../components/add-schedule/TeacherItem';
@@ -19,7 +19,7 @@ import {
 } from '../constants/style';
 import { AppState } from '../types/store';
 import { addTeacherSchedule, setTeacherSchedules } from '../actions/creators';
-import { getUserScheduleFromHTML, parseHTMLFromURL } from '../utils/process-info';
+import { getUserScheduleFromHTML, parseHTMLFromURL, getTeacherSearchURL, getTeacherURL } from '../utils/process-info';
 import client from '../utils/bugsnag';
 
 const ListContainer = styled.View`
@@ -46,6 +46,7 @@ const Title = styled(Subtext)`
 export default authorizedRoute('Add Schedule', function AddSchedule() {
   const teacherSchedules = useSelector(({ user }: AppState) => user.teacherSchedules);
   const theme = useSelector((state: AppState) => state.theme);
+  const { username, password } = useSelector((state: AppState) => state.user);
   const dispatch = useDispatch();
   const [query, setQuery] = useState('');
   const [teachers, setTeachers] = useState<RawTeacherData[]>([]);
@@ -57,7 +58,8 @@ export default authorizedRoute('Add Schedule', function AddSchedule() {
   const fetchTeachers = async (teacherQuery: string) => {
     controller.abort();
     try {
-      const response = await fetch(`${SEARCH_URL}?query=${teacherQuery}&limit=10`, {
+      const response = await fetch(getTeacherSearchURL(teacherQuery, TEACHER_FETCH_LIMIT, username, password), {
+        method: 'POST',
         timeout: FETCH_TIMEOUT,
         signal,
       });
@@ -81,8 +83,8 @@ export default authorizedRoute('Add Schedule', function AddSchedule() {
 
     try {
       const name = `${firstName} ${lastName}`;
-      const url = `${TEACHER_URL}/${id}`;
-      const $ = await parseHTMLFromURL(url, { signal });
+      const url = getTeacherURL(id, username, password);
+      const $ = await parseHTMLFromURL(url, { signal, method: 'POST' });
       const schedule = await getUserScheduleFromHTML($);
       dispatch(addTeacherSchedule({ name, url, schedule }));
       notify('Success', `${name}'s schedule added!`);

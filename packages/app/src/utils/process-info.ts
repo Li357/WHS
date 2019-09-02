@@ -6,7 +6,7 @@ import { processSchedule } from './process-schedule';
 import {
   HEADER_SELECTOR, STUDENT_OVERVIEW_SELECTOR, STUDENT_ID_SELECTOR,
   SCHOOL_PICTURE_SELECTOR, SCHOOL_PICTURE_REGEX, SCHOOL_PICTURE_BLANK_FLAG, SCHOOL_PICTURE_BLANK_SYMBOL,
-  SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR, DATES_URL,
+  SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR, DATES_URL, SEARCH_URL, TEACHER_URL,
 } from '../constants/fetch';
 import { UserInfo, UserOverviewMap, UserOverviewKeys } from '../types/store';
 import { Schedule, TeacherSchedule, RawSchedule } from '../types/schedule';
@@ -141,4 +141,27 @@ export async function getDates(type: DateType, year: number): Promise<DateSchema
     throw new NetworkError('Fetch for dates was not successful!');
   }
   return response.json();
+}
+
+/**
+ * Returns URL to query to fetch list of teachers
+ * @param query teacher name query
+ * @param limit number of results
+ * @param username of user
+ * @param password of user
+ */
+export function getTeacherSearchURL(query: string, limit: number, username: string, password: string) {
+  const returnURL = encodeURIComponent(`${SEARCH_URL}?query=${query}&limit=${limit}`);
+  return `${getLoginURL(username, password)}&ReturnUrl=${returnURL}`;
+}
+
+/**
+ * Returns URL to fetch teacher schedule
+ * @param id id of teacher to fetch
+ * @param username of user
+ * @param password of user
+ */
+export function getTeacherURL(id: number, username: string, password: string) {
+  const returnURL = encodeURIComponent(`${TEACHER_URL}/${id}`);
+  return `${getLoginURL(username, password)}&ReturnUrl=${returnURL}`;
 }
