@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppState as RNAppState, AppStateStatus } from 'react-native';
+import { AppState as RNAppState, AppStateStatus, Platform, Alert, Linking } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
@@ -203,6 +203,17 @@ export default class App extends Component<{}, AppComponentState> {
   }
 
   public componentDidMount() {
+    if (Platform.OS === 'ios') {
+      const goToAppStore = () => {
+        Linking.openURL('itms-apps://apps.apple.com/us/app/whs-scheduler/id1298249748');
+      };
+
+      Alert.alert('Caution', 'Please update the app through the app store for critical bug fixes.', [
+        { text: 'Update', onPress: goToAppStore },
+        { text: 'OK' },
+      ]);
+    }
+
     RNAppState.addEventListener('change', this.updateDayScheduleIfNeeded);
   }
 
