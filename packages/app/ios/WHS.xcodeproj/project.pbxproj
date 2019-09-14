@@ -17,6 +17,8 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* WHSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* WHSTests.m */; };
 		416C4A6BFC1C48F4A7AE5043 /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 504F847CAC4944FC97577881 /* libCodePush.a */; };
+		4CB3CDF11DD70306442301C8 /* libPods-WHS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8BB5B13A525117BE6C7F3ED /* libPods-WHS.a */; };
+		5013BF0B767B8A69A33FF73F /* libPods-WHSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 098BD76D643189358051E158 /* libPods-WHSTests.a */; };
 		727BCF8CB18A48EA9DF304DD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D0BF82E3B5A4ECB9879F2EB /* libz.tbd */; };
 		7E63C0A322FB476D910104B3 /* TSBackgroundFetch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30004041F5CE45FE800A18C0 /* TSBackgroundFetch.framework */; };
 		917978CC08124D7FA79111D5 /* SFProDisplay-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 083014EC86BB491AB7D492D3 /* SFProDisplay-Bold.otf */; };
@@ -60,6 +62,7 @@
 		00E356F21AD99517003FC87E /* WHSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WHSTests.m; sourceTree = "<group>"; };
 		03DDEB34219544CF863C360D /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		083014EC86BB491AB7D492D3 /* SFProDisplay-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Bold.otf"; path = "../assets/fonts/SFProDisplay-Bold.otf"; sourceTree = "<group>"; };
+		098BD76D643189358051E158 /* libPods-WHSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WHSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D0BF82E3B5A4ECB9879F2EB /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		13B07F961A680F5B00A75B9A /* WHS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WHS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = WHS/AppDelegate.h; sourceTree = "<group>"; };
@@ -103,6 +106,7 @@
 		D3804A7F7028489DAF35530F /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		E0F86F282D9B42F0A15B8B5B /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F8BB5B13A525117BE6C7F3ED /* libPods-WHS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WHS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5013BF0B767B8A69A33FF73F /* libPods-WHSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +126,7 @@
 				7E63C0A322FB476D910104B3 /* TSBackgroundFetch.framework in Frameworks */,
 				727BCF8CB18A48EA9DF304DD /* libz.tbd in Frameworks */,
 				416C4A6BFC1C48F4A7AE5043 /* libCodePush.a in Frameworks */,
+				4CB3CDF11DD70306442301C8 /* libPods-WHS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,6 +191,8 @@
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				0D0BF82E3B5A4ECB9879F2EB /* libz.tbd */,
 				30004041F5CE45FE800A18C0 /* TSBackgroundFetch.framework */,
+				F8BB5B13A525117BE6C7F3ED /* libPods-WHS.a */,
+				098BD76D643189358051E158 /* libPods-WHSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
