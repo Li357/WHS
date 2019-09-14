@@ -117,7 +117,7 @@ export function getLoginError($: CheerioSelector) {
  * @param teacherSchedules old teacher schedules to refresh
  */
 export async function getTeacherSchedules(teacherSchedules: TeacherSchedule[]): Promise<TeacherSchedule[]> {
-  const parsedPages = await Promise.all(teacherSchedules.map(({ url }) => parseHTMLFromURL(url)));
+  const parsedPages = await Promise.all(teacherSchedules.map(({ url }) => parseHTMLFromURL(url, { method: 'POST' })));
   return parsedPages.map(($, index) => ({
     ...teacherSchedules[index],
     schedule: getUserScheduleFromHTML($),

@@ -4,15 +4,15 @@ import {
   getLoginURL, getLoginError, getSchoolPictureFromHTML, processName,
   getUserScheduleFromHTML, getUserInfoFromHTML, getTeacherSchedules, getTeacherSearchURL, getTeacherURL,
 } from '../../src/utils/process-info';
-import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL, SCHOOL_WEBSITE } from '../../src/constants/fetch';
+import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL } from '../../src/constants/fetch';
 import { processSchedule } from '../../src/utils/process-schedule';
 import { getStudent$, getError$, getNew$, getTeacher$, fetchMock, open, TEST_HTML_DIR } from '../test-utils/fetch';
 import { TeacherSchedule } from '../../src/types/schedule';
 
 fetchMock.config.fetch = fetch;
 fetchMock
-  .get(`${SCHOOL_WEBSITE}/teachers/1`, open(`${TEST_HTML_DIR}/teacher.html`))
-  .get(`${SCHOOL_WEBSITE}/teachers/2`, open(`${TEST_HTML_DIR}/teacher.html`));
+  .post(getTeacherURL(1, 'John', '12345'), open(`${TEST_HTML_DIR}/teacher.html`))
+  .post(getTeacherURL(2, 'John', '12345'), open(`${TEST_HTML_DIR}/teacher.html`));
 
 describe('processing user info', () => {
   describe('getLoginURL', () => {
@@ -131,14 +131,16 @@ describe('processing user info', () => {
 
   describe('getTeacherSchedules', () => {
     it('should get specified teacher schedules', async () => {
+      const teacherOneURL = getTeacherURL(1, 'John', '12345');
+      const teacherTwoURL = getTeacherURL(2, 'John', '12345');
       const mockTeacherSchedules: TeacherSchedule[] = [
-        { url: `${SCHOOL_WEBSITE}/teachers/1`, name: 'Teacher 1', schedule: [] },
-        { url: `${SCHOOL_WEBSITE}/teachers/2`, name: 'Teacher 2', schedule: [] },
+        { url: teacherOneURL, name: 'Teacher 1', schedule: [] },
+        { url: teacherTwoURL, name: 'Teacher 2', schedule: [] },
       ];
       const expectedTeacherSchedule = getUserScheduleFromHTML(await getTeacher$());
       expect(await getTeacherSchedules(mockTeacherSchedules)).toEqual([
-        { url: `${SCHOOL_WEBSITE}/teachers/1`, name: 'Teacher 1', schedule: expectedTeacherSchedule },
-        { url: `${SCHOOL_WEBSITE}/teachers/2`, name: 'Teacher 2', schedule: expectedTeacherSchedule },
+        { url: teacherOneURL, name: 'Teacher 1', schedule: expectedTeacherSchedule },
+        { url: teacherTwoURL, name: 'Teacher 2', schedule: expectedTeacherSchedule },
       ]);
     });
   });
