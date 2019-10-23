@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Dialog from 'react-native-dialog';
 import styled from 'styled-components/native';
@@ -11,11 +12,11 @@ import Switch from '../components/settings/Switch';
 import { fetchUserInfo } from '../actions/async';
 import { AppState, Theme } from '../types/store';
 import { setTheme } from '../actions/creators';
-import { darkTheme } from '../constants/theme';
+import { darkTheme, lightTheme } from '../constants/theme';
 import { notify, reportError } from '../utils/utils';
 import ButtonGroup from '../components/drawer/ButtonGroup';
 import client from '../utils/bugsnag';
-import { SUBTEXT_SIZE, DIALOG_INPUT_BACKGROUND_COLOR } from '../constants/style';
+import { SUBTEXT_SIZE } from '../constants/style';
 import { scheduleNotifications } from '../utils/notifications';
 import { LoginError } from '../utils/error';
 import { LOGIN_CREDENTIALS_CHANGED_MSG } from '../constants/fetch';
@@ -26,7 +27,7 @@ const SettingIcon = styled(Icon)`
 `;
 
 const BugReportInput = styled(Dialog.Input)`
-  background-color: ${DIALOG_INPUT_BACKGROUND_COLOR};
+  background-color: ${Platform.select({ ios: lightTheme.backgroundColor, android: lightTheme.foregroundColor })};
 `;
 
 export default authorizedRoute('Settings', function Settings() {

@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { ThemeState } from '../types/store';
 import { ACCENT_COLOR } from './style';
 
