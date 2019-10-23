@@ -2,6 +2,7 @@
 import { Platform } from 'react-native';
 
 import { hp2px, wp2px, wp, hp } from '../utils/style';
+import { lightTheme } from './theme';
 
 export const ACCENT_COLOR = '#EF4040';
 
@@ -68,3 +69,9 @@ export const SCHEDULE_CARD_ITEM_HEIGHT = hp('15%');
 
 export const ADD_SCHEDULE_TEACHER_PHOTO_SIZE = FORM_HEIGHT * 0.6;
 export const ADD_SCHEDULE_TEACHER_PHOTO_MARGIN_LEFT = '5%';
+
+// agnostic to theme
+export const DIALOG_INPUT_BACKGROUND_COLOR = Platform.select({
+  ios: lightTheme.backgroundColor,
+  android: lightTheme.foregroundColor,
+});

@@ -15,7 +15,7 @@ import { darkTheme } from '../constants/theme';
 import { notify, reportError } from '../utils/utils';
 import ButtonGroup from '../components/drawer/ButtonGroup';
 import client from '../utils/bugsnag';
-import { SUBTEXT_SIZE } from '../constants/style';
+import { SUBTEXT_SIZE, DIALOG_INPUT_BACKGROUND_COLOR } from '../constants/style';
 import { scheduleNotifications } from '../utils/notifications';
 import { LoginError } from '../utils/error';
 import { LOGIN_CREDENTIALS_CHANGED_MSG } from '../constants/fetch';
@@ -23,6 +23,10 @@ import { LOGIN_CREDENTIALS_CHANGED_MSG } from '../constants/fetch';
 const SettingIcon = styled(Icon)`
   font-size: ${SUBTEXT_SIZE};
   color: ${({ theme }) => theme.subtextColor};
+`;
+
+const BugReportInput = styled(Dialog.Input)`
+  background-color: ${DIALOG_INPUT_BACKGROUND_COLOR};
 `;
 
 export default authorizedRoute('Settings', function Settings() {
@@ -82,7 +86,7 @@ export default authorizedRoute('Settings', function Settings() {
         Please describe the bug. Note some anonymous diagnostic info is sent.
       </Dialog.Description>
     ),
-    <Dialog.Input key="2" value={bugReport} onChangeText={setBugReport} />,
+    <BugReportInput key="2" value={bugReport} onChangeText={setBugReport} />,
     <Dialog.Button key="3" label="Cancel" onPress={closeDialog} />,
     <Dialog.Button key="4" label="Report" onPress={handleBugReport} />,
   ];
