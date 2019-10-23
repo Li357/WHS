@@ -23,7 +23,7 @@ export function scheduleNotificationForScheduleItem(
     return;
   }
 
-  let message;
+  let message: string;
   if (isCrossSection) {
     message = 'You\'re cross sectioned for your next class, please check your schedule';
   } else {

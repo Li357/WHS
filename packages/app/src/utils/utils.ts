@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 import { subDays, format } from 'date-fns';
 
 import client from './bugsnag';
-import { NETWORK_REQUEST_FAILED_MSG, NETWORK_REQUEST_FAILED } from '../constants/fetch';
+import { NETWORK_REQUEST_FAILED_MSG, NETWORK_REQUEST_FAILED, UNKNOWN_ERROR_MSG } from '../constants/fetch';
 
 /**
  * Split array without mutation
@@ -84,7 +84,8 @@ export function last<T>(arr: T[]) {
 }
 
 export function notify(title: string, body: string) {
-  Alert.alert(title, body, [{ text: 'OK' }]);
+  // ensure a string is passed; patch to fix UnexpectedNativeTypeException
+  Alert.alert(title, body || UNKNOWN_ERROR_MSG, [{ text: 'OK' }]);
 }
 
 export function reportError(error: Error) {
