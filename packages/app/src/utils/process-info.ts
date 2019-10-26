@@ -119,6 +119,9 @@ export async function fetchTeachersFromQuery(query: string, username: string, pa
     timeout: FETCH_TIMEOUT,
     signal,
   });
+  if (!response.ok) {
+    throw new NetworkError();
+  }
   return response.json();
 }
 

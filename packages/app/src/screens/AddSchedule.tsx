@@ -59,7 +59,7 @@ export default authorizedRoute('Add Schedule', function AddSchedule() {
   const fetchTeachers = async (teacherQuery: string) => {
     controller.abort();
     try {
-      const json = await fetchTeachersFromQuery(teacherQuery, username, password, signal);
+      const { teachers: json } = await fetchTeachersFromQuery(teacherQuery, username, password, signal);
       const teachersAvailable = json.filter(({ firstName, lastName, email }: RawTeacherData) => {
         const alreadyAdded = teacherSchedules.some((teacherObj) => teacherObj.name === `${firstName} ${lastName}`);
         return email !== null && !alreadyAdded;

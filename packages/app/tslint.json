@@ -12,7 +12,7 @@
       "groups": [
         {
           "name": "packages",
-          "match": "^[^\\.]+$",
+          "match": "^(?:(?!\\.\\/).)+$",
           "order": 10
         },
         {

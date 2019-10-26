@@ -67,10 +67,10 @@ export default memo(function Login(props: NavigationScreenProps) {
     } catch (error) {
       if (error instanceof LoginError) {
         setError(true);
-        setLoading(false);
-        return;
+      } else {
+        reportError(error);
       }
-      reportError(error);
+      setLoading(false);
     }
   };
 

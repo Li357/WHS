@@ -1,6 +1,7 @@
 import { Alert } from 'react-native';
 import { subDays, format } from 'date-fns';
-import fetchPolyfill, { Timeout } from 'react-native-fetch-polyfill';
+import fetchPolyfill from 'react-native-fetch-polyfill';
+import debounce from 'lodash.debounce';
 
 import client from './bugsnag';
 import { NetworkError, LoginError } from './error';
@@ -107,7 +108,7 @@ export function notify(title: string, body: string) {
   Alert.alert(title, body, [{ text: 'OK' }]);
 }
 
-export function reportError(error: Error, customMessage?: string) {
+export const reportError = debounce((error: Error, customMessage?: string) => {
   if (error instanceof LoginError) {
     return notify(ERROR, LOGIN_CREDENTIALS_CHANGED_MSG);
   } else if (error instanceof NetworkError) {
@@ -115,7 +116,7 @@ export function reportError(error: Error, customMessage?: string) {
   }
   notify(ERROR, customMessage || UNKNOWN_ERROR_MSG);
   client.notify(error);
-}
+}, 5000, { leading: true });
 
 export function reportScheduleCaution(semesterOneStart: Date) {
   // On the server-side, semesterOneStart represents the day everyone goes to school
