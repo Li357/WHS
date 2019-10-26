@@ -104,11 +104,11 @@ export async function fetch(input?: string | Request, init?: RequestInit & Timeo
   }
 }
 
-export function notify(title: string, body: string) {
+export const notify = debounce((title: string, body: string) => {
   Alert.alert(title, body, [{ text: 'OK' }]);
-}
+}, 5000, { leading: true });
 
-export const reportError = debounce((error: Error, customMessage?: string) => {
+export function reportError(error: Error, customMessage?: string) {
   if (error instanceof LoginError) {
     return notify(ERROR, LOGIN_CREDENTIALS_CHANGED_MSG);
   } else if (error instanceof NetworkError) {
@@ -116,7 +116,7 @@ export const reportError = debounce((error: Error, customMessage?: string) => {
   }
   notify(ERROR, customMessage || UNKNOWN_ERROR_MSG);
   client.notify(error);
-}, 5000, { leading: true });
+}
 
 export function reportScheduleCaution(semesterOneStart: Date) {
   // On the server-side, semesterOneStart represents the day everyone goes to school
