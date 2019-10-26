@@ -21,6 +21,7 @@ import {
   getUserScheduleFromHTML, parseHTMLFromURL, getTeacherURL, fetchTeachersFromQuery,
 } from '../utils/process-info';
 import client from '../utils/bugsnag';
+import { SUCCESS } from '../constants/fetch';
 
 const ListContainer = styled.View`
   border-radius: ${FORM_BORDER_RADIUS};
@@ -82,7 +83,7 @@ export default authorizedRoute('Add Schedule', function AddSchedule() {
       const $ = await parseHTMLFromURL(url, { signal, method: 'POST' });
       const schedule = await getUserScheduleFromHTML($);
       dispatch(addTeacherSchedule({ name, url, schedule }));
-      notify('Success', `${name}'s schedule added!`);
+      notify(SUCCESS, `${name}'s schedule added!`);
       setTeachers([]);
       setQuery('');
     } catch (error) {
@@ -97,7 +98,7 @@ export default authorizedRoute('Add Schedule', function AddSchedule() {
 
     const removed = teacherSchedules.filter((teacher) => teacher.name !== name);
     dispatch(setTeacherSchedules(removed));
-    notify('Success', `${name}'s schedule removed.`);
+    notify(SUCCESS, `${name}'s schedule removed.`);
     setRemovingTeacher(false);
   };
 

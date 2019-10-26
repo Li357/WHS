@@ -113,7 +113,7 @@ export function getLoginError($: CheerioSelector) {
   return $(LOGIN_ERROR_SELECTOR).text().trim();
 }
 
-export async function fetchTeachersFromQuery(query: string, username: string, password: string, signal: AbortSignal) {
+export async function fetchTeachersFromQuery(query: string, username: string, password: string, signal?: AbortSignal) {
   const response = await fetch(getTeacherSearchURL(query, TEACHER_FETCH_LIMIT, username, password), {
     method: 'POST',
     timeout: FETCH_TIMEOUT,

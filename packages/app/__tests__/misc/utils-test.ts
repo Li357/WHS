@@ -1,5 +1,11 @@
-import { insert, sortByProps, getWithFallback, splice, sum, last, reportError } from '../../src/utils/utils';
+import { fetch, insert, sortByProps, getWithFallback, splice, sum, last, reportError } from '../../src/utils/utils';
 import client from '../../src/utils/bugsnag';
+import { LoginError, NetworkError } from '../../src/utils/error';
+import { fetchMock } from '../test-utils/fetch';
+
+fetchMock.config.fetch = fetch;
+fetchMock
+  .get('/', new Promise((res) => setTimeout(res, 1000)));
 
 describe('array utils', () => {
   describe('splice', () => {
@@ -148,11 +154,27 @@ describe('array utils', () => {
     });
   });
 
+  describe('custom fetch', () => {
+    it('should throw NetworkError instead of TypeError', async () => {
+      await expect(fetch('/', { timeout: 500 })).rejects.toThrowError(NetworkError);
+    });
+  });
+
   describe('reportError', () => {
-    it('should alert and notify bugsnag', () => {
+    const bugsnagNotify = client.notify as jest.Mock<void, [Error]>;
+
+    it('should not report login and network errors to bugsnag', () => {
+      reportError(new LoginError());
+      expect(bugsnagNotify).not.toBeCalled();
+
+      reportError(new NetworkError());
+      expect(bugsnagNotify).not.toBeCalled();
+    });
+
+    it('should notify bugsnag otherwise', () => {
       const error = new Error('Test Error');
       reportError(error);
-      expect((client.notify as jest.Mock<void, [Error]>).mock.calls[0]).toEqual([error]);
+      expect(bugsnagNotify.mock.calls[0]).toEqual([error]);
     });
   });
 });

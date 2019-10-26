@@ -1,10 +1,11 @@
-import fetch from 'react-native-fetch-polyfill';
 
 import {
   getLoginURL, getLoginError, getSchoolPictureFromHTML, processName,
-  getUserScheduleFromHTML, getUserInfoFromHTML, getTeacherSchedules, getTeacherSearchURL, getTeacherURL,
+  getUserScheduleFromHTML, getUserInfoFromHTML,
+  getTeacherSchedules, getTeacherSearchURL, getTeacherURL, fetchTeachersFromQuery,
 } from '../../src/utils/process-info';
-import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL } from '../../src/constants/fetch';
+import { fetch } from '../../src/utils/utils';
+import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL, TEACHER_FETCH_LIMIT } from '../../src/constants/fetch';
 import { processSchedule } from '../../src/utils/process-schedule';
 import { getStudent$, getError$, getNew$, getTeacher$, fetchMock, open, TEST_HTML_DIR } from '../test-utils/fetch';
 import { TeacherSchedule } from '../../src/types/schedule';
@@ -12,7 +13,8 @@ import { TeacherSchedule } from '../../src/types/schedule';
 fetchMock.config.fetch = fetch;
 fetchMock
   .post(getTeacherURL(1, 'John', '12345'), open(`${TEST_HTML_DIR}/teacher.html`))
-  .post(getTeacherURL(2, 'John', '12345'), open(`${TEST_HTML_DIR}/teacher.html`));
+  .post(getTeacherURL(2, 'John', '12345'), open(`${TEST_HTML_DIR}/teacher.html`))
+  .post(getTeacherSearchURL('test', TEACHER_FETCH_LIMIT, 'John', '12345'), []);
 
 describe('processing user info', () => {
   describe('getLoginURL', () => {
@@ -126,6 +128,12 @@ describe('processing user info', () => {
 
     it('should return empty string if it does not', async () => {
       expect(getLoginError(await getStudent$())).toEqual('');
+    });
+  });
+
+  describe('fetchTeachersFromQuery', () => {
+    it('should launch request to fetch teachers list', async () => {
+      expect(await fetchTeachersFromQuery('test', 'John', '12345')).toEqual([]);
     });
   });
 
