@@ -1,8 +1,14 @@
 import { Alert } from 'react-native';
 import { subDays, format } from 'date-fns';
+import fetchPolyfill from 'react-native-fetch-polyfill';
+import debounce from 'lodash.debounce';
 
 import client from './bugsnag';
-import { NETWORK_REQUEST_FAILED_MSG, NETWORK_REQUEST_FAILED, UNKNOWN_ERROR_MSG } from '../constants/fetch';
+import { NetworkError, LoginError } from './error';
+import {
+  ERROR, CAUTION,
+  LOGIN_CREDENTIALS_CHANGED_MSG, NETWORK_REQUEST_FAILED_MSG, UNKNOWN_ERROR_MSG, NO_SPACE_MSG,
+} from '../constants/fetch';
 
 /**
  * Split array without mutation
@@ -83,17 +89,33 @@ export function last<T>(arr: T[]) {
   return arr.slice(-1)[0];
 }
 
-export function notify(title: string, body: string) {
-  // ensure a string is passed; patch to fix UnexpectedNativeTypeException
-  Alert.alert(title, body || UNKNOWN_ERROR_MSG, [{ text: 'OK' }]);
+/**
+ * Same signature as WHATWG fetch but rethrows TypeError as NetworkError for catching
+ */
+export async function fetch(input?: string | Request, init?: RequestInit & Timeout): Promise<Response> {
+  try {
+    const response = await fetchPolyfill(input, init);
+    return response;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new NetworkError();
+    }
+    throw error;
+  }
 }
 
-export function reportError(error: Error) {
-  const didRequestFail = error.message === NETWORK_REQUEST_FAILED;
-  notify('Error', didRequestFail ? NETWORK_REQUEST_FAILED_MSG : error.message);
-  if (!didRequestFail) {
-    client.notify(error);
+export const notify = debounce((title: string, body: string) => {
+  Alert.alert(title, body, [{ text: 'OK' }]);
+}, 5000, { leading: true });
+
+export function reportError(error: Error, customMessage?: string) {
+  if (error instanceof LoginError) {
+    return notify(ERROR, LOGIN_CREDENTIALS_CHANGED_MSG);
+  } else if (error instanceof NetworkError) {
+    return notify(ERROR, NETWORK_REQUEST_FAILED_MSG);
   }
+  notify(ERROR, customMessage || UNKNOWN_ERROR_MSG);
+  client.notify(error);
 }
 
 export function reportScheduleCaution(semesterOneStart: Date) {
@@ -105,16 +127,12 @@ export function reportScheduleCaution(semesterOneStart: Date) {
   const firstDate = format(semesterOneStart, 'MMMM do');
 
   notify(
-    'Caution',
+    CAUTION,
     `Many schedules are changing and will not be considered final until ${schedulesFinalDate}. `
     + `Please be sure to refresh your schedule so that you attend the correct classes starting ${firstDate}.`,
   );
 }
 
 export function reportNotEnoughSpace() {
-  notify(
-    'Error',
-    'There is not enough space on your phone to save your login, schedule, and other critical information.'
-    + 'Please clear up some space and retry logging in.',
-  );
+  notify(ERROR, NO_SPACE_MSG);
 }

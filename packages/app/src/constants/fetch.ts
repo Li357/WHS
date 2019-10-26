@@ -5,11 +5,16 @@ export const PACKAGE_NAME = 'com.li357.whs';
 export const IOS_MAX_NOTIFICATIONS = 64;
 export const MAX_NOTIFICATION_SETUP_TIMEOUT = 25000;
 
-export const NETWORK_REQUEST_FAILED = 'Network request failed';
+export const SUCCESS = 'Success';
+export const CAUTION = 'Caution';
+export const ERROR = 'Error';
+export const REFRESHED_MSG = 'Your information has been refreshed.';
 export const NETWORK_REQUEST_FAILED_MSG = `An error occurred while fetching data. \
 Please check your internet connection.`;
-export const LOGIN_CREDENTIALS_CHANGED_MSG = 'Your login credentials have changed. Please try logging in again.';
-export const UNKNOWN_ERROR_MSG = 'Unknown error occurred and has been reported.';
+export const LOGIN_CREDENTIALS_CHANGED_MSG = 'Your login credentials may have changed. Please try logging in again.';
+export const NO_SPACE_MSG = `There is not enough space on your phone to save your login, schedule, and other critical \
+information. Please clear up some space and retry logging in.`;
+export const UNKNOWN_ERROR_MSG = 'Something went wrong. Please try restarting the app.';
 
 export const SCHOOL_WEBSITE = 'https://westside-web.azurewebsites.net';
 export const LOGIN_URL = `${SCHOOL_WEBSITE}/account/login`;
