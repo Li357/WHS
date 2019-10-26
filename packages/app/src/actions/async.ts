@@ -1,5 +1,4 @@
 import { ThunkAction } from 'redux-thunk';
-import fetch from 'react-native-fetch-polyfill';
 import { isAfter } from 'date-fns';
 
 import {
@@ -9,6 +8,7 @@ import {
   SetRefreshedAction,
   DatesState,
 } from '../types/store';
+import { fetch } from '../utils/utils';
 import {
   getLoginURL, parseHTMLFromURL, getUserScheduleFromHTML, getUserInfoFromHTML, getLoginError, getSchoolPictureFromHTML,
   getTeacherSchedules,
@@ -39,6 +39,7 @@ export function fetchUserInfo(username: string, password: string) {
     // if we are not doing a manual refresh, clear the current user
     const loginURL = getLoginURL(username, password);
     if (username !== user.username) {
+      // In the future, refactor so all direct fetch calls are abstracted away
       await fetch(loginURL, { method: 'POST', timeout: FETCH_TIMEOUT });
     }
 

@@ -25,10 +25,8 @@ import { getScheduleTypeOnDate, isScheduleEmpty } from './src/utils/query-schedu
 import Settings from './src/screens/Settings';
 import AddSchedule from './src/screens/AddSchedule';
 import registerNotificationScheduler, { scheduleNotifications } from './src/utils/notifications';
-import { reportScheduleCaution, notify } from './src/utils/utils';
+import { reportScheduleCaution, reportError } from './src/utils/utils';
 import client from './src/utils/bugsnag';
-import { LoginError } from './src/utils/error';
-import { LOGIN_CREDENTIALS_CHANGED_MSG } from './src/constants/fetch';
 
 interface AppComponentState {
   rehydrated: boolean;
@@ -77,34 +75,26 @@ export default class App extends Component<{}, AppComponentState> {
     } = store.getState();
     const now = new Date();
 
-    try {
-      if (semesterOneStart === null || semesterTwoStart === null || semesterTwoEnd === null) {
-        return;
-      }
-      if (isAfter(now, semesterTwoEnd)) {
-        client.leaveBreadcrumb('Refreshing dates after end of year');
-
-        await store.dispatch(fetchDates(now.getFullYear()));
-        store.dispatch(setRefreshed([false, false]));
-        return PushNotification.cancelAllLocalNotifications();
-      }
-
-      const shouldRefresh = (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo)
-        || (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
-      if (isScheduleEmpty(schedule) || shouldRefresh) {
-        client.leaveBreadcrumb('Refreshing semesters one/two');
-
-        await store.dispatch(fetchUserInfo(username, password));
-        await scheduleNotifications();
-      }
-      await registerNotificationScheduler();
-    } catch (error) {
-      if (error instanceof LoginError) {
-        return notify('Error', LOGIN_CREDENTIALS_CHANGED_MSG);
-      }
-      // rethrow to handle in handleRehydrate
-      throw error;
+    if (semesterOneStart === null || semesterTwoStart === null || semesterTwoEnd === null) {
+      return;
     }
+    if (isAfter(now, semesterTwoEnd)) {
+      client.leaveBreadcrumb('Refreshing dates after end of year');
+
+      await store.dispatch(fetchDates(now.getFullYear()));
+      store.dispatch(setRefreshed([false, false]));
+      return PushNotification.cancelAllLocalNotifications();
+    }
+
+    const shouldRefresh = (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo)
+      || (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
+    if (isScheduleEmpty(schedule) || shouldRefresh) {
+      client.leaveBreadcrumb('Refreshing semesters one/two');
+
+      await store.dispatch(fetchUserInfo(username, password));
+      await scheduleNotifications();
+    }
+    await registerNotificationScheduler();
   }
 
   private silentlyUpdateData = async () => {
@@ -188,8 +178,7 @@ export default class App extends Component<{}, AppComponentState> {
       }
       this.setState({ rehydrated: true });
     } catch (error) {
-      notify('Error', 'Something went wrong, please try restarting the app.');
-      client.notify(error);
+      reportError(error);
     }
   }
 

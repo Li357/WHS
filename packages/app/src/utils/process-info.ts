@@ -1,12 +1,13 @@
-import fetch from 'react-native-fetch-polyfill';
 import { load } from 'react-native-cheerio';
 import { DateType, DateSchema } from '@whs/server';
 
+import { fetch } from './utils';
 import { processSchedule } from './process-schedule';
 import {
   HEADER_SELECTOR, STUDENT_OVERVIEW_SELECTOR, STUDENT_ID_SELECTOR,
   SCHOOL_PICTURE_SELECTOR, SCHOOL_PICTURE_REGEX, SCHOOL_PICTURE_BLANK_FLAG, SCHOOL_PICTURE_BLANK_SYMBOL,
-  SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR, DATES_URL, SEARCH_URL, TEACHER_URL,
+  SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR, DATES_URL,
+  SEARCH_URL, TEACHER_URL, TEACHER_FETCH_LIMIT,
 } from '../constants/fetch';
 import { UserInfo, UserOverviewMap, UserOverviewKeys } from '../types/store';
 import { Schedule, TeacherSchedule, RawSchedule } from '../types/schedule';
@@ -23,7 +24,7 @@ export async function parseHTMLFromURL(url: string, options?: RequestInit) {
     ...options,
   });
   if (!response.ok) {
-    throw new NetworkError('Fetch from URL was not successful!');
+    throw new NetworkError();
   }
   const html = await response.text();
   return load(html);
@@ -112,6 +113,15 @@ export function getLoginError($: CheerioSelector) {
   return $(LOGIN_ERROR_SELECTOR).text().trim();
 }
 
+export async function fetchTeachersFromQuery(query: string, username: string, password: string, signal: AbortSignal) {
+  const response = await fetch(getTeacherSearchURL(query, TEACHER_FETCH_LIMIT, username, password), {
+    method: 'POST',
+    timeout: FETCH_TIMEOUT,
+    signal,
+  });
+  return response.json();
+}
+
 /**
  * Refreshes a given collection of teacher schedules
  * @param teacherSchedules old teacher schedules to refresh
@@ -138,7 +148,7 @@ export async function getDates(type: DateType, year: number): Promise<DateSchema
     },
   });
   if (!response.ok) {
-    throw new NetworkError('Fetch for dates was not successful!');
+    throw new NetworkError();
   }
   return response.json();
 }

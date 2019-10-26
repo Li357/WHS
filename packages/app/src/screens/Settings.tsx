@@ -18,8 +18,7 @@ import ButtonGroup from '../components/drawer/ButtonGroup';
 import client from '../utils/bugsnag';
 import { SUBTEXT_SIZE } from '../constants/style';
 import { scheduleNotifications } from '../utils/notifications';
-import { LoginError } from '../utils/error';
-import { LOGIN_CREDENTIALS_CHANGED_MSG } from '../constants/fetch';
+import { SUCCESS, REFRESHED_MSG } from '../constants/fetch';
 
 const SettingIcon = styled(Icon)`
   font-size: ${SUBTEXT_SIZE};
@@ -49,12 +48,8 @@ export default authorizedRoute('Settings', function Settings() {
     try {
       await dispatch(fetchUserInfo(username, password));
       await scheduleNotifications();
-      notify('Success', 'Your information has been refreshed.');
+      notify(SUCCESS, REFRESHED_MSG);
     } catch (error) {
-      if (error instanceof LoginError) {
-        return notify('Error', LOGIN_CREDENTIALS_CHANGED_MSG);
-      }
-      notify('Error', error);
       reportError(error);
     }
     setRefreshing(false);

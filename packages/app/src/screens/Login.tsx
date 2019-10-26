@@ -65,11 +65,12 @@ export default memo(function Login(props: NavigationScreenProps) {
       dispatch(setDaySchedule(getScheduleTypeOnDate(now, updatedDates)));
       props.navigation.navigate('Dashboard');
     } catch (error) {
-      setError(true);
-      setLoading(false);
-      if (!(error instanceof LoginError)) {
-        reportError(error);
+      if (error instanceof LoginError) {
+        setError(true);
+        setLoading(false);
+        return;
       }
+      reportError(error);
     }
   };
 

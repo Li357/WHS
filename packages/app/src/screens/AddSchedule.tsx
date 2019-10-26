@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import fetch from 'react-native-fetch-polyfill';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import authorizedRoute from '../components/common/authorizedRoute';
 import Input from '../components/common/Input';
 import Subtext from '../components/common/Subtext';
-import { FETCH_TIMEOUT, TEACHER_FETCH_LIMIT } from '../constants/fetch';
 import { RawTeacherData } from '../types/schedule';
 import { reportError, notify } from '../utils/utils';
 import TeacherItem from '../components/add-schedule/TeacherItem';
@@ -19,7 +17,9 @@ import {
 } from '../constants/style';
 import { AppState } from '../types/store';
 import { addTeacherSchedule, setTeacherSchedules } from '../actions/creators';
-import { getUserScheduleFromHTML, parseHTMLFromURL, getTeacherSearchURL, getTeacherURL } from '../utils/process-info';
+import {
+  getUserScheduleFromHTML, parseHTMLFromURL, getTeacherURL, fetchTeachersFromQuery,
+} from '../utils/process-info';
 import client from '../utils/bugsnag';
 
 const ListContainer = styled.View`
@@ -58,12 +58,7 @@ export default authorizedRoute('Add Schedule', function AddSchedule() {
   const fetchTeachers = async (teacherQuery: string) => {
     controller.abort();
     try {
-      const response = await fetch(getTeacherSearchURL(teacherQuery, TEACHER_FETCH_LIMIT, username, password), {
-        method: 'POST',
-        timeout: FETCH_TIMEOUT,
-        signal,
-      });
-      const { teachers: json } = await response.json();
+      const json = await fetchTeachersFromQuery(teacherQuery, username, password, signal);
       const teachersAvailable = json.filter(({ firstName, lastName, email }: RawTeacherData) => {
         const alreadyAdded = teacherSchedules.some((teacherObj) => teacherObj.name === `${firstName} ${lastName}`);
         return email !== null && !alreadyAdded;
