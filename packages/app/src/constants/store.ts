@@ -27,6 +27,7 @@ export const initialDatesState: DatesState = {
   noSchool: [],
   earlyDismissal: [],
   lateStart: [],
+  wednesday: [],
   semesterOneStart: null,
   semesterOneEnd: null,
   semesterTwoStart: null,

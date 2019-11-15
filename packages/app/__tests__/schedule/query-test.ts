@@ -321,6 +321,7 @@ describe('schedule querying', () => {
       noSchool: [new Date(2019, 11, 23), new Date(2019, 11, 24)],
       earlyDismissal: [new Date(2019, 8, 4), new Date(2019, 10, 11)],
       lateStart: [new Date(2019, 8, 25), new Date(2019, 10, 1)],
+      wednesday: [new Date(2019, 10, 15)],
       semesterOneStart: new Date(2019, 7, 14),
       semesterOneEnd: new Date(2019, 11, 22),
       semesterTwoStart: new Date(2020, 0, 5),
@@ -393,6 +394,9 @@ describe('schedule querying', () => {
     it('returns WEDNESDAY for wednesdays', () => {
       const schedule = getSchedule(new Date(2019, 8, 18));
       expect(schedule).toBe(SCHEDULES.WEDNESDAY);
+
+      const setWednesday = getSchedule(new Date(2019, 10, 15));
+      expect(setWednesday).toBe(SCHEDULES.WEDNESDAY);
     });
 
     it('returns REGULAR schedule otherwise', () => {

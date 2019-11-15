@@ -15,7 +15,7 @@ import { ClassItem, CrossSectionedItem, ScheduleItem, DaySchedule, ModNumber } f
 import { AppState } from '../../types/store';
 import { getScheduleTypeOnDate, getModAtTime, isHalfMod, convertTimeToDate } from '../../utils/query-schedule';
 import * as SCHEDULES from '../../constants/schedules';
-import { interpolateAssembly, getFinalsSchedule, createClassItem, injectAssemblyOrFinalsIfNeeded } from '../../utils/process-schedule';
+import { createClassItem, injectAssemblyOrFinalsIfNeeded } from '../../utils/process-schedule';
 import ClassCardItem from './ClassCardItem';
 import CrossSectionedCardItem from './CrossSectionedCardItem';
 import Subtext from '../common/Subtext';
@@ -118,8 +118,8 @@ const makeCardDayScheduleSelector = () => createSelector(
     const isFinals = scheduleType === 'FINALS';
 
     const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule, scheduleType, day);
-    const userDaySchedule = revisedUserDaySchedule
-      .filter((scheduleItem) => (scheduleItem as ClassItem).title !== 'No Homeroom');
+    // Remove homeroom/no homeroom item on wednesday schedules
+    const userDaySchedule = revisedUserDaySchedule.slice(scheduleType === 'WEDNESDAY' ? 1 : 0);
 
     const cardDaySchedule = daySchedule.map(([start, end, modNumber]) => {
       const startTime = formatTime(start);

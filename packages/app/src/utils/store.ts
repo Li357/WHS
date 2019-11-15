@@ -12,6 +12,7 @@ import {
 } from '../types/store';
 import rootReducer from '../reducers/root';
 import { reportNotEnoughSpace } from './utils';
+import datesReducer from '../reducers/dates';
 
 // Do not persist the profile-photo, it will be manually rehydrated
 const profilePhotoTransform = createTransform<UserState, UserState>(
@@ -67,6 +68,11 @@ const dateTransform = createTransform<DatesState, SerializedDatesState>(
 const migrations = {
   // v-1 (WHS v1 and v2) --> v3
   3: () => rootReducer(undefined, { type: MiscellaneousActions.OTHER }),
+  // add wednesday option to DatesState
+  4: (state: AppState) => ({
+    ...state,
+    dates: datesReducer(undefined, { type: MiscellaneousActions.OTHER }),
+  }),
 };
 
 const persistConfig = {

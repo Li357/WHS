@@ -86,6 +86,7 @@ export interface DatesState {
   noSchool: Date[];
   earlyDismissal: Date[];
   lateStart: Date[];
+  wednesday: Date[];
   semesterOneStart: Date | null;
   semesterOneEnd: Date | null;
   semesterTwoStart: Date | null;
@@ -96,6 +97,7 @@ export interface SerializedDatesState {
   noSchool: string[];
   earlyDismissal: string[];
   lateStart: string[];
+  wednesday: string[];
   semesterOneStart: string | null;
   semesterOneEnd: string | null;
   semesterTwoStart: string | null;

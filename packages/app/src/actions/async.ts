@@ -105,7 +105,7 @@ export function fetchDates(year?: number) {
     }
 
     const [
-      assembly, noSchool, earlyDismissal, lateStart,
+      assembly, noSchool, earlyDismissal, lateStart, wednesday,
     ] = await Promise.all(DATE_TYPES.map(async (type) => {
       const dates = await getDates(type, year!);
       return dates.map((dateObj) => {
@@ -131,6 +131,7 @@ export function fetchDates(year?: number) {
       noSchool,
       earlyDismissal,
       lateStart,
+      wednesday,
       semesterOneStart,
       semesterOneEnd,
       semesterTwoStart,
