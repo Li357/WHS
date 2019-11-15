@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import { subDays, format } from 'date-fns';
-import fetchPolyfill from 'react-native-fetch-polyfill';
+import fetchPolyfill, { Timeout } from 'react-native-fetch-polyfill';
 import debounce from 'lodash.debounce';
 
 import client from './bugsnag';
@@ -87,6 +87,14 @@ export function sum(arr: number[]) {
  */
 export function last<T>(arr: T[]) {
   return arr.slice(-1)[0];
+}
+
+/**
+ * Returns true if status between 200 and 308 inclusive
+ * @param response to check
+ */
+export function isResponseOk(response: Response) {
+  return response.status >= 200 && response.status <= 308;
 }
 
 /**

@@ -118,8 +118,8 @@ const makeCardDayScheduleSelector = () => createSelector(
     const isFinals = scheduleType === 'FINALS';
 
     const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule, scheduleType, day);
-    const userDaySchedule = revisedUserDaySchedule
-      .filter((scheduleItem) => (scheduleItem as ClassItem).title !== 'No Homeroom');
+    // Remove homeroom/no homeroom item on wednesday schedules
+    const userDaySchedule = revisedUserDaySchedule.slice(scheduleType === 'WEDNESDAY' ? 1 : 0);
 
     const cardDaySchedule = daySchedule.map(([start, end, modNumber]) => {
       const startTime = formatTime(start);

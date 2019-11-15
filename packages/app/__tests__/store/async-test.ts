@@ -121,6 +121,7 @@ describe('async actions', () => {
             noSchool: [],
             earlyDismissal: [],
             lateStart: [],
+            wednesday: [],
             semesterOneStart: null,
             semesterOneEnd: new Date(datesArray[1].date),
             semesterTwoStart: null,

@@ -1,7 +1,7 @@
 import { load } from 'react-native-cheerio';
 import { DateType, DateSchema } from '@whs/server';
 
-import { fetch } from './utils';
+import { fetch, isResponseOk } from './utils';
 import { processSchedule } from './process-schedule';
 import {
   HEADER_SELECTOR, STUDENT_OVERVIEW_SELECTOR, STUDENT_ID_SELECTOR,
@@ -23,7 +23,8 @@ export async function parseHTMLFromURL(url: string, options?: RequestInit) {
     timeout: FETCH_TIMEOUT,
     ...options,
   });
-  if (!response.ok) {
+  // includes both ok and redirected
+  if (!isResponseOk(response)) {
     throw new NetworkError();
   }
   const html = await response.text();
@@ -119,7 +120,7 @@ export async function fetchTeachersFromQuery(query: string, username: string, pa
     timeout: FETCH_TIMEOUT,
     signal,
   });
-  if (!response.ok) {
+  if (!isResponseOk(response)) {
     throw new NetworkError();
   }
   return response.json();
