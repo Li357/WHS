@@ -77,7 +77,7 @@ const migrations = {
 
 const persistConfig = {
   key: 'root',
-  version: 3,
+  version: 4,
   storage: AsyncStorage,
   timeout: 0,
   transforms: [profilePhotoTransform, dateTransform],
