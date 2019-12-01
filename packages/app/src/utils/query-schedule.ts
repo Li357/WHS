@@ -172,7 +172,7 @@ export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBr
     return 'WEEKEND';
   }
 
-  if (day === 3 || containsDate(queryDate, dates.wednesday)) {
+  if (day === 3 || (dates.wednesday !== undefined && containsDate(queryDate, dates.wednesday))) {
     return 'WEDNESDAY';
   }
   return 'REGULAR';
