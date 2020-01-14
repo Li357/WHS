@@ -61,11 +61,13 @@ export default class App extends Component<{}, AppComponentState> {
       if (newDayScheduleType === dayScheduleType) {
         return;
       }
+      client.leaveBreadcrumb(`Updating today's schedule to ${newDayScheduleType}`);
       store.dispatch(setDaySchedule(newDayScheduleType));
     }
   }
 
   private async refreshScheduleIfNeeded() {
+    // FIXME: Schedule is not refreshed sometimes even in new semester, stuck on 1st finals
     client.leaveBreadcrumb('Refreshing schedule and notifications if needed');
 
     const {
@@ -75,6 +77,7 @@ export default class App extends Component<{}, AppComponentState> {
     } = store.getState();
     const now = new Date();
 
+    client.leaveBreadcrumb(`Now: ${now} 2nd Start: ${semesterTwoStart} 2nd Refreshed: ${refreshedSemesterTwo}`);
     if (semesterOneStart === null || semesterTwoStart === null || semesterTwoEnd === null) {
       return;
     }
@@ -88,6 +91,7 @@ export default class App extends Component<{}, AppComponentState> {
 
     const shouldRefresh = (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo)
       || (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
+    client.leaveBreadcrumb(`Should refresh? ${shouldRefresh}`);
     if (isScheduleEmpty(schedule) || shouldRefresh) {
       client.leaveBreadcrumb('Refreshing semesters one/two');
 

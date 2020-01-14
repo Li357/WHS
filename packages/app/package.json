@@ -77,6 +77,7 @@
     "@whs/server": "^3.0.0",
     "babel-jest": "^24.8.0",
     "bugsnag-sourcemaps": "^1.2.1",
+    "code-push-cli": "^2.1.9",
     "fetch-mock": "^7.3.3",
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.55.0",

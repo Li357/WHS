@@ -53,15 +53,22 @@ export default memo(function Login(props: NavigationScreenProps) {
     let updatedDates = dates;
     try {
       updatedDates = await dispatch(fetchDates());
-    // tslint:disable-next-line: no-empty
+      // tslint:disable-next-line: no-empty
     } catch (error) {}
 
     try {
       const now = new Date();
+
+      client.leaveBreadcrumb('Login: Fetching user info');
       await dispatch(fetchUserInfo(username, password));
+
+      client.leaveBreadcrumb('Login: Registering scheduler');
       await registerNotificationScheduler();
+
+      client.leaveBreadcrumb('Login: Scheduling notifications');
       await scheduleNotifications();
 
+      client.leaveBreadcrumb('Set day schedule');
       dispatch(setDaySchedule(getScheduleTypeOnDate(now, updatedDates)));
       props.navigation.navigate('Dashboard');
     } catch (error) {
@@ -69,6 +76,8 @@ export default memo(function Login(props: NavigationScreenProps) {
         setError(true);
       } else {
         reportError(error);
+        // 3.0.1-b6, weird bug prevent login, extra notify to debug
+        client.notify(error);
       }
       setLoading(false);
     }
