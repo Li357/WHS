@@ -118,8 +118,9 @@ const makeCardDayScheduleSelector = () => createSelector(
     const isFinals = scheduleType === 'FINALS';
 
     const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule, scheduleType, day);
-    // Remove homeroom/no homeroom item on wednesday schedules
-    const userDaySchedule = revisedUserDaySchedule.slice(scheduleType === 'WEDNESDAY' ? 1 : 0);
+    // PATCH: scheduleType === 'WEDNESDAY' && day !== 3 condition is needed since the first item is already
+    // sliced off for normal Wednesday schedules (i.e. day === 3, see interpolateOpenMods)
+    const userDaySchedule = revisedUserDaySchedule.slice(scheduleType === 'WEDNESDAY' && day !== 3 ? 1 : 0);
 
     const cardDaySchedule = daySchedule.map(([start, end, modNumber]) => {
       const startTime = formatTime(start);
