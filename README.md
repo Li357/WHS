@@ -14,4 +14,15 @@ A class schedule app for [Westside High School](https://whs.westside66.org/) wit
 
 ---
 
+# 3.1.0 E-Learning Update
+
+### App
+- [ ] Pin schedules to weekday cycle (Monday schedule for Aug 20, 21, 24, 25)
+- [ ] Handle flex day anomalies for holidays/no-school days (see Labor Day, affected day has group moved to flex day, Wednesday)
+- [ ] Notify students when they go to school (from server, does not handle primary school coordination)
+
+### Server
+- [ ] Backend UI to create name groups
+  - [ ] Day -> Name Group
+
 <sub>© 2017-Present Andrew Li, MIT License. Google Play and the Google Play logo are trademarks of Google LLC.</sub>
