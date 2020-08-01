@@ -2,26 +2,24 @@
   <div class="dashboard">
     <el-container class="dashboard-container">
       <el-header class="dashboard-header">
-        <i
-          :class="['dashboard-hamburger', drawerOpen ? 'el-icon-close' : 'el-icon-s-unfold']"
-          @click="drawerOpen = !drawerOpen"
-        ></i>
+        <i :class="['dashboard-hamburger', drawerOpen ? 'el-icon-close' : 'el-icon-s-unfold']" @click="drawerOpen = !drawerOpen"></i>
         Dashboard
         <el-button class="dashboard-logout" type="text" @click="logout">Log out</el-button>
       </el-header>
       <el-container>
         <el-aside :class="['dashboard-navbar', { open: drawerOpen }]" width="20%">
           <el-menu
-            class="dashboard-navbar-list" unique-opened
-            :default-active="`${startYear}/${dateType || settingType}`"
+            class="dashboard-navbar-list"
+            unique-opened
+            :default-active="`${startYear}/${!isELearning ? dateType || settingType : 'elearning'}`"
           >
             <el-submenu v-for="year in years" :key="year" :index="`${year}`">
-              <template slot="title">{{ year }} - {{ year + 1 }}</template>
-              <el-menu-item
-                v-for="(displayName, type) in dateTypeNames"
-                :key="type" :index="`${year}/${type}`"
-                @click="select(year, type)"
-              >{{ displayName }}</el-menu-item>
+              <template slot="title"
+                >{{ year }} - {{ year + 1 }}</template
+              >
+              <el-menu-item v-for="(displayName, type) in dateTypeNames" :key="type" :index="`${year}/${type}`" @click="select(year, type)">{{
+                displayName
+              }}</el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>
@@ -47,6 +45,10 @@ export default class Dashboard extends Vue {
   private drawerOpen = false;
 
   private dateTypeNames = dateTypeNames;
+
+  get isELearning() {
+    return this.$route.path.includes('elearning');
+  }
 
   get years() {
     const currentYear = new Date().getFullYear();

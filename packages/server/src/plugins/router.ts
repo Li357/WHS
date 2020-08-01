@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import Dashboard from '../views/Dashboard.vue';
 import DateList from '../components/DateList.vue';
 import YearSetting from '../components/YearSetting.vue';
+import ELearningSettings from '../components/ELearningSettings.vue';
 import Login from '../views/Login.vue';
 import NotFound from '../views/NotFound.vue';
 import { getCookie } from '../utils';
@@ -28,6 +29,11 @@ const routes = [
         // https://github.com/pillarjs/path-to-regexp/issues/95
         path: ':settingType(semester-one-start|semester-one-end|semester-two-start|semester-two-end)',
         component: YearSetting,
+        props: true,
+      },
+      {
+        path: 'elearning',
+        component: ELearningSettings,
         props: true,
       },
     ],

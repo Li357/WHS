@@ -9,11 +9,13 @@ export function getCookie(name: string) {
 }
 
 export function range(start: number, end: number) {
-  return Array(end - start).fill(undefined).map((_, i) => i + start);
+  return Array(end - start)
+    .fill(undefined)
+    .map((_, i) => i + start);
 }
 
 export const dateTypeNames: DateTypeNames = {
-  'assembly': 'Assembly Dates',
+  assembly: 'Assembly Dates',
   'no-school': 'No School Dates',
   'early-dismissal': 'Early Dismissal Dates',
   'late-start': 'Late Start Dates',
@@ -21,4 +23,5 @@ export const dateTypeNames: DateTypeNames = {
   'semester-one-end': 'Semester One End',
   'semester-two-start': 'Semester Two Start',
   'semester-two-end': 'Semester Two End',
+  elearning: 'E-Learning Settings',
 };

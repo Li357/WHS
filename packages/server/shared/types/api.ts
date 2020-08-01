@@ -9,8 +9,8 @@ export interface Schema {
 
 export type DateListType = 'assembly' | 'no-school' | 'early-dismissal' | 'late-start';
 export type YearSettingType = 'semester-one-start' | 'semester-one-end' | 'semester-two-start' | 'semester-two-end';
-export type DateType = DateListType | YearSettingType;
-export type DateTypeNames = { [K in DateType]: string; };
+export type DateType = DateListType | YearSettingType | 'elearning';
+export type DateTypeNames = { [K in DateType]: string };
 export interface DateSchema extends Schema {
   type: DateType;
   year: string;
@@ -28,4 +28,13 @@ export interface UserSchema extends Schema {
 export interface LoginBody {
   username?: string;
   password?: string;
+}
+
+type NameGroup = [string, string];
+export interface ELearningSettingsSchema extends Schema {
+  monday: NameGroup;
+  tuesday: NameGroup;
+  wednesday: NameGroup;
+  thursday: NameGroup;
+  friday: NameGroup;
 }

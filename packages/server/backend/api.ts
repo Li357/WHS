@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { DatesQuery, DateSchema } from '../shared/types/api';
+import { DatesQuery, DateSchema, ELearningSettingsSchema } from '../shared/types/api';
 import { asyncRoute, log, requiresAuth } from './utils';
 
 const api = Router();
@@ -36,6 +36,16 @@ api.post('/dates', requiresAuth((user) => user.admin), asyncRoute(async ({ body,
     `${modifiedCount} modified, ${deletedCount} deleted, and ${upsertedCount} upserted.`,
   );
   res.status(200).end();
+}));
+
+api.get('/elearning-settings', asyncRoute(async ({ db }, res) => {
+  const collection = db!.collection<ELearningSettingsSchema>('elearningSettings');
+  const settings = await collection.findOne({});
+  res.status(200).json(settings);
+}));
+
+api.post('/elearning-settings', asyncRoute(async ({ query, db }, res) => {
+
 }));
 
 export default api;

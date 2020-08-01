@@ -1,29 +1,27 @@
 <template>
-  <div class="date-list">
+  <div class="year-setting">
     <el-container>
-      <el-header class="date-list-header" height="75px">
+      <el-header class="year-setting-header" height="75px">
         {{ schoolYearName }} {{ settingName }}
         <div>
+          <el-button type="primary" icon="el-icon-edit" @click="editingSetting = true" :disabled="loading" round>Edit Setting</el-button>
+          <el-button type="danger" icon="el-icon-check" @click="saveSetting(startYear, settingType)" :disabled="loading" round
+            >Save Setting</el-button
+          >
+          <el-button class="mobile" type="primary" icon="el-icon-edit" @click="editingSetting = true" :disabled="loading" round></el-button>
           <el-button
-            type="primary" icon="el-icon-edit"
-            @click="editingSetting = true" :disabled="loading" round
-          >Edit Setting</el-button>
-          <el-button
-            type="danger" icon="el-icon-check"
-            @click="saveSetting(startYear, settingType)" :disabled="loading" round
-          >Save Setting</el-button>
-          <el-button
-            class="mobile" type="primary" icon="el-icon-edit"
-            @click="editingSetting = true" :disabled="loading" round
-          ></el-button>
-          <el-button
-            class="mobile" type="danger" icon="el-icon-check"
-            @click="saveSetting(startYear, settingType)" :disabled="loading" round
+            class="mobile"
+            type="danger"
+            icon="el-icon-check"
+            @click="saveSetting(startYear, settingType)"
+            :disabled="loading"
+            round
           ></el-button>
         </div>
       </el-header>
       <el-table
-        :data="settingDisplay" v-loading="loading"
+        :data="settingDisplay"
+        v-loading="loading"
         :empty-text="`${settingName} not set. Please set before the start of the ${schoolYearName} school year.`"
       >
         <el-table-column prop="date" label="Date"></el-table-column>
@@ -33,8 +31,11 @@
       </el-table>
     </el-container>
     <edit-setting-modal
-      :editing-setting="editingSetting" :start-year="startYear" :setting-type="settingType"
-      @edit="editSetting" @close="editingSetting = false"
+      :editing-setting="editingSetting"
+      :start-year="startYear"
+      :setting-type="settingType"
+      @edit="editSetting"
+      @close="editingSetting = false"
     ></edit-setting-modal>
   </div>
 </template>
@@ -82,10 +83,12 @@ export default class YearSetting extends Vue {
     if (this.setting === null) {
       return [];
     }
-    return [{
-      ...this.setting,
-      date: format(this.setting.date, 'MMMM D, YYYY'),
-    }];
+    return [
+      {
+        ...this.setting,
+        date: format(this.setting.date, 'MMMM D, YYYY'),
+      },
+    ];
   }
 
   public beforeRouteEnter(to: Route, from: Route, next: (cb: (vm: YearSetting) => void) => void) {
@@ -156,7 +159,7 @@ export default class YearSetting extends Vue {
 </script>
 
 <style lang="stylus" scoped>
-.date-list
+.year-setting
   width 80%
 
   @media screen and (max-width: 900px)

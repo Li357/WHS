@@ -19,6 +19,8 @@ For v3:
   - `year`: school year, e.g. 2019 for the 2019-2020 school year
   - `type`: one of `no-school`, `assembly`, `late-start`, `early-dismissal`, `semester-one-start`, `semester-one-end`, `semester-two-start`, `semester-two-end`
 - `POST /v3/dates`
+- `GET /v3/elearning-settings`
+- `POST /v3/elearning-settings`
 - `POST /auth/login`
 - `POST /auth/logout`
 
