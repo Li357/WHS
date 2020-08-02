@@ -4,11 +4,30 @@
       <el-header class="year-setting-header" height="75px">
         {{ schoolYearName }} {{ settingName }}
         <div>
-          <el-button type="primary" icon="el-icon-edit" @click="editingSetting = true" :disabled="loading" round>Edit Setting</el-button>
-          <el-button type="danger" icon="el-icon-check" @click="saveSetting(startYear, settingType)" :disabled="loading" round
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            @click="editingSetting = true"
+            :disabled="loading"
+            round
+            >Edit Setting</el-button
+          >
+          <el-button
+            type="danger"
+            icon="el-icon-check"
+            @click="saveSetting(startYear, settingType)"
+            :disabled="loading"
+            round
             >Save Setting</el-button
           >
-          <el-button class="mobile" type="primary" icon="el-icon-edit" @click="editingSetting = true" :disabled="loading" round></el-button>
+          <el-button
+            class="mobile"
+            type="primary"
+            icon="el-icon-edit"
+            @click="editingSetting = true"
+            :disabled="loading"
+            round
+          ></el-button>
           <el-button
             class="mobile"
             type="danger"
@@ -26,7 +45,9 @@
       >
         <el-table-column prop="date" label="Date"></el-table-column>
         <el-table-column align="right">
-          <span v-if="!(setting && setting.saved)" class="date-list-unsaved">Unsaved</span>
+          <span v-if="!(setting && setting.saved)" class="date-list-unsaved">
+            Unsaved
+          </span>
         </el-table-column>
       </el-table>
     </el-container>
@@ -91,16 +112,27 @@ export default class YearSetting extends Vue {
     ];
   }
 
-  public beforeRouteEnter(to: Route, from: Route, next: (cb: (vm: YearSetting) => void) => void) {
+  public beforeRouteEnter(
+    to: Route,
+    from: Route,
+    next: (cb: (vm: YearSetting) => void) => void,
+  ) {
     next((vm: YearSetting) => {
       vm.fetchSetting(vm.startYear, vm.settingType);
     });
   }
 
-  public async beforeRouteUpdate({ params: toParams }: Route, from: Route, next: () => void) {
+  public async beforeRouteUpdate(
+    { params: toParams }: Route,
+    from: Route,
+    next: () => void,
+  ) {
     await this.saveSetting(this.startYear, this.settingType);
     next();
-    this.fetchSetting(toParams.startYear, toParams.settingType as YearSettingType);
+    this.fetchSetting(
+      toParams.startYear,
+      toParams.settingType as YearSettingType,
+    );
   }
 
   public async beforeRouteLeave(to: Route, from: Route, next: () => void) {

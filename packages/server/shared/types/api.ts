@@ -4,11 +4,19 @@ export interface DatesQuery {
 }
 
 export interface Schema {
-  _id: string;
+  _id?: string;
 }
 
-export type DateListType = 'assembly' | 'no-school' | 'early-dismissal' | 'late-start';
-export type YearSettingType = 'semester-one-start' | 'semester-one-end' | 'semester-two-start' | 'semester-two-end';
+export type DateListType =
+  | 'assembly'
+  | 'no-school'
+  | 'early-dismissal'
+  | 'late-start';
+export type YearSettingType =
+  | 'semester-one-start'
+  | 'semester-one-end'
+  | 'semester-two-start'
+  | 'semester-two-end';
 export type DateType = DateListType | YearSettingType | 'elearning';
 export type DateTypeNames = { [K in DateType]: string };
 export interface DateSchema extends Schema {
@@ -30,11 +38,10 @@ export interface LoginBody {
   password?: string;
 }
 
-type NameGroup = [string, string];
+export type NameGroup = [string, string];
+export type Day = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
 export interface ELearningSettingsSchema extends Schema {
-  monday: NameGroup;
-  tuesday: NameGroup;
-  wednesday: NameGroup;
-  thursday: NameGroup;
-  friday: NameGroup;
+  type: 'yellow' | 'red';
+  groups: { [K in Day]: NameGroup[] };
+  dates: Date[];
 }

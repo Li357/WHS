@@ -1,4 +1,11 @@
-import { LoginBody, DateSchemaWithoutID, DateType, DateSchema, YearSettingType } from '../shared/types/api';
+import {
+  LoginBody,
+  DateSchemaWithoutID,
+  DateType,
+  DateSchema,
+  YearSettingType,
+  ELearningSettingsSchema,
+} from '../shared/types/api';
 
 class API {
   private AUTH_API = '/api/auth';
@@ -37,7 +44,9 @@ class API {
   }
 
   public async getDates(year: string, type: string): Promise<DateSchema[]> {
-    const response = await fetch(`${this.DATES_API}/dates?year=${year}&type=${type}`);
+    const response = await fetch(
+      `${this.DATES_API}/dates?year=${year}&type=${type}`,
+    );
     if (!response.ok) {
       throw new Error('There was a problem getting dates.');
     }
@@ -54,7 +63,11 @@ class API {
     this.changes.push(deletion);
   }
 
-  public editSetting(type: YearSettingType, year: string, setting: DateSchemaWithoutID) {
+  public editSetting(
+    type: YearSettingType,
+    year: string,
+    setting: DateSchemaWithoutID,
+  ) {
     const update = {
       updateOne: {
         filter: { type, year },
@@ -83,6 +96,27 @@ class API {
       this.changes = [];
     }
     return hasChanges;
+  }
+
+  public async getELearningSettings() {
+    const response = await fetch(`${this.DATES_API}/elearning-settings`);
+    if (!response.ok) {
+      throw new Error('There was a problem getting e-learning settings.');
+    }
+    return response.json();
+  }
+
+  public async saveELearningSettings(settings: ELearningSettingsSchema[]) {
+    const response = await fetch(`${this.DATES_API}/elearning-settings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(settings),
+    });
+    if (!response.ok) {
+      throw new Error('There was a problem saving e-learning settings.');
+    }
   }
 }
 
