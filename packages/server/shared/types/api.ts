@@ -19,13 +19,13 @@ export type YearSettingType =
   | 'semester-two-end';
 export type DateType = DateListType | YearSettingType | 'elearning';
 export type DateTypeNames = { [K in DateType]: string };
-export interface DateSchema extends Schema {
-  type: DateType;
+export interface DateSchema<T = DateType> extends Schema {
+  type: T;
   year: string;
   date: string;
   comment: string;
 }
-export type DateSchemaWithoutID = Omit<DateSchema, '_id'>;
+export type DateSchemaWithoutID<T = DateType> = Omit<DateSchema<T>, '_id'>;
 
 export interface UserSchema extends Schema {
   username: string;
@@ -40,8 +40,9 @@ export interface LoginBody {
 
 export type NameGroup = [string, string];
 export type Day = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
+export type ELearningType = 'yellow' | 'red';
 export interface ELearningSettingsSchema extends Schema {
-  type: 'yellow' | 'red';
+  type: ELearningType;
   groups: { [K in Day]: NameGroup[] };
-  dates: Date[];
+  dates: string[]; // ISO strings
 }

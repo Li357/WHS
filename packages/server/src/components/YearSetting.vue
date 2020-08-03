@@ -10,16 +10,18 @@
             @click="editingSetting = true"
             :disabled="loading"
             round
-            >Edit Setting</el-button
           >
+            Edit Setting
+          </el-button>
           <el-button
             type="danger"
             icon="el-icon-check"
             @click="saveSetting(startYear, settingType)"
             :disabled="loading"
             round
-            >Save Setting</el-button
           >
+            Save Setting
+          </el-button>
           <el-button
             class="mobile"
             type="primary"

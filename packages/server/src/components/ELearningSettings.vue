@@ -7,16 +7,15 @@
           <el-button
             type="danger"
             icon="el-icon-check"
-            @click="saveSettings"
+            @click="saveSettingsAndDates"
             :disabled="loading"
             round
+            >Save Settings</el-button
           >
-            Save Settings
-          </el-button>
         </div>
       </el-header>
     </el-container>
-    <div class="code-container" v-loading="loadingSettings">
+    <div class="code-container" v-loading="loading">
       <el-tabs v-model="activeName">
         <el-tab-pane
           v-for="(code, index) in CODE_TYPES"
@@ -33,9 +32,8 @@
                   :key="stringifyGroup(assignedGroup)"
                   closable
                   @close="onRemoveGroup(assignedGroup, index, day)"
+                  >{{ stringifyGroup(assignedGroup) }}</el-tag
                 >
-                  {{ stringifyGroup(assignedGroup) }}
-                </el-tag>
               </div>
               <el-dropdown trigger="click" @command="onSelect">
                 <span class="namegroup-dropdown">
@@ -49,26 +47,68 @@
                     :key="stringifyGroup(group)"
                     :command="{ group, day, index }"
                     :disabled="isGroupChosen(index, day, group)"
+                    >{{ stringifyGroup(group) }}</el-dropdown-item
                   >
-                    {{ stringifyGroup(group) }}
-                  </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
           </div>
-          <el-table
-            :data="settings[index].dates"
-            empty-text="No dates"
-            v-loading="loadingSettings"
-          >
-            <el-table-column prop="date" label="Date"></el-table-column>
-            <el-table-column align="right">
-              <!-- <template slot-scope="scope"> </template> -->
-            </el-table-column>
-          </el-table>
+          <el-divider></el-divider>
+          <div class="dates-container">
+            <div class="header">
+              Code {{ titlecase(code) }} Dates
+              <div>
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  @click="showAddDateModal(index)"
+                  :disabled="loading"
+                  round
+                  >Add Date</el-button
+                >
+                <el-button
+                  type="danger"
+                  icon="el-icon-check"
+                  @click="saveSettingsAndDates"
+                  :disabled="loading"
+                  round
+                  >Save Dates</el-button
+                >
+              </div>
+            </div>
+            <el-table
+              :data="getDataForType(code)"
+              empty-text="No dates"
+              v-loading="loading"
+            >
+              <el-table-column prop="date" label="Date"></el-table-column>
+              <el-table-column align="right">
+                <template slot-scope="scope">
+                  <span v-if="!scope.row.saved" class="date-list-unsaved">
+                    Unsaved
+                  </span>
+                  <el-button
+                    type="danger"
+                    size="mini"
+                    icon="el-icon-delete"
+                    @click="removeDate(scope.row.type, scope.row.date)"
+                  >
+                    Delete
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
+    <add-date-modal
+      :adding-dates="addingDates"
+      :start-year="startYear"
+      :date-type="CODE_TYPES[currentIndex]"
+      @add="addDates"
+      @close="addingDates = false"
+    ></add-date-modal>
   </div>
 </template>
 
@@ -76,11 +116,14 @@
 import Vue from 'vue';
 import { Route } from 'vue-router';
 import { Component, Prop } from 'vue-property-decorator';
+import { format, isSameDay } from 'date-fns';
 
 import {
   ELearningSettingsSchema,
+  ELearningType,
   NameGroup,
   Day,
+  DateSchemaWithoutID,
 } from '../../shared/types/api';
 import {
   ELEARNING_NAME_GROUPS,
@@ -89,12 +132,17 @@ import {
   ELEARNING_INITIAL_SETTINGS,
 } from '../utils';
 import API from '../api-wrapper';
+import AddDateModal from './AddDateModal.vue';
+import { ELearningDate } from '../types/ELearningSettings';
 
-@Component({ name: 'elearning-settings' })
+@Component({ name: 'elearning-settings', components: { AddDateModal } })
 export default class ELearningSettings extends Vue {
   @Prop(String) private readonly startYear!: string;
   private settings = ELEARNING_INITIAL_SETTINGS;
-  private loadingSettings = true;
+  private dates: ELearningDate[] = []; // this is the working-copy of dates before being saved to DB
+  private loading = true;
+  private addingDates = false;
+  private currentIndex = 0;
 
   // make sure all settings show up even if not set
   private DAYS = ELEARNING_DAYS;
@@ -127,6 +175,15 @@ export default class ELearningSettings extends Vue {
     return group.join('-');
   }
 
+  private getDataForType(type: ELearningType) {
+    return this.dates
+      .filter((dateObj) => dateObj.type === type)
+      .map((dateObj) => ({
+        ...dateObj,
+        date: format(dateObj.date, 'MMMM D, YYYY'),
+      }));
+  }
+
   private isGroupChosen(index: number, day: Day, group: NameGroup) {
     return (
       this.settings[index].groups[day].findIndex(
@@ -141,12 +198,81 @@ export default class ELearningSettings extends Vue {
     );
   }
 
-  private async saveSettings() {
+  private showAddDateModal(index: number) {
+    this.addingDates = true;
+    this.currentIndex = index;
+  }
+
+  private addDates(dates: Array<DateSchemaWithoutID<ELearningType>>) {
+    const { filtered } = dates.reduce(
+      (
+        obj: {
+          filtered: ELearningDate[];
+        },
+        incomingDate,
+      ) => {
+        const existingDateIndex = this.dates.findIndex(
+          (dateObj) => dateObj.date === incomingDate.date,
+        );
+        const isDuplicate = existingDateIndex > -1;
+        if (!isDuplicate) {
+          obj.filtered.push({
+            type: incomingDate.type,
+            date: incomingDate.date,
+            saved: false,
+          });
+        } else {
+          // The date being added is a different type, overrides
+          // So if a yellow date already exists and a red date is then added
+          // the red date overwrites the yellow
+          const existingDate = this.dates[existingDateIndex];
+          if (existingDate.type !== incomingDate.type) {
+            // mutate in place... yikers
+            this.dates[existingDateIndex] = {
+              ...existingDate,
+              type: incomingDate.type,
+              saved: false,
+            };
+          }
+        }
+        return obj;
+      },
+      { filtered: [] },
+    );
+    this.dates = [...this.dates, ...filtered].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
+
+    this.$notify({
+      title: 'Success',
+      message: 'Date(s) added! Please click Save Dates to commit changes.',
+    });
+  }
+
+  private removeDate(type: ELearningType, date: string) {
+    this.dates = this.dates.filter(
+      (dateObj) =>
+        !(
+          dateObj.type === type &&
+          isSameDay(new Date(dateObj.date), new Date(date))
+        ),
+    );
+  }
+
+  private async saveSettingsAndDates() {
+    this.loading = true;
     try {
-      await API.saveELearningSettings(this.settings);
+      const withDates = this.settings.map((setting, index) => ({
+        ...setting,
+        dates: this.dates
+          .filter((dateObj) => dateObj.type === setting.type)
+          .map((dateObj) => dateObj.date),
+      }));
+      await API.saveELearningSettings(withDates);
+      this.dates = this.dates.map((dateObj) => ({ ...dateObj, saved: true }));
       this.$notify({
         title: 'Success',
-        message: `Settings saved!`,
+        message: 'Settings and dates saved!',
       });
     } catch ({ message }) {
       this.$notify({
@@ -154,14 +280,26 @@ export default class ELearningSettings extends Vue {
         message,
       });
     }
+    this.loading = false;
   }
 
   private async fetchSettings() {
-    this.loadingSettings = true;
+    this.loading = true;
     try {
       const settings = await API.getELearningSettings();
       if (settings.length === 2) {
         this.settings = settings;
+        this.dates = settings.reduce(
+          (arr: ELearningDate[], setting: ELearningSettingsSchema) => [
+            ...arr,
+            ...setting.dates.map((date) => ({
+              date,
+              type: setting.type,
+              saved: true,
+            })),
+          ],
+          [],
+        );
       }
     } catch ({ message }) {
       this.$notify({
@@ -169,7 +307,7 @@ export default class ELearningSettings extends Vue {
         message,
       });
     }
-    this.loadingSettings = false;
+    this.loading = false;
   }
 
   private beforeRouteEnter(
@@ -183,7 +321,7 @@ export default class ELearningSettings extends Vue {
   }
 
   private async beforeRouteLeave(to: Route, from: Route, next: () => void) {
-    await this.saveSettings();
+    await this.saveSettingsAndDates();
     next();
   }
 }
@@ -228,4 +366,15 @@ export default class ELearningSettings extends Vue {
   display flex
   align-items center
   flex-direction row
+
+.dates-container
+  & .header
+    display flex
+    align-items center
+    justify-content space-between
+
+.date-list-unsaved
+  font-weight bold
+  color: red
+  margin 0 10px
 </style>
