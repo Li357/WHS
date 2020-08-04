@@ -1,7 +1,5 @@
-import { ELearningType } from '../../shared/types/api';
-
 export interface ELearningDate {
-  type: ELearningType;
+  plan: string;
   date: string;
   saved: boolean;
 }

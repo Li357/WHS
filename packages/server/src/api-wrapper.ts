@@ -4,7 +4,7 @@ import {
   DateType,
   DateSchema,
   YearSettingType,
-  ELearningSettingsSchema,
+  ELearningPlanSchema,
 } from '../shared/types/api';
 
 class API {
@@ -98,16 +98,16 @@ class API {
     return hasChanges;
   }
 
-  public async getELearningSettings() {
-    const response = await fetch(`${this.DATES_API}/elearning-settings`);
+  public async getELearningPlans() {
+    const response = await fetch(`${this.DATES_API}/elearning-plans`);
     if (!response.ok) {
-      throw new Error('There was a problem getting e-learning settings.');
+      throw new Error('There was a problem getting e-learning plans.');
     }
     return response.json();
   }
 
-  public async saveELearningSettings(settings: ELearningSettingsSchema[]) {
-    const response = await fetch(`${this.DATES_API}/elearning-settings`, {
+  public async saveELearningPlans(settings: ELearningPlanSchema[]) {
+    const response = await fetch(`${this.DATES_API}/elearning-plans`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

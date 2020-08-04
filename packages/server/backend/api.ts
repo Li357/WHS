@@ -3,7 +3,7 @@ import { Router } from 'express';
 import {
   DatesQuery,
   DateSchema,
-  ELearningSettingsSchema,
+  ELearningPlanSchema,
 } from '../shared/types/api';
 import { asyncRoute, log, requiresAuth } from './utils';
 
@@ -50,27 +50,23 @@ api.post(
 );
 
 api.get(
-  '/elearning-settings',
+  '/elearning-plans',
   asyncRoute(async ({ db }, res) => {
-    const collection = db!.collection<ELearningSettingsSchema>(
-      'elearningSettings',
-    );
-    const settings = await collection.find().toArray();
-    res.status(200).json(settings);
+    const collection = db!.collection<ELearningPlanSchema>('elearningPlans');
+    const plans = await collection.find().toArray();
+    res.status(200).json(plans);
   }),
 );
 
 api.post(
-  '/elearning-settings',
+  '/elearning-plans',
   asyncRoute(async ({ body, db }, res) => {
-    const collection = db!.collection<ELearningSettingsSchema>(
-      'elearningSettings',
-    );
+    const collection = db!.collection<ELearningPlanSchema>('elearningPlans');
     await Promise.all(
-      body.map(({ _id, ...setting }: ELearningSettingsSchema) =>
+      body.map(({ _id, ...plan }: ELearningPlanSchema) =>
         collection.updateOne(
-          { type: setting.type },
-          { $set: setting },
+          { name: plan.name },
+          { $set: plan },
           {
             upsert: true,
           },

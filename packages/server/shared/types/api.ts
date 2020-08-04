@@ -40,9 +40,8 @@ export interface LoginBody {
 
 export type NameGroup = [string, string];
 export type Day = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
-export type ELearningType = 'yellow' | 'red';
-export interface ELearningSettingsSchema extends Schema {
-  type: ELearningType;
+export interface ELearningPlanSchema extends Schema {
+  name: string;
   groups: { [K in Day]: NameGroup[] };
   dates: string[]; // ISO strings
 }
