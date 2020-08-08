@@ -309,7 +309,7 @@ export default class ELearningPlans extends Vue {
           .filter((dateObj) => dateObj.plan === plan.name)
           .map((dateObj) => dateObj.date),
       }));
-      await API.saveELearningPlans(withDates);
+      await API.saveELearningPlans(withDates, this.startYear);
       this.dates = this.dates.map((dateObj) => ({ ...dateObj, saved: true }));
       this.$notify({
         title: 'Success',

@@ -64,8 +64,14 @@ api.get(
 
 api.post(
   '/elearning-plans',
-  asyncRoute(async ({ body, db }, res) => {
+  requiresAuth((user) => user.admin),
+  asyncRoute(async ({ query = {}, body, db }, res) => {
+    const { year } = query as ELearningQuery;
     const collection = db!.collection<ELearningPlanSchema>('elearningPlans');
+    if (year !== undefined) {
+      // nuclear option cuz I'm lazy
+      await collection.deleteMany({ year });
+    }
     await Promise.all(
       body.map(({ _id, ...plan }: ELearningPlanSchema) =>
         collection.updateOne(
