@@ -10,23 +10,19 @@
             @click="showAddPlanModal"
             :disabled="loading"
             round
-            >Add Plan</el-button
-          >
+          >Add Plan</el-button>
           <el-button
             type="danger"
             icon="el-icon-check"
             @click="savePlans"
             :disabled="loading"
             round
-            >Save Plans</el-button
-          >
+          >Save Plans</el-button>
         </div>
       </el-header>
     </el-container>
     <div class="plan-container" v-loading="loading">
-      <span v-if="plans.length === 0"
-        >Click "Add Plans" to add an e-learning plan.</span
-      >
+      <span v-if="plans.length === 0">Click "Add Plans" to add an e-learning plan.</span>
       <el-tabs v-else v-model="activePlanName" editable @edit="onPlanEdit">
         <el-tab-pane
           v-for="(plan, index) in plans"
@@ -43,8 +39,7 @@
                   :key="stringifyGroup(assignedGroup)"
                   closable
                   @close="onRemoveGroup(assignedGroup, index, day)"
-                  >{{ stringifyGroup(assignedGroup) }}</el-tag
-                >
+                >{{ stringifyGroup(assignedGroup) }}</el-tag>
               </div>
               <el-dropdown trigger="click" @command="onSelect">
                 <span class="namegroup-dropdown">
@@ -58,8 +53,7 @@
                     :key="stringifyGroup(group)"
                     :command="{ group, day, index }"
                     :disabled="isGroupChosen(index, day, group)"
-                    >{{ stringifyGroup(group) }}</el-dropdown-item
-                  >
+                  >{{ stringifyGroup(group) }}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -75,36 +69,27 @@
                   @click="showAddDateModal(index)"
                   :disabled="loading"
                   round
-                  >Add Date</el-button
-                >
+                >Add Date</el-button>
                 <el-button
                   type="danger"
                   icon="el-icon-check"
                   @click="savePlans"
                   :disabled="loading"
                   round
-                  >Save Dates</el-button
-                >
+                >Save Dates</el-button>
               </div>
             </div>
-            <el-table
-              :data="getDatesForPlan(plan.name)"
-              empty-text="No dates"
-              v-loading="loading"
-            >
+            <el-table :data="getDatesForPlan(plan.name)" empty-text="No dates" v-loading="loading">
               <el-table-column prop="date" label="Date"></el-table-column>
               <el-table-column align="right">
                 <template slot-scope="scope">
-                  <span v-if="!scope.row.saved" class="date-list-unsaved"
-                    >Unsaved</span
-                  >
+                  <span v-if="!scope.row.saved" class="date-list-unsaved">Unsaved</span>
                   <el-button
                     type="danger"
                     size="mini"
                     icon="el-icon-delete"
                     @click="removeDate(scope.row.name, scope.row.date)"
-                    >Delete</el-button
-                  >
+                  >Delete</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -123,18 +108,11 @@
     <el-dialog :visible="addingPlan" width="40%" @close="resetPlanModal">
       <div slot="title" class="add-plan-header">
         Add E-Learning Plan
-        <span class="add-plan-header-description"
-          >Pick a name for the new plan</span
-        >
+        <span class="add-plan-header-description">Pick a name for the new plan</span>
       </div>
       <el-input v-model="newPlanName" placeholder="Plan name"></el-input>
       <div slot="footer">
-        <el-button
-          type="primary"
-          @click="addPlan"
-          :disabled="newPlanName.length === 0"
-          >Add Plan</el-button
-        >
+        <el-button type="primary" @click="addPlan" :disabled="newPlanName.length === 0">Add Plan</el-button>
       </div>
     </el-dialog>
   </div>
@@ -291,6 +269,7 @@ export default class ELearningPlans extends Vue {
 
   private addPlan() {
     const newPlan: ELearningPlanSchema = {
+      year: this.startYear,
       name: this.newPlanName,
       groups: {
         monday: [],
@@ -348,7 +327,7 @@ export default class ELearningPlans extends Vue {
   private async fetchSettings() {
     this.loading = true;
     try {
-      const plans = await API.getELearningPlans();
+      const plans = await API.getELearningPlans(this.startYear);
       this.plans = plans;
       this.dates = plans.reduce(
         (arr: ELearningDate[], plan: ELearningPlanSchema) => [

@@ -98,8 +98,10 @@ class API {
     return hasChanges;
   }
 
-  public async getELearningPlans() {
-    const response = await fetch(`${this.DATES_API}/elearning-plans`);
+  public async getELearningPlans(year: string) {
+    const response = await fetch(
+      `${this.DATES_API}/elearning-plans?year=${year}`,
+    );
     if (!response.ok) {
       throw new Error('There was a problem getting e-learning plans.');
     }

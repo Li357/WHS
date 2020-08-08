@@ -4,6 +4,7 @@ import {
   DatesQuery,
   DateSchema,
   ELearningPlanSchema,
+  ELearningQuery,
 } from '../shared/types/api';
 import { asyncRoute, log, requiresAuth } from './utils';
 
@@ -51,9 +52,12 @@ api.post(
 
 api.get(
   '/elearning-plans',
-  asyncRoute(async ({ db }, res) => {
+  asyncRoute(async ({ query, db }, res) => {
+    const { year } = query as ELearningQuery;
     const collection = db!.collection<ELearningPlanSchema>('elearningPlans');
-    const plans = await collection.find().toArray();
+    const plans = await collection
+      .find(year !== undefined ? { year } : {})
+      .toArray();
     res.status(200).json(plans);
   }),
 );
@@ -65,7 +69,7 @@ api.post(
     await Promise.all(
       body.map(({ _id, ...plan }: ELearningPlanSchema) =>
         collection.updateOne(
-          { name: plan.name },
+          { name: plan.name, year: plan.year },
           { $set: plan },
           {
             upsert: true,
