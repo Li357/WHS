@@ -1,9 +1,6 @@
 import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds } from 'date-fns';
 
-import {
-  DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule,
-  ScheduleItem, ClassItem,
-} from '../types/schedule';
+import { DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule, ScheduleItem, ClassItem } from '../types/schedule';
 import { DatesState, DayScheduleType } from '../types/store';
 import { last } from './utils';
 
@@ -47,9 +44,7 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
       end: modEnd,
     });
     if (isThisMod) {
-      const nextMod = modNumber === ModNumber.FOURTEEN || modNumber === ModNumber.FINALS_FOUR
-        ? ModNumber.AFTER_SCHOOL
-        : ModNumber.PASSING_PERIOD;
+      const nextMod = modNumber === ModNumber.FOURTEEN || modNumber === ModNumber.FINALS_FOUR ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD;
       return { current: modNumber, next: nextMod };
     }
 
@@ -73,7 +68,9 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
  * @param scheduleItem item to get occupied mods from
  */
 export function getOccupiedMods({ startMod, length }: ScheduleItem): ModNumber[] {
-  return Array(length).fill(undefined).map((_, i) => startMod + i);
+  return Array(length)
+    .fill(undefined)
+    .map((_, i) => startMod + i);
 }
 
 /**
@@ -102,9 +99,7 @@ export function getScheduleInfoAtTime(date: Date, daySchedule: DaySchedule, sche
   // no need to check if current is passing period
   const isNextPassingPeriod = next === ModNumber.PASSING_PERIOD;
   // DO NOT use find and add one since mod numbers may not be continuous
-  const nextClassMod = isNextPassingPeriod
-    ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2]
-    : next;
+  const nextClassMod = isNextPassingPeriod ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2] : next;
 
   const day = date.getDay();
   const currentClass = getClassAtMod(current, schedule[day - 1]);

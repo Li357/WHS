@@ -3,21 +3,30 @@ import { isAfter } from 'date-fns';
 
 import {
   AppState,
-  SetUserCredentialsAction, SetUserInfoAction, SetUserScheduleAction, SetTeacherSchedulesAction,
+  SetUserCredentialsAction,
+  SetUserInfoAction,
+  SetUserScheduleAction,
+  SetTeacherSchedulesAction,
   SetDatesAction,
   SetRefreshedAction,
   DatesState,
+  ELearningPlansState,
+  SetELearningPlansAction,
 } from '../types/store';
 import { fetch } from '../utils/utils';
 import {
-  getLoginURL, parseHTMLFromURL, getUserScheduleFromHTML, getUserInfoFromHTML, getLoginError, getSchoolPictureFromHTML,
+  getLoginURL,
+  parseHTMLFromURL,
+  getUserScheduleFromHTML,
+  getUserInfoFromHTML,
+  getLoginError,
+  getSchoolPictureFromHTML,
   getTeacherSchedules,
   getDates,
+  getELearningPlans,
 } from '../utils/process-info';
 import { getProfilePhoto, setProfilePhoto } from '../utils/manage-photos';
-import {
-  setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials, setDates, setRefreshed,
-} from './creators';
+import { setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials, setDates, setRefreshed, setELearningPlans } from './creators';
 import { LoginError } from '../utils/error';
 import { FETCH_TIMEOUT, DATE_TYPES, SETTING_TYPES } from '../constants/fetch';
 import { getSchoolYearFromDate } from '../utils/query-schedule';
@@ -27,8 +36,7 @@ export function fetchUserInfo(username: string, password: string) {
     Promise<void>,
     AppState,
     undefined,
-    SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction |
-    SetTeacherSchedulesAction | SetRefreshedAction
+    SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction | SetRefreshedAction
   > = async (dispatch, getState) => {
     const {
       user,
@@ -52,7 +60,7 @@ export function fetchUserInfo(username: string, password: string) {
     const schedule = getUserScheduleFromHTML($);
     const info = getUserInfoFromHTML($);
     // prevent profile photo erasure on manual refresh
-    const profilePhoto = await getProfilePhoto(username) || info.schoolPicture;
+    const profilePhoto = (await getProfilePhoto(username)) || info.schoolPicture;
     await setProfilePhoto(username, profilePhoto);
     const refreshedTeacherSchedules = await getTeacherSchedules(user.teacherSchedules);
 
@@ -76,16 +84,9 @@ export function fetchUserInfo(username: string, password: string) {
 }
 
 export function fetchSchoolPicture(username: string = '', password: string = '') {
-  const fetchSchoolPictureThunk: ThunkAction<
-    Promise<string>,
-    AppState,
-    undefined,
-    SetUserInfoAction
-  > = async (dispatch, getState) => {
+  const fetchSchoolPictureThunk: ThunkAction<Promise<string>, AppState, undefined, SetUserInfoAction> = async (dispatch, getState) => {
     const { user } = getState();
-    const $ = await parseHTMLFromURL(
-      getLoginURL(user.username || username, user.password || password), { method: 'POST' },
-    );
+    const $ = await parseHTMLFromURL(getLoginURL(user.username || username, user.password || password), { method: 'POST' });
     const schoolPicture = getSchoolPictureFromHTML($);
     dispatch(setUserInfo({ schoolPicture }));
     return schoolPicture;
@@ -94,38 +95,33 @@ export function fetchSchoolPicture(username: string = '', password: string = '')
 }
 
 export function fetchDates(year?: number) {
-  const fetchDatesThunk: ThunkAction<
-    Promise<DatesState>,
-    AppState,
-    undefined,
-    SetDatesAction
-  > = async (dispatch) => {
+  const fetchDatesThunk: ThunkAction<Promise<DatesState>, AppState, undefined, SetDatesAction> = async (dispatch) => {
     if (!year) {
       year = getSchoolYearFromDate(new Date());
     }
 
-    const [
-      assembly, noSchool, earlyDismissal, lateStart, wednesday,
-    ] = await Promise.all(DATE_TYPES.map(async (type) => {
-      const dates = await getDates(type, year!);
-      return dates.map((dateObj) => {
-        const date = new Date(dateObj.date);
-        // guarantee comparison wrt only day
-        date.setHours(0, 0, 0, 0);
-        return date;
-      });
-    }));
-    const [
-      semesterOneStart, semesterOneEnd, semesterTwoStart, semesterTwoEnd,
-    ] = await Promise.all(SETTING_TYPES.map(async (type) => {
-      const [setting] = await getDates(type, year!);
-      if (setting) {
-        const date = new Date(setting.date);
-        date.setHours(0, 0, 0, 0);
-        return date;
-      }
-      return null;
-    }));
+    const [assembly, noSchool, earlyDismissal, lateStart, wednesday] = await Promise.all(
+      DATE_TYPES.map(async (type) => {
+        const dates = await getDates(type, year!);
+        return dates.map((dateObj) => {
+          const date = new Date(dateObj.date);
+          // guarantee comparison wrt only day
+          date.setHours(0, 0, 0, 0);
+          return date;
+        });
+      }),
+    );
+    const [semesterOneStart, semesterOneEnd, semesterTwoStart, semesterTwoEnd] = await Promise.all(
+      SETTING_TYPES.map(async (type) => {
+        const [setting] = await getDates(type, year!);
+        if (setting) {
+          const date = new Date(setting.date);
+          date.setHours(0, 0, 0, 0);
+          return date;
+        }
+        return null;
+      }),
+    );
     const datesState = {
       assembly,
       noSchool,
@@ -142,4 +138,27 @@ export function fetchDates(year?: number) {
     return datesState;
   };
   return fetchDatesThunk;
+}
+
+export function fetchELearningPlans(year?: number) {
+  const fetchELearningPlansThunk: ThunkAction<Promise<void>, AppState, undefined, SetELearningPlansAction> = async (dispatch) => {
+    if (!year) {
+      year = getSchoolYearFromDate(new Date());
+    }
+    const plans = await getELearningPlans(year);
+    const newState = plans.reduce(
+      (state: ELearningPlansState, plan) => {
+        plan.dates.forEach((date) => {
+          const dateObj = new Date(date);
+          dateObj.setHours(0, 0, 0, 0); // make sure only comparing day
+          state.dates[dateObj.toISOString()] = plan.name;
+        });
+        state.plans[plan.name] = plan;
+        return state;
+      },
+      { dates: {}, plans: {} },
+    );
+    dispatch(setELearningPlans(newState));
+  };
+  return fetchELearningPlansThunk;
 }

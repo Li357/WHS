@@ -4,6 +4,7 @@ import userReducer from './user';
 import dayReducer from './day';
 import themeReducer from './theme';
 import datesReducer from './dates';
+import elearningPlansReducer from './elearningPlans';
 import { AppAction, AppState, MiscellaneousActions } from '../types/store';
 
 const combinedReducer = combineReducers({
@@ -11,6 +12,7 @@ const combinedReducer = combineReducers({
   day: dayReducer,
   theme: themeReducer,
   dates: datesReducer,
+  elearningPlans: elearningPlansReducer,
 });
 
 export default function rootReducer(state: AppState | undefined, action: AppAction): AppState {

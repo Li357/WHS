@@ -1,11 +1,26 @@
 import {
-  UserActions, UserState, UserInfoKeys,
-  SetUserInfoAction, SetUserScheduleAction, SetUserCredentialsAction,
-  SetTeacherSchedulesAction, AddTeacherScheduleAction,
-  DayActions, SetDayScheduleAction,
-  Theme, SetThemeAction, ThemeActions,
+  UserActions,
+  UserState,
+  UserInfoKeys,
+  SetUserInfoAction,
+  SetUserScheduleAction,
+  SetUserCredentialsAction,
+  SetTeacherSchedulesAction,
+  AddTeacherScheduleAction,
+  DayActions,
+  SetDayScheduleAction,
+  Theme,
+  SetThemeAction,
+  ThemeActions,
   DatesState,
-  MiscellaneousActions, LogOutAction, OtherAction, DatesActions, DayScheduleType, SetRefreshedAction,
+  MiscellaneousActions,
+  LogOutAction,
+  OtherAction,
+  DatesActions,
+  DayScheduleType,
+  SetRefreshedAction,
+  ELearningPlansState,
+  ELearningPlansActions,
 } from '../types/store';
 import { Schedule, TeacherSchedule } from '../types/schedule';
 
@@ -51,6 +66,11 @@ export const setTheme = (payload: Theme): SetThemeAction => ({
 
 export const setDates = (payload: Partial<DatesState>) => ({
   type: DatesActions.SET_DATES,
+  payload,
+});
+
+export const setELearningPlans = (payload: Partial<ELearningPlansState>) => ({
+  type: ELearningPlansActions.SET_PLANS,
   payload,
 });
 
