@@ -16,6 +16,7 @@ import { reportError, splice } from '../utils/utils';
 import { PROFILE_HEIGHT } from '../constants/style';
 import { injectAssemblyOrFinalsIfNeeded } from '../utils/process-schedule';
 import client from '../utils/bugsnag';
+import { getScheduleDay } from '../utils/query-schedule';
 
 const dayScheduleSelector = createSelector(
   ({ day }: AppState) => day.schedule,
@@ -29,10 +30,9 @@ const scheduleSelector = createSelector(
       return schedule;
     }
 
-    const now = new Date();
-    const day = now.getDay();
-    const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
-    return splice(schedule, day - 1, 1, [revisedUserDaySchedule]);
+    const scheduleDay = getScheduleDay(new Date()); // already returns correct index (not off by one)
+    const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[scheduleDay], dayScheduleType, scheduleDay);
+    return splice(schedule, scheduleDay, 1, [revisedUserDaySchedule]);
   },
 );
 export default authorizedRoute('', function Dashboard({ navigation }) {
@@ -65,8 +65,8 @@ export default authorizedRoute('', function Dashboard({ navigation }) {
     await removeProfilePhoto(username);
   };
 
-  const DetailsHeader = (<Details userInfo={userInfo} />);
-  const ProfileHeader = (<Profile userInfo={userInfo} onPhotoSelect={selectPhoto} onPhotoReset={resetPhoto} />);
+  const DetailsHeader = <Details userInfo={userInfo} />;
+  const ProfileHeader = <Profile userInfo={userInfo} onPhotoSelect={selectPhoto} onPhotoReset={resetPhoto} />;
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Swiper height={PROFILE_HEIGHT} loop={false} activeDotColor={accentColor} dotColor={borderColor}>

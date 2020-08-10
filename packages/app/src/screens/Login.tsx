@@ -12,7 +12,7 @@ import Text from '../components/common/Text';
 import { fetchUserInfo, fetchDates } from '../actions/async';
 import { AppState } from '../types/store';
 import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE, SUBTEXT_SIZE } from '../constants/style';
-import { getScheduleTypeOnDate } from '../utils/query-schedule';
+import { getScheduleTypeOnDate, getScheduleTypeOnDate } from '../utils/query-schedule';
 import { setDaySchedule } from '../actions/creators';
 import WHS from '../../assets/images/WHS.png';
 import { reportError } from '../utils/utils';
@@ -97,21 +97,8 @@ export default memo(function Login(props: NavigationScreenProps) {
       <LoginScreen>
         <Image source={WHS} resizeMode="contain" />
         <Header>Login to WHS</Header>
-        <Input
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-          error={error}
-          textContentType="username"
-        />
-        <Input
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          error={error}
-          secureTextEntry={true}
-          textContentType="password"
-        />
+        <Input placeholder="Username" value={username} onChangeText={setUsername} error={error} textContentType="username" />
+        <Input placeholder="Password" value={password} onChangeText={setPassword} error={error} secureTextEntry={true} textContentType="password" />
         <Button onPress={handleLogin} disabled={!canLogin}>
           {loading ? <CircleSnail size={SUBTEXT_SIZE} color={theme.foregroundColor} /> : 'Login'}
         </Button>

@@ -10,7 +10,7 @@ import Subtext from '../components/common/Subtext';
 import { ScheduleItem } from '../types/schedule';
 import { wp } from '../utils/style';
 import { SCREEN_MARGIN_HORIZONTAL, LARGE_ICON_SIZE } from '../constants/style';
-import { isScheduleEmpty } from '../utils/query-schedule';
+import { isScheduleEmpty, getScheduleDay } from '../utils/query-schedule';
 import { AppState } from '../types/store';
 import client from '../utils/bugsnag';
 
@@ -44,15 +44,13 @@ export default authorizedRoute(
       );
     }
 
-    const renderItem = ({ item }: { item: ScheduleItem[], index: number }) => (
-      <ScheduleCard schedule={item} navigation={navigation} />
-    );
-    const currentDay = new Date().getDay();
+    const renderItem = ({ item }: { item: ScheduleItem[]; index: number }) => <ScheduleCard schedule={item} navigation={navigation} />;
+    const currentScheduleDay = getScheduleDay(new Date());
 
     return (
       <Carousel
         loop={true}
-        firstItem={Math.min(currentDay - 1, 4)}
+        firstItem={Math.min(currentScheduleDay, 4)}
         data={schedule}
         renderItem={renderItem}
         sliderWidth={wp('100%')}

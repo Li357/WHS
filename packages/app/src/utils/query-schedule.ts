@@ -1,8 +1,9 @@
 import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds } from 'date-fns';
 
 import { DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule, ScheduleItem, ClassItem } from '../types/schedule';
-import { DatesState, DayScheduleType } from '../types/store';
+import { DatesState, DayScheduleType, ELearningPlansState } from '../types/store';
 import { last } from './utils';
+import { date } from 'date-fns/locale/af';
 
 /**
  * Converts a `h:mm` time (from a day schedule timpair) to a date for comparison
@@ -88,22 +89,25 @@ export function getClassAtMod(modNumber: ModNumber, userDaySchedule: UserDaySche
 
 /**
  * Gets the current and next mod, and their corresponding classes
- * @param date day to query
+ * NOTE: After e-learning patch: the datetime param does not determine the current day of the user's schedule,
+ *       since the day might be Monday, but student's in-person may follow a Thursday schedule. The datetime
+ *       param DOES specify the specific time in the day to get the info at that TIME
+ * @param datetime datetime to query
  * @param daySchedule schedule of the specified date
  * @param schedule user's schedule of classes
  */
-export function getScheduleInfoAtTime(date: Date, daySchedule: DaySchedule, schedule: Schedule): ScheduleInfo {
+export function getScheduleInfoAtTime(datetime: Date, daySchedule: DaySchedule, schedule: Schedule): ScheduleInfo {
   // This returns PASSING_PERIOD, BEFORE_SCHOOL, and AFTER_SCHOOL which are not actual class times
-  const { current, next } = getModAtTime(date, daySchedule);
+  const { current, next } = getModAtTime(datetime, daySchedule);
   // Since this function is only used to display current class during a class mod,
   // no need to check if current is passing period
   const isNextPassingPeriod = next === ModNumber.PASSING_PERIOD;
   // DO NOT use find and add one since mod numbers may not be continuous
   const nextClassMod = isNextPassingPeriod ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2] : next;
 
-  const day = date.getDay();
-  const currentClass = getClassAtMod(current, schedule[day - 1]);
-  const nextClass = getClassAtMod(nextClassMod, schedule[day - 1]);
+  const day = getScheduleDay(datetime);
+  const currentClass = getClassAtMod(current, schedule[day]);
+  const nextClass = getClassAtMod(nextClassMod, schedule[day]);
   return { current, next, currentClass, nextClass };
 }
 
@@ -117,13 +121,14 @@ export function containsDate(queryDate: Date, dates: Date[]) {
 }
 
 /**
- * Gets day schedule TYPE on a certain date
+ * Gets day schedule TYPE on a certain date NOT accounting for breaks/holidays/e-learning logic, useful for display
+ * on the schedule cards, which are a reference that does not change with breaks
  * @param queryDate certain date to query
  * @param dates map of special dates from server
- * @param omitBreak whether or not to stop from returning SCHEDULES.BREAK (used in schedule display)
+ * @param elearningPlans elearning plans from store
  */
-export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBreak = false): DayScheduleType {
-  const { semesterOneStart, semesterOneEnd, semesterTwoEnd } = dates;
+export function getDisplayScheduleTypeOnDate(queryDate: Date, dates: DatesState): DayScheduleType {
+  const { semesterOneEnd, semesterTwoEnd } = dates;
   if (semesterOneEnd !== null && semesterTwoEnd !== null) {
     const semesterOneFinalsOne = subDays(semesterOneEnd, 1);
     const semesterTwoFinalsOne = subDays(semesterTwoEnd, 1);
@@ -135,19 +140,7 @@ export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBr
     }
   }
 
-  const day = queryDate.getDay();
-  if (!omitBreak) {
-    // Always let summer/break take precedence over weekend
-    // If the date is after semesterTwoEnd, they will be refreshed anyways
-    if (semesterOneStart !== null && isBefore(queryDate, semesterOneStart)) {
-      return 'SUMMER';
-    }
-
-    if (containsDate(queryDate, dates.noSchool)) {
-      return 'BREAK';
-    }
-  }
-
+  const day = getScheduleDay(queryDate); // 0 is Monday, 4 is Friday, so 2 is Wednesday
   if (containsDate(queryDate, dates.earlyDismissal)) {
     return 'EARLY_DISMISSAL';
   }
@@ -157,20 +150,56 @@ export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, omitBr
   }
 
   if (containsDate(queryDate, dates.lateStart)) {
-    if (day === 3) {
+    if (day === 2) {
       return 'LATE_START_WEDNESDAY';
     }
     return 'LATE_START';
   }
 
-  if (day > 5 || day < 1) {
+  if (day > 4 || day < 0) {
     return 'WEEKEND';
   }
 
-  if (day === 3 || (dates.wednesday !== undefined && containsDate(queryDate, dates.wednesday))) {
+  if (day === 2 || (dates.wednesday !== undefined && containsDate(queryDate, dates.wednesday))) {
     return 'WEDNESDAY';
   }
   return 'REGULAR';
+}
+
+/**
+ * Gets day schedule TYPE on a certain date accounting for additional school logic (i.e. summer, holidays, e-learning logic), not only
+ * for display on schedule cards.
+ * @param queryDate certain date to query
+ * @param dates map of special dates from server
+ * @param elearningPlans elearning plans from store
+ */
+export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, elearningPlans: ELearningPlansState): DayScheduleType {
+  const { semesterOneStart } = dates;
+
+  // Always let summer/break take precedence over weekend
+  // If the date is after semesterTwoEnd, they will be refreshed anyways
+  if (semesterOneStart !== null && isBefore(queryDate, semesterOneStart)) {
+    return 'SUMMER';
+  }
+
+  if (containsDate(queryDate, dates.noSchool)) {
+    return 'BREAK';
+  }
+
+  return getDisplayScheduleTypeOnDate(queryDate, dates);
+}
+
+/**
+ * Returns day (0 is Monday, up to 4, which is Friday), an index to access the USER'S schedule. Necessary
+ * for e-learning patch because the calendar weekday may be MONDAY, i.e. 0, but students actually follow
+ * their THURSDAY schedule in-person, i.e. 3.
+ *
+ * For a certain period of e-learning, such as
+ *
+ */
+export function getScheduleDay(queryDate: Date): number {
+  // TODO:
+  return queryDate.getDay() - 1;
 }
 
 /**
