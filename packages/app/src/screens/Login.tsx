@@ -12,7 +12,7 @@ import Text from '../components/common/Text';
 import { fetchUserInfo, fetchDates } from '../actions/async';
 import { AppState } from '../types/store';
 import { LOGIN_HEADER_MARGIN, LOGIN_IMAGE_SIZE, SUBTEXT_SIZE } from '../constants/style';
-import { getScheduleTypeOnDate, getScheduleTypeOnDate } from '../utils/query-schedule';
+import { getScheduleTypeOnDate } from '../utils/query-schedule';
 import { setDaySchedule } from '../actions/creators';
 import WHS from '../../assets/images/WHS.png';
 import { reportError } from '../utils/utils';
