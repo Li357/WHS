@@ -21,19 +21,21 @@ function serializeState(state: AppState): IMetadata {
   return {
     type: 'state',
     // day consists of booleans and strings
-    day: day as unknown as IMetadataValue,
+    day: (day as unknown) as IMetadataValue,
     dates: serializedDates,
-    theme: theme as unknown as IMetadataValue,
-    user: user as unknown as IMetadataValue,
+    theme: (theme as unknown) as IMetadataValue,
+    user: (user as unknown) as IMetadataValue,
   };
 }
 
 const config = new Configuration();
-config.codeBundleId = '3.0.1-b7';
+config.codeBundleId = '3.0.1-b8';
 config.notifyReleaseStages = ['production'];
 config.registerBeforeSendCallback((report) => {
   const state = store.getState();
-  const { user: { name, username } } = state;
+  const {
+    user: { name, username },
+  } = state;
 
   client.setUser('', name, `${username}@westside66.net`);
   report.metadata = serializeState(state);
