@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)https://westside-web.azurewebsites.net/teachers -->
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Teachers | Westside</title>
+    <link rel="stylesheet" href="./Teachers _ Westside_files/site.css" />
+    <link rel="stylesheet" type="text/css" href="./Teachers _ Westside_files/ionicons.min.css" />
+    <link rel="stylesheet" type="text/css" href="./Teachers _ Westside_files/datatables.min.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://westside-web.azurewebsites.net/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="https://westside-web.azurewebsites.net/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://westside-web.azurewebsites.net/favicon-16x16.png" />
+  </head>
+  <body>
+    <nav class="navbar navbar-full navbar-custom navbar-dark bg-inverse">
+      <div class="container">
+        <a class="navbar-brand" href="https://westside-web.azurewebsites.net/">
+          <img src="./Teachers _ Westside_files/logo.png" alt="Westside High School Logo" />
+        </a>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div class="pull-xs-right navbar-right">
+          <div id="js-search-view" class="navbar-search">
+            <input type="text" placeholder="Search..." />
+            <div id="js-search-results" class="navbar-search-results"></div>
+          </div>
+          <div class="dropdown dropdown-menu-right">
+            <div class="navbar-user-avatar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="./Teachers _ Westside_files/blank-user.png" alt="" />
+            </div>
+            <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-header">Hi, Schau.Sarah!</div>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="https://westside-web.azurewebsites.net/account"><i class="icon ion-person icon-left"></i> Account</a>
+              <form action="https://westside-web.azurewebsites.net/account/logoff" method="post">
+                <button type="submit" class="dropdown-item"><i class="icon ion-log-out icon-left"></i> Logout</button>
+                <input
+                  name="__RequestVerificationToken"
+                  type="hidden"
+                  value="CfDJ8Jjl5AHsM9xIuwvC4l17t5sLGmrXusNLyu3gl_d3fa31Fqqtjfcgb-p-UKvbb4_-y9LXOlXl8w-G__WQo72MZRYNYqwpz2uut0gKVcTpAQwg7AMaf0FTUydSA4U1pCfR3jDiRRs87r1qxZ4e6-u0mrwjKghOOlsVQxLzQUoDAKUP4Q47zHeWDxbIlC_S6b4yVg"
+                />
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+            <li active-on-route="" class="nav-item active">
+              <a class="nav-link" href="https://westside-web.azurewebsites.net/teachers">Teachers</a>
+            </li>
+
+            <li class="nav-item" active-on-route="">
+              <a class="nav-link" href="https://westside-web.azurewebsites.net/students">Students</a>
+            </li>
+
+            <li class="nav-item" active-on-route="">
+              <a class="nav-link" href="https://westside-web.azurewebsites.net/attendance">Attendance</a>
+            </li>
+
+            <li class="nav-item" active-on-route="">
+              <a class="nav-link" href="https://westside-web.azurewebsites.net/calendar">Calendar</a>
+            </li>
+
+            <li class="nav-item" active-on-route="">
+              <a class="nav-link" href="https://westside-web.azurewebsites.net/links">External Links</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <section class="page-title">
+      <div class="container">
+        <h2>Teacher Directory</h2>
+      </div>
+    </section>
+
+    <section class="page-content">
+      <div class="container">
+        <div id="js-teachers-table_wrapper" class="dataTables_wrapper no-footer">
+          <div class="dataTables_length" id="js-teachers-table_length">
+            <label
+              >Show
+              <select name="js-teachers-table_length" aria-controls="js-teachers-table" class=""
+                ><option value="10">10</option
+                ><option value="25">25</option
+                ><option value="50">50</option
+                ><option value="100">100</option></select
+              >
+              entries</label
+            >
+          </div>
+          <div id="js-teachers-table_filter" class="dataTables_filter">
+            <label>Search:<input type="search" class="" placeholder="" aria-controls="js-teachers-table" /></label>
+          </div>
+          <table id="js-teachers-table" class="table table-sm dataTable no-footer" role="grid" aria-describedby="js-teachers-table_info">
+            <thead>
+              <tr role="row">
+                <th
+                  class="sorting_asc"
+                  tabindex="0"
+                  aria-controls="js-teachers-table"
+                  rowspan="1"
+                  colspan="1"
+                  aria-sort="ascending"
+                  aria-label="Last Name: activate to sort column descending"
+                  style="width: 205px;"
+                >
+                  Last Name
+                </th>
+                <th
+                  class="sorting"
+                  tabindex="0"
+                  aria-controls="js-teachers-table"
+                  rowspan="1"
+                  colspan="1"
+                  aria-label="First Name: activate to sort column ascending"
+                  style="width: 156px;"
+                >
+                  First Name
+                </th>
+                <th
+                  class="sorting"
+                  tabindex="0"
+                  aria-controls="js-teachers-table"
+                  rowspan="1"
+                  colspan="1"
+                  aria-label="Email: activate to sort column ascending"
+                  style="width: 439px;"
+                >
+                  Email
+                </th>
+                <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Actions" style="width: 169px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Accompanist</th>
+                <td>Denise Millard</td>
+                <td></td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/674">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Admire</th>
+                <td>Lisa</td>
+                <td>Admire.Lisa@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/690">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Allemang</th>
+                <td>Jon</td>
+                <td>Allemang.Jon@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/379">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Allen</th>
+                <td>Jenni</td>
+                <td></td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/562">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Anderson</th>
+                <td>Karen</td>
+                <td>Anderson.Karen@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/737">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Baber</th>
+                <td>Benjamin</td>
+                <td>Baber.Benjamin@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/395">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Backhaus</th>
+                <td>David</td>
+                <td>Backhaus.David@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/800">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Bauers</th>
+                <td>Chase</td>
+                <td>Bauers.Chase@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/738">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Baumgartner</th>
+                <td>Reese</td>
+                <td></td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/657">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Beaty</th>
+                <td>Christian</td>
+                <td>Beaty.Christian@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/708">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Beile</th>
+                <td>Rebecca</td>
+                <td></td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/623">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Bergman</th>
+                <td>Angela</td>
+                <td>Bergman.Angela@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/380">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Birdsall</th>
+                <td>Cassandra</td>
+                <td>birdsall.cassandra@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/829">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Black</th>
+                <td>Elizabeth</td>
+                <td>Black.Elizabeth@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/438">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Blessen</th>
+                <td>Annelise</td>
+                <td>Blessen.Annelise@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/429">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Bombac</th>
+                <td>John</td>
+                <td>Bombac.John@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/524">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Bontz</th>
+                <td>Sara</td>
+                <td>Bontz.Sara@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/785">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Bramblett</th>
+                <td>Linda</td>
+                <td>Bramblett.Linda@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/464">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Bramley</th>
+                <td>Nathan</td>
+                <td>Bramley.Nathan@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/441">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Brockman</th>
+                <td>Jennifer</td>
+                <td>Brockman.Jennifer@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/474">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Brooks</th>
+                <td>Michaela</td>
+                <td>Brooks.Michaela@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/786">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Brousek</th>
+                <td>Robert</td>
+                <td>Brousek.Robert@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/440">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Bulin</th>
+                <td>David</td>
+                <td>Bulin.David@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/381">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="even">
+                <th scope="row" class="sorting_1">Burke</th>
+                <td>Linda</td>
+                <td>Burke.Linda@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/663">View Teacher</a></td>
+              </tr>
+              <tr role="row" class="odd">
+                <th scope="row" class="sorting_1">Bywater</th>
+                <td>David</td>
+                <td>Bywater.David@westside66.net</td>
+                <td><a class="btn btn-secondary btn-sm" href="https://westside-web.azurewebsites.net/teachers/427">View Teacher</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="dataTables_info" id="js-teachers-table_info" role="status" aria-live="polite">Showing 1 to 25 of 303 entries</div>
+          <div class="dataTables_paginate paging_simple_numbers" id="js-teachers-table_paginate">
+            <a
+              class="paginate_button previous disabled"
+              aria-controls="js-teachers-table"
+              data-dt-idx="0"
+              tabindex="0"
+              id="js-teachers-table_previous"
+              >Previous</a
+            ><span
+              ><a class="paginate_button current" aria-controls="js-teachers-table" data-dt-idx="1" tabindex="0">1</a
+              ><a class="paginate_button" aria-controls="js-teachers-table" data-dt-idx="2" tabindex="0">2</a
+              ><a class="paginate_button" aria-controls="js-teachers-table" data-dt-idx="3" tabindex="0">3</a
+              ><a class="paginate_button" aria-controls="js-teachers-table" data-dt-idx="4" tabindex="0">4</a
+              ><a class="paginate_button" aria-controls="js-teachers-table" data-dt-idx="5" tabindex="0">5</a><span class="ellipsis">…</span
+              ><a class="paginate_button" aria-controls="js-teachers-table" data-dt-idx="6" tabindex="0">13</a></span
+            ><a class="paginate_button next" aria-controls="js-teachers-table" data-dt-idx="7" tabindex="0" id="js-teachers-table_next">Next</a>
+          </div>
+        </div>
+        <br /><br />
+      </div>
+    </section>
+
+    <script>
+      window._pageDataJson = '{"action":"Index","controller":"Teachers","userId":"5521"}';
+    </script>
+    <script src="./Teachers _ Westside_files/jquery.min.js"></script>
+    <script src="./Teachers _ Westside_files/underscore-min.js"></script>
+    <script src="./Teachers _ Westside_files/backbone-min.js"></script>
+    <script src="./Teachers _ Westside_files/tether.min.js"></script>
+    <script
+      src="./Teachers _ Westside_files/bootstrap.min.js"
+      integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./Teachers _ Westside_files/bootstrap.select.js"></script>
+    <script src="./Teachers _ Westside_files/select2.js"></script>
+    <script src="./Teachers _ Westside_files/jquery.dataTables.min.js"></script>
+    <script src="./Teachers _ Westside_files/page-layout.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $('#js-teachers-table').DataTable({
+          columnDefs: [
+            {
+              bSortable: false,
+              targets: -1,
+            },
+          ],
+          pageLength: 25,
+        });
+      });
+    </script>
+  </body>
+</html>

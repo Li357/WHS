@@ -1,13 +1,19 @@
-
 import {
-  getLoginURL, getLoginError, getSchoolPictureFromHTML, processName,
-  getUserScheduleFromHTML, getUserInfoFromHTML,
-  getTeacherSchedules, getTeacherSearchURL, getTeacherURL, fetchTeachersFromQuery,
+  getLoginURL,
+  getLoginError,
+  getSchoolPictureFromHTML,
+  processName,
+  getUserScheduleFromHTML,
+  getUserInfoFromHTML,
+  getTeacherSchedules,
+  getTeacherSearchURL,
+  getTeacherURL,
+  fetchTeachersFromQuery,
 } from '../../src/utils/process-info';
 import { fetch } from '../../src/utils/utils';
 import { LOGIN_URL, SCHOOL_PICTURE_BLANK_SYMBOL, TEACHER_FETCH_LIMIT } from '../../src/constants/fetch';
 import { processSchedule } from '../../src/utils/process-schedule';
-import { getStudent$, getError$, getNew$, getTeacher$, fetchMock, open, TEST_HTML_DIR } from '../test-utils/fetch';
+import { getStudent$, getError$, getNew$, getTeacher$, fetchMock, open, TEST_HTML_DIR, getEmpty$ } from '../test-utils/fetch';
 import { TeacherSchedule } from '../../src/types/schedule';
 
 fetchMock.config.fetch = fetch;
@@ -87,37 +93,49 @@ describe('processing user info', () => {
 
   describe('getUserScheduleFromHTML', () => {
     it('should return schedule if it exists', async () => {
-      expect(getUserScheduleFromHTML(await getStudent$())).toEqual(processSchedule([{
-        sourceId: 26271,
-        sourceType: 'course',
-        title: 'Band',
-        body: 'Rm. 181 (Krueger)',
-        roomNumber: '181',
-        sectionNumber: 3,
-        phaseNumber: 1,
-        day: 5,
-        startMod: 1,
-        length: 1,
-        endMod: 2,
-        data: null,
-      }]));
+      expect(getUserScheduleFromHTML(await getStudent$())).toEqual(
+        processSchedule([
+          {
+            sourceId: 26271,
+            sourceType: 'course',
+            title: 'Band',
+            body: 'Rm. 181 (Krueger)',
+            roomNumber: '181',
+            sectionNumber: 3,
+            phaseNumber: 1,
+            day: 5,
+            startMod: 1,
+            length: 1,
+            endMod: 2,
+            data: null,
+          },
+        ]),
+      );
     });
 
     it('should return teacher schedule', async () => {
-      expect(getUserScheduleFromHTML(await getTeacher$())).toEqual(processSchedule([{
-        sourceId: 26559,
-        sourceType: 'course',
-        title: 'English 1 S2',
-        body: 'Rm. 113 (Grossman)',
-        roomNumber: '113',
-        sectionNumber: 5,
-        phaseNumber: 1,
-        day: 2,
-        startMod: 14,
-        length: 1,
-        endMod: 15,
-        data: { courseId: '476' },
-      }]));
+      expect(getUserScheduleFromHTML(await getTeacher$())).toEqual(
+        processSchedule([
+          {
+            sourceId: 26559,
+            sourceType: 'course',
+            title: 'English 1 S2',
+            body: 'Rm. 113 (Grossman)',
+            roomNumber: '113',
+            sectionNumber: 5,
+            phaseNumber: 1,
+            day: 2,
+            startMod: 14,
+            length: 1,
+            endMod: 15,
+            data: { courseId: '476' },
+          },
+        ]),
+      );
+    });
+
+    it('should handle case when there is no schedule', async () => {
+      expect(getUserScheduleFromHTML(await getEmpty$())).toEqual(processSchedule([]));
     });
   });
 
@@ -156,9 +174,7 @@ describe('processing user info', () => {
   describe('getTeacherSearchURL', () => {
     it('should return login url with return url', () => {
       const url = getTeacherSearchURL('John', 10, 'Jeff', 'Smith');
-      expect(url).toEqual(
-        `${LOGIN_URL}?Username=Jeff&Password=Smith&ReturnUrl=%2Fapi%2Fsearch%3Fquery%3DJohn%26limit%3D10`,
-      );
+      expect(url).toEqual(`${LOGIN_URL}?Username=Jeff&Password=Smith&ReturnUrl=%2Fapi%2Fsearch%3Fquery%3DJohn%26limit%3D10`);
     });
   });
 

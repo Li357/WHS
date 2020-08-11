@@ -4,10 +4,22 @@ import { DateType, DateSchema } from '@whs/server';
 import { fetch, isResponseOk } from './utils';
 import { processSchedule } from './process-schedule';
 import {
-  HEADER_SELECTOR, STUDENT_OVERVIEW_SELECTOR, STUDENT_ID_SELECTOR,
-  SCHOOL_PICTURE_SELECTOR, SCHOOL_PICTURE_REGEX, SCHOOL_PICTURE_BLANK_FLAG, SCHOOL_PICTURE_BLANK_SYMBOL,
-  SCHEDULE_SELECTOR, SCHEDULE_REGEX, LOGIN_URL, FETCH_TIMEOUT, LOGIN_ERROR_SELECTOR, DATES_URL,
-  SEARCH_URL, TEACHER_URL, TEACHER_FETCH_LIMIT,
+  HEADER_SELECTOR,
+  STUDENT_OVERVIEW_SELECTOR,
+  STUDENT_ID_SELECTOR,
+  SCHOOL_PICTURE_SELECTOR,
+  SCHOOL_PICTURE_REGEX,
+  SCHOOL_PICTURE_BLANK_FLAG,
+  SCHOOL_PICTURE_BLANK_SYMBOL,
+  SCHEDULE_SELECTOR,
+  SCHEDULE_REGEX,
+  LOGIN_URL,
+  FETCH_TIMEOUT,
+  LOGIN_ERROR_SELECTOR,
+  DATES_URL,
+  SEARCH_URL,
+  TEACHER_URL,
+  TEACHER_FETCH_LIMIT,
 } from '../constants/fetch';
 import { UserInfo, UserOverviewMap, UserOverviewKeys } from '../types/store';
 import { Schedule, TeacherSchedule, RawSchedule } from '../types/schedule';
@@ -65,7 +77,10 @@ export function processName(rawName: string) {
  * @param $ cheerio selector for parsed HTML
  */
 export function getUserInfoFromHTML($: CheerioSelector): UserInfo {
-  const [rawName, subtitle] = $(HEADER_SELECTOR).children().map((i, el) => $(el).text().trim()).get();
+  const [rawName, subtitle] = $(HEADER_SELECTOR)
+    .children()
+    .map((i, el) => $(el).text().trim())
+    .get();
   const isTeacher = subtitle === 'Teacher';
   const name = isTeacher ? rawName : processName(rawName); // Teachers do not their name in "last, first" format
   const schoolPicture = getSchoolPictureFromHTML($);
@@ -78,9 +93,13 @@ export function getUserInfoFromHTML($: CheerioSelector): UserInfo {
   };
 
   if (!isTeacher) {
-    const studentOverviewInfo = $(STUDENT_OVERVIEW_SELECTOR).get()
+    const studentOverviewInfo = $(STUDENT_OVERVIEW_SELECTOR)
+      .get()
       .reduce((infoMap: UserOverviewMap, currentInfo: CheerioElement) => {
-        const [staffRole, staffName] = $(currentInfo).text().split(': ').map((str) => str.trim());
+        const [staffRole, staffName] = $(currentInfo)
+          .text()
+          .split(': ')
+          .map((str) => str.trim());
         const infoKey = staffRole.toLowerCase() as UserOverviewKeys;
         infoMap[infoKey] = staffName;
         return infoMap;
@@ -102,7 +121,13 @@ export function getUserInfoFromHTML($: CheerioSelector): UserInfo {
 export function getUserScheduleFromHTML($: CheerioSelector): Schedule {
   // .text returns empty string in script
   const matches = ($(SCHEDULE_SELECTOR).html() || '').trim().match(SCHEDULE_REGEX);
-  const rawSchedule: RawSchedule = matches === null ? [] : JSON.parse(matches[1]).schedule;
+  let rawSchedule: RawSchedule = [];
+  if (matches !== null) {
+    const pageData = JSON.parse(matches[1]);
+    if (pageData.schedule !== undefined) {
+      rawSchedule = pageData.schedule as RawSchedule;
+    }
+  }
   return processSchedule(rawSchedule);
 }
 
