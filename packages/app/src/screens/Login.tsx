@@ -41,6 +41,7 @@ export default memo(function Login(props: NavigationScreenProps) {
   const [loading, setLoading] = useState(false);
   const dates = useSelector((state: AppState) => state.dates);
   const theme = useSelector((state: AppState) => state.theme);
+  const elearningPlans = useSelector((state: AppState) => state.elearningPlans);
   const dispatch = useDispatch();
 
   const handleLogin = async () => {
@@ -69,7 +70,7 @@ export default memo(function Login(props: NavigationScreenProps) {
       await scheduleNotifications();
 
       client.leaveBreadcrumb('Set day schedule');
-      dispatch(setDaySchedule(getScheduleTypeOnDate(now, updatedDates)));
+      dispatch(setDaySchedule(getScheduleTypeOnDate(now, updatedDates, elearningPlans)));
       props.navigation.navigate('Dashboard');
     } catch (error) {
       if (error instanceof LoginError) {

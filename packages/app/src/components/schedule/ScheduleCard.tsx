@@ -10,14 +10,14 @@ import Text from '../common/Text';
 import { CARD_BORDER_RADIUS, CARD_PADDING, SUBTEXT_SIZE, BORDER_WIDTH, SCHEDULE_CARD_ITEM_HEIGHT } from '../../constants/style';
 import { ClassItem, CrossSectionedItem, ScheduleItem, DaySchedule, ModNumber } from '../../types/schedule';
 import { AppState } from '../../types/store';
-import { getModAtTime, isHalfMod, convertTimeToDate, getScheduleDay, getDisplayScheduleTypeOnDate } from '../../utils/query-schedule';
+import { getModAtTime, isHalfMod, convertTimeToDate, getScheduleDay, getDisplayScheduleTypeOnDate, getPlanOnDate } from '../../utils/query-schedule';
 import * as SCHEDULES from '../../constants/schedules';
 import { createClassItem, injectAssemblyOrFinalsIfNeeded } from '../../utils/process-schedule';
 import ClassCardItem from './ClassCardItem';
 import CrossSectionedCardItem from './CrossSectionedCardItem';
 import Subtext from '../common/Subtext';
 import { formatTime } from '../../utils/duration';
-import { sum } from '../../utils/utils';
+import { sum, getDayString } from '../../utils/utils';
 import { NavigationProp } from '../../types/utils';
 
 const ScheduleCardContainer = styled.View`
@@ -102,8 +102,9 @@ interface ScheduleCardProps {
 const makeCardDayScheduleSelector = () =>
   createSelector(
     (state: AppState) => state.dates,
+    (state: AppState) => state.elearningPlans,
     (_: any, schedule: ScheduleItem[]) => schedule,
-    (dates, schedule) => {
+    (dates, elearningPlans, schedule) => {
       const now = new Date();
 
       // NOTE: E-learning patch means that the current day is not necessarily the right day in the user's schedule (see getScheduleDay)
@@ -113,13 +114,12 @@ const makeCardDayScheduleSelector = () =>
       const cardDaySchedule = SCHEDULES[cardScheduleType];
       const isCardDateFinals = cardScheduleType === 'FINALS';
 
-      const currentScheduleDay = getScheduleDay(new Date()); // day that students actually follow in their schedule
+      const isELearning = getPlanOnDate(now, elearningPlans) !== undefined;
+      const { scheduleDay: currentScheduleDay } = getScheduleDay(new Date(), elearningPlans); // day that students actually follow in their schedule
       const isCardCurrentScheduleDay = currentScheduleDay === cardDay - 1; // currentScheduleDay is 0 based, cardDay is 1 based
 
       const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule, cardScheduleType, cardDay);
-      // PATCH: scheduleType === 'WEDNESDAY' && day !== 3 condition is needed since the first item is already
-      // sliced off for normal Wednesday schedules (i.e. day === 3, see interpolateOpenMods)
-      const patchedUserDaySchedule = revisedUserDaySchedule.slice(cardScheduleType === 'WEDNESDAY' && cardDay !== 3 ? 1 : 0);
+      const patchedUserDaySchedule = revisedUserDaySchedule.slice(cardScheduleType === 'WEDNESDAY' ? 1 : 0);
 
       const displayCardDaySchedule = cardDaySchedule.map(([start, end, modNumber]) => {
         const startTime = formatTime(start);
@@ -134,12 +134,13 @@ const makeCardDayScheduleSelector = () =>
         userDaySchedule: patchedUserDaySchedule,
         isCurrentDay: isCardCurrentScheduleDay,
         isFinals: isCardDateFinals,
+        isELearning,
       };
     },
   );
 export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps) {
   const cardDayScheduleSelector = useMemo(makeCardDayScheduleSelector, []);
-  const { cardDate, cardDaySchedule, userDaySchedule, daySchedule, isCurrentDay, isFinals } = useSelector((state: AppState) =>
+  const { cardDate, cardDaySchedule, userDaySchedule, daySchedule, isCurrentDay, isFinals, isELearning } = useSelector((state: AppState) =>
     cardDayScheduleSelector(state, schedule),
   );
 
@@ -178,13 +179,17 @@ export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps
     </BarContainer>
   );
 
+  const header = (
+    <>
+      <Title minimumFontScale={0.5}>{formattedDay}</Title>
+      {!isELearning && <Subtext minimumFontScale={0.5}>{formattedDate}</Subtext>}
+    </>
+  );
+
   return (
     <ScheduleCardContainer>
       <Header>
-        <Body>
-          <Title minimumFontScale={0.5}>{formattedDay}</Title>
-          <Subtext minimumFontScale={0.5}>{formattedDate}</Subtext>
-        </Body>
+        <Body>{header}</Body>
         <Switch
           value={showTimes}
           onValueChange={setShowTimes}

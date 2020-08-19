@@ -25,21 +25,20 @@ const dayScheduleSelector = createSelector(
 const scheduleSelector = createSelector(
   ({ user }: AppState) => user.schedule,
   ({ day }: AppState) => day.schedule,
-  (schedule, dayScheduleType) => {
+  (state: AppState) => state.elearningPlans,
+  (schedule, dayScheduleType, elearningPlans) => {
+    const { scheduleDay } = getScheduleDay(new Date(), elearningPlans); // already returns correct index (not off by one)
     if (['BREAK', 'SUMMER', 'WEEKEND'].includes(dayScheduleType)) {
-      return schedule;
+      return schedule[scheduleDay];
     }
-
-    const scheduleDay = getScheduleDay(new Date()); // already returns correct index (not off by one)
-    const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[scheduleDay], dayScheduleType, scheduleDay);
-    return splice(schedule, scheduleDay, 1, [revisedUserDaySchedule]);
+    return injectAssemblyOrFinalsIfNeeded(schedule[scheduleDay], dayScheduleType, scheduleDay);
   },
 );
 export default authorizedRoute('', function Dashboard({ navigation }) {
   const userInfo = useSelector((state: AppState) => state.user);
   const { accentColor, borderColor } = useSelector((state: AppState) => state.theme);
   const daySchedule = useSelector(dayScheduleSelector);
-  const userSchedule = useSelector(scheduleSelector);
+  const userDaySchedule = useSelector(scheduleSelector);
   const dispatch = useDispatch();
 
   const selectPhoto = async (newPhoto: string, base64: boolean = true) => {
@@ -73,7 +72,7 @@ export default authorizedRoute('', function Dashboard({ navigation }) {
         {ProfileHeader}
         {DetailsHeader}
       </Swiper>
-      <Info daySchedule={daySchedule} userSchedule={userSchedule} navigation={navigation} />
+      <Info daySchedule={daySchedule} userDaySchedule={userDaySchedule} navigation={navigation} />
     </ScrollView>
   );
 });

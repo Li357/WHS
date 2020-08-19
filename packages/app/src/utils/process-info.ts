@@ -212,6 +212,7 @@ export async function getELearningPlans(year: number): Promise<ELearningPlanSche
       'Cache-Control': 'no-cache',
     },
   });
+  console.log(response);
   if (!response.ok) {
     throw new NetworkError();
   }

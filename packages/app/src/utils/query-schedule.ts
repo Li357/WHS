@@ -1,9 +1,9 @@
-import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds } from 'date-fns';
+import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds, differenceInCalendarWeeks } from 'date-fns';
 
 import { DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule, ScheduleItem, ClassItem } from '../types/schedule';
 import { DatesState, DayScheduleType, ELearningPlansState } from '../types/store';
 import { last } from './utils';
-import { date } from 'date-fns/locale/af';
+import { ELearningPlanSchema } from '@whs/server';
 
 /**
  * Converts a `h:mm` time (from a day schedule timpair) to a date for comparison
@@ -96,7 +96,7 @@ export function getClassAtMod(modNumber: ModNumber, userDaySchedule: UserDaySche
  * @param daySchedule schedule of the specified date
  * @param schedule user's schedule of classes
  */
-export function getScheduleInfoAtTime(datetime: Date, daySchedule: DaySchedule, schedule: Schedule): ScheduleInfo {
+export function getScheduleInfoAtTime(datetime: Date, daySchedule: DaySchedule, userDaySchedule: UserDaySchedule): ScheduleInfo {
   // This returns PASSING_PERIOD, BEFORE_SCHOOL, and AFTER_SCHOOL which are not actual class times
   const { current, next } = getModAtTime(datetime, daySchedule);
   // Since this function is only used to display current class during a class mod,
@@ -105,9 +105,8 @@ export function getScheduleInfoAtTime(datetime: Date, daySchedule: DaySchedule, 
   // DO NOT use find and add one since mod numbers may not be continuous
   const nextClassMod = isNextPassingPeriod ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2] : next;
 
-  const day = getScheduleDay(datetime);
-  const currentClass = getClassAtMod(current, schedule[day]);
-  const nextClass = getClassAtMod(nextClassMod, schedule[day]);
+  const currentClass = getClassAtMod(current, userDaySchedule);
+  const nextClass = getClassAtMod(nextClassMod, userDaySchedule);
   return { current, next, currentClass, nextClass };
 }
 
@@ -140,7 +139,7 @@ export function getDisplayScheduleTypeOnDate(queryDate: Date, dates: DatesState)
     }
   }
 
-  const day = getScheduleDay(queryDate); // 0 is Monday, 4 is Friday, so 2 is Wednesday
+  const calendarDay = queryDate.getDay() - 1;
   if (containsDate(queryDate, dates.earlyDismissal)) {
     return 'EARLY_DISMISSAL';
   }
@@ -150,17 +149,17 @@ export function getDisplayScheduleTypeOnDate(queryDate: Date, dates: DatesState)
   }
 
   if (containsDate(queryDate, dates.lateStart)) {
-    if (day === 2) {
+    if (calendarDay === 2) {
       return 'LATE_START_WEDNESDAY';
     }
     return 'LATE_START';
   }
 
-  if (day > 4 || day < 0) {
+  if (calendarDay > 4 || calendarDay < 0) {
     return 'WEEKEND';
   }
 
-  if (day === 2 || (dates.wednesday !== undefined && containsDate(queryDate, dates.wednesday))) {
+  if (calendarDay === 2 || (dates.wednesday !== undefined && containsDate(queryDate, dates.wednesday))) {
     return 'WEDNESDAY';
   }
   return 'REGULAR';
@@ -186,20 +185,61 @@ export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, elearn
     return 'BREAK';
   }
 
+  const currentPlan = getPlanOnDate(queryDate, elearningPlans);
+  if (currentPlan !== undefined) {
+    return 'REGULAR';
+  }
+
   return getDisplayScheduleTypeOnDate(queryDate, dates);
 }
 
 /**
- * Returns day (0 is Monday, up to 4, which is Friday), an index to access the USER'S schedule. Necessary
- * for e-learning patch because the calendar weekday may be MONDAY, i.e. 0, but students actually follow
- * their THURSDAY schedule in-person, i.e. 3.
- *
- * For a certain period of e-learning, such as
+ * Returns both calendar day and schedule day (0 is Monday, up to 4, which is Friday), an index to access
+ * the USER'S schedule. Necessary for e-learning patch because the calendar weekday may be MONDAY, i.e. 0,
+ * but students actually follow their THURSDAY schedule in-person, i.e. 3.
  *
  */
-export function getScheduleDay(queryDate: Date): number {
-  // TODO:
-  return queryDate.getDay() - 1;
+export function getScheduleDay(queryDate: Date, elearningPlans: ELearningPlansState): { scheduleDay: number; calendarDay: number } {
+  const calendarDay = queryDate.getDay() - 1;
+  const clone = new Date(queryDate.getTime()); // avoid mutation...
+  clone.setHours(0, 0, 0, 0);
+
+  /**
+   * In completely online (red) or completely in person (green) the days proceeds as normal (guessing it proceeds directly from calendar day)
+   * In partial modes, the days are tied
+   */
+
+  let scheduleDay = calendarDay; // by default (i.e. a full plan, see isPartialPlan for definitions, follows the calendar day)
+  const currentPlan = getPlanOnDate(queryDate, elearningPlans);
+  if (currentPlan !== undefined) {
+    const isPartial = isPartialPlan(currentPlan);
+    if (isPartial) {
+      // we begin calculation of current partial day by getting the plan start day
+      // then counting the number of weeks mod 5 (days of week)
+      const startDate = new Date(currentPlan.dates[0]);
+      const weeksSincePlanStart = differenceInCalendarWeeks(queryDate, startDate, { weekStartsOn: startDate.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
+      scheduleDay = weeksSincePlanStart % 5;
+    }
+  }
+  return { calendarDay, scheduleDay };
+}
+
+export function getPlanOnDate(queryDate: Date, elearningPlans: ELearningPlansState) {
+  return elearningPlans.find((plan) =>
+    containsDate(
+      queryDate,
+      plan.dates.map((str) => new Date(str)),
+    ),
+  );
+}
+
+/**
+ * Returns whether or not a specific e-learning plan is partial, i.e. some people go to school
+ * A plan is either partial of full. Full means that everyone follows the same thing (either stay at home in red or in person in green)
+ * @param plan
+ */
+function isPartialPlan(plan: ELearningPlanSchema) {
+  return Object.entries(plan.groups).some((group) => group.length > 0);
 }
 
 /**

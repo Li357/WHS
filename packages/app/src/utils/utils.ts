@@ -5,10 +5,7 @@ import debounce from 'lodash.debounce';
 
 import client from './bugsnag';
 import { NetworkError, LoginError } from './error';
-import {
-  ERROR, CAUTION,
-  LOGIN_CREDENTIALS_CHANGED_MSG, NETWORK_REQUEST_FAILED_MSG, UNKNOWN_ERROR_MSG, NO_SPACE_MSG,
-} from '../constants/fetch';
+import { ERROR, CAUTION, LOGIN_CREDENTIALS_CHANGED_MSG, NETWORK_REQUEST_FAILED_MSG, UNKNOWN_ERROR_MSG, NO_SPACE_MSG } from '../constants/fetch';
 
 /**
  * Split array without mutation
@@ -112,9 +109,13 @@ export async function fetch(input?: string | Request, init?: RequestInit & Timeo
   }
 }
 
-export const notify = debounce((title: string, body: string) => {
-  Alert.alert(title, body, [{ text: 'OK' }]);
-}, 5000, { leading: true });
+export const notify = debounce(
+  (title: string, body: string) => {
+    Alert.alert(title, body, [{ text: 'OK' }]);
+  },
+  5000,
+  { leading: true },
+);
 
 export function reportError(error: Error, customMessage?: string) {
   if (error instanceof LoginError) {
@@ -136,11 +137,17 @@ export function reportScheduleCaution(semesterOneStart: Date) {
 
   notify(
     CAUTION,
-    `Many schedules are changing and will not be considered final until ${schedulesFinalDate}. `
-    + `Please be sure to refresh your schedule so that you attend the correct classes starting ${firstDate}.`,
+    `Many schedules are changing and will not be considered final until ${schedulesFinalDate}. ` +
+      `Please be sure to refresh your schedule so that you attend the correct classes starting ${firstDate}.`,
   );
 }
 
 export function reportNotEnoughSpace() {
   notify(ERROR, NO_SPACE_MSG);
+}
+
+// this is spaghetti, ideally some native way to do this
+const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+export function getDayString(day: number) {
+  return DAY_NAMES[day];
 }

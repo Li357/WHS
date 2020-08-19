@@ -4,7 +4,7 @@ import { initialELearningPlansState } from '../constants/store';
 export default function elearningPlansReducer(state: ELearningPlansState = initialELearningPlansState, action: ELearningPlansAction) {
   switch (action.type) {
     case ELearningPlansActions.SET_PLANS:
-      return { ...state, ...action.payload };
+      return action.payload;
     default:
       return state;
   }

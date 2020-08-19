@@ -34,4 +34,4 @@ export const initialDatesState: DatesState = {
   semesterTwoEnd: null,
 };
 
-export const initialELearningPlansState: ELearningPlansState = {};
+export const initialELearningPlansState: ELearningPlansState = [];

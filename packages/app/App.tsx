@@ -18,7 +18,7 @@ import Schedule from './src/screens/Schedule';
 import Loading from './src/screens/Loading';
 import Themer from './src/components/common/Themer';
 import { store, persistor } from './src/utils/store';
-import { fetchDates, fetchSchoolPicture, fetchUserInfo } from './src/actions/async';
+import { fetchDates, fetchSchoolPicture, fetchUserInfo, fetchELearningPlans } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
 import { setUserInfo, setDaySchedule, setRefreshed } from './src/actions/creators';
 import { isScheduleEmpty, getScheduleTypeOnDate } from './src/utils/query-schedule';
@@ -58,11 +58,12 @@ export default class App extends Component<{}, AppComponentState> {
     if (newStatus === 'active') {
       const {
         dates,
+        elearningPlans,
         day: { schedule: dayScheduleType },
       } = store.getState();
       const now = new Date();
 
-      const newDayScheduleType = getScheduleTypeOnDate(now, dates);
+      const newDayScheduleType = getScheduleTypeOnDate(now, dates, elearningPlans);
       if (newDayScheduleType === dayScheduleType) {
         return;
       }
@@ -111,8 +112,10 @@ export default class App extends Component<{}, AppComponentState> {
     try {
       await store.dispatch(fetchSchoolPicture());
       await store.dispatch(fetchDates());
+      await store.dispatch(fetchELearningPlans());
       await scheduleNotifications();
-    } catch {
+    } catch (e) {
+      console.log(e);
       client.leaveBreadcrumb('Update failed silently');
     }
   };

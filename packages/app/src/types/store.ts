@@ -111,16 +111,13 @@ export enum DatesActions {
 
 export type SetDatesAction = AppActionType<DatesActions.SET_DATES, Partial<DatesState>>;
 
-export interface ELearningPlansState {
-  dates: Record<string, string>; // iso string -> plan name
-  plans: Record<string, ELearningPlanSchema>; // TODO, plan name -> plan details
-}
+export type ELearningPlansState = ELearningPlanSchema[];
 
 export enum ELearningPlansActions {
   SET_PLANS = 'SET_PLANS',
 }
 
-export type SetELearningPlansAction = AppActionType<ELearningPlansActions.SET_PLANS, Partial<ELearningPlansState>>;
+export type SetELearningPlansAction = AppActionType<ELearningPlansActions.SET_PLANS, ELearningPlansState>;
 
 export enum MiscellaneousActions {
   LOG_OUT = 'LOG_OUT',

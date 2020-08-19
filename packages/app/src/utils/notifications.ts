@@ -5,7 +5,7 @@ import { max, eachWeekOfInterval, setDay, format, subMinutes, isAfter, isSameDay
 
 import { ClassItem, ScheduleItem, DaySchedule } from '../types/schedule';
 import { store } from './store';
-import { convertTimeToDate, getModAtTime, getScheduleTypeOnDate } from './query-schedule';
+import { convertTimeToDate, getModAtTime, getScheduleTypeOnDate, getPlanOnDate } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
 import { NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT } from '../constants/fetch';
 import { injectAssemblyOrFinalsIfNeeded } from './process-schedule';
@@ -65,12 +65,19 @@ export async function scheduleNotifications() {
   }
 
   PushNotification.cancelAllLocalNotifications();
+
   const start = new Date();
   const {
     dates,
+    elearningPlans,
     user: { schedule },
     day: { refreshedSemesterTwo },
   } = store.getState();
+  // No notifications during elearning, less annoying hopefully.
+  if (getPlanOnDate(start, elearningPlans) !== undefined) {
+    return BackgroundFetch.FETCH_RESULT_NO_DATA;
+  }
+
   if (dates.semesterTwoEnd !== null && dates.semesterOneStart !== null && dates.semesterOneEnd) {
     const sundaysUntilEnd = eachWeekOfInterval({
       start: max([start, dates.semesterOneStart]),
@@ -86,7 +93,7 @@ export async function scheduleNotifications() {
           continue;
         }
 
-        const dayScheduleType = getScheduleTypeOnDate(weekday, dates);
+        const dayScheduleType = getScheduleTypeOnDate(weekday, dates, elearningPlans);
         const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
         if (['FINALS', 'BREAK', 'WEEKEND', 'SUMMER'].includes(dayScheduleType)) {
           continue;

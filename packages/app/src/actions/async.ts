@@ -146,19 +146,7 @@ export function fetchELearningPlans(year?: number) {
       year = getSchoolYearFromDate(new Date());
     }
     const plans = await getELearningPlans(year);
-    const newState = plans.reduce(
-      (state: ELearningPlansState, plan) => {
-        plan.dates.forEach((date) => {
-          const dateObj = new Date(date);
-          dateObj.setHours(0, 0, 0, 0); // make sure only comparing day
-          state.dates[dateObj.toISOString()] = plan.name;
-        });
-        state.plans[plan.name] = plan;
-        return state;
-      },
-      { dates: {}, plans: {} },
-    );
-    dispatch(setELearningPlans(newState));
+    dispatch(setELearningPlans(plans));
   };
   return fetchELearningPlansThunk;
 }

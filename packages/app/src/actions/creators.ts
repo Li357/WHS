@@ -69,7 +69,7 @@ export const setDates = (payload: Partial<DatesState>) => ({
   payload,
 });
 
-export const setELearningPlans = (payload: Partial<ELearningPlansState>) => ({
+export const setELearningPlans = (payload: ELearningPlansState) => ({
   type: ELearningPlansActions.SET_PLANS,
   payload,
 });
