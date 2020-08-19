@@ -88,7 +88,7 @@
                     type="danger"
                     size="mini"
                     icon="el-icon-delete"
-                    @click="removeDate(scope.row.name, scope.row.date)"
+                    @click="removeDate(scope.row.plan, scope.row.date)"
                   >Delete</el-button>
                 </template>
               </el-table-column>
