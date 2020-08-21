@@ -1,4 +1,4 @@
-import { DayState, UserState, DatesState } from '../types/store';
+import { DayState, UserState, DatesState, ELearningPlansState } from '../types/store';
 
 export const MAX_TEACHER_SCHEDULES = 50;
 
@@ -33,3 +33,5 @@ export const initialDatesState: DatesState = {
   semesterTwoStart: null,
   semesterTwoEnd: null,
 };
+
+export const initialELearningPlansState: ELearningPlansState = [];

@@ -27,6 +27,7 @@ const SettingIcon = styled(Icon)`
 
 const BugReportInput = styled(Dialog.Input)`
   background-color: ${Platform.select({ ios: lightTheme.backgroundColor, android: lightTheme.foregroundColor })};
+  color: ${lightTheme.textColor};
 `;
 
 export default authorizedRoute('Settings', function Settings() {
@@ -71,17 +72,11 @@ export default authorizedRoute('Settings', function Settings() {
   const openDialog = () => setReportingBug(true);
   const closeDialog = () => setReportingBug(false);
 
-  const refreshLeftElement = refreshing
-    ? (<CircleSnail size={SUBTEXT_SIZE} color={theme.subtextColor} />)
-    : (<SettingIcon name="refresh" />);
+  const refreshLeftElement = refreshing ? <CircleSnail size={SUBTEXT_SIZE} color={theme.subtextColor} /> : <SettingIcon name="refresh" />;
 
   const reportDialogContent = [
     <Dialog.Title key="0">Report Bug</Dialog.Title>,
-    (
-      <Dialog.Description key="1">
-        Please describe the bug. Note some anonymous diagnostic info is sent.
-      </Dialog.Description>
-    ),
+    <Dialog.Description key="1">Please describe the bug. Note some anonymous diagnostic info is sent.</Dialog.Description>,
     <BugReportInput key="2" value={bugReport} onChangeText={setBugReport} />,
     <Dialog.Button key="3" label="Cancel" onPress={closeDialog} />,
     <Dialog.Button key="4" label="Report" onPress={handleBugReport} />,
@@ -89,27 +84,23 @@ export default authorizedRoute('Settings', function Settings() {
 
   const reportedContent = [
     <Dialog.Title key="0">Reported</Dialog.Title>,
-    (
-      <Dialog.Description key="1">
-        Bug reported submitted. You may be contacted for further information.
-      </Dialog.Description>
-    ),
+    <Dialog.Description key="1">Bug reported submitted. You may be contacted for further information.</Dialog.Description>,
     <Dialog.Button key="2" label="OK" onPress={closeDialog} />,
   ];
 
   return (
     <>
       <ButtonGroup>
-        <Button
-          onPress={handleRefresh}
-          disabled={refreshing}
-          left={refreshLeftElement}
-        >
+        <Button onPress={handleRefresh} disabled={refreshing} left={refreshLeftElement}>
           Manual Refresh
         </Button>
-        <Button onPress={openDialog} left={<SettingIcon name="warning" />}>Report Bug</Button>
+        <Button onPress={openDialog} left={<SettingIcon name="warning" />}>
+          Report Bug
+        </Button>
       </ButtonGroup>
-      <Switch value={isDarkTheme} onChange={handleThemeChange}>Dark Theme</Switch>
+      <Switch value={isDarkTheme} onChange={handleThemeChange}>
+        Dark Theme
+      </Switch>
       <Dialog.Container visible={reportingBug}>{reported ? reportedContent : reportDialogContent}</Dialog.Container>
     </>
   );

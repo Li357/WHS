@@ -1,5 +1,5 @@
 import { load } from 'react-native-cheerio';
-import { DateType, DateSchema } from '@whs/server';
+import { DateType, DateSchema, ELearningPlanSchema } from '@whs/server';
 
 import { fetch, isResponseOk } from './utils';
 import { processSchedule } from './process-schedule';
@@ -20,6 +20,7 @@ import {
   SEARCH_URL,
   TEACHER_URL,
   TEACHER_FETCH_LIMIT,
+  ELEARNINGPLANS_URL,
 } from '../constants/fetch';
 import { UserInfo, UserOverviewMap, UserOverviewKeys } from '../types/store';
 import { Schedule, TeacherSchedule, RawSchedule } from '../types/schedule';
@@ -203,4 +204,23 @@ export function getTeacherSearchURL(query: string, limit: number, username: stri
 export function getTeacherURL(id: number, username: string, password: string) {
   const returnURL = encodeURIComponent(`${TEACHER_URL}/${id}`);
   return `${getLoginURL(username, password)}&ReturnUrl=${returnURL}`;
+}
+
+/**
+ * Fetches e-learning plan from server
+ * @param year of e-learning plans
+ */
+export async function getELearningPlans(year: number): Promise<ELearningPlanSchema[]> {
+  const response = await fetch(`${ELEARNINGPLANS_URL}?year=${year}`, {
+    timeout: FETCH_TIMEOUT,
+    headers: {
+      'Pragma': 'no-cache',
+      'Cache-Control': 'no-cache',
+    },
+  });
+  console.log(response);
+  if (!response.ok) {
+    throw new NetworkError();
+  }
+  return response.json();
 }

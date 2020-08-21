@@ -2,25 +2,22 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Switch, ScrollView, AppState as RNAppState, AppStateStatus } from 'react-native';
 import styled from 'styled-components/native';
 import { useSelector } from 'react-redux';
-import { setDay, format, differenceInSeconds } from 'date-fns';
+import { setDay, format, differenceInSeconds, startOfWeek, lastDayOfWeek } from 'date-fns';
 import { createSelector } from 'reselect';
 import { Bar } from 'react-native-progress';
 
 import Text from '../common/Text';
-import {
-  CARD_BORDER_RADIUS, CARD_PADDING, SUBTEXT_SIZE,
-  BORDER_WIDTH, SCHEDULE_CARD_ITEM_HEIGHT,
-} from '../../constants/style';
+import { CARD_BORDER_RADIUS, CARD_PADDING, SUBTEXT_SIZE, BORDER_WIDTH, SCHEDULE_CARD_ITEM_HEIGHT } from '../../constants/style';
 import { ClassItem, CrossSectionedItem, ScheduleItem, DaySchedule, ModNumber } from '../../types/schedule';
 import { AppState } from '../../types/store';
-import { getScheduleTypeOnDate, getModAtTime, isHalfMod, convertTimeToDate } from '../../utils/query-schedule';
+import { getModAtTime, isHalfMod, convertTimeToDate, getScheduleDay, getDisplayScheduleTypeOnDate, getPlanOnDate } from '../../utils/query-schedule';
 import * as SCHEDULES from '../../constants/schedules';
 import { createClassItem, injectAssemblyOrFinalsIfNeeded } from '../../utils/process-schedule';
 import ClassCardItem from './ClassCardItem';
 import CrossSectionedCardItem from './CrossSectionedCardItem';
 import Subtext from '../common/Subtext';
 import { formatTime } from '../../utils/duration';
-import { sum } from '../../utils/utils';
+import { sum, getDayString } from '../../utils/utils';
 import { NavigationProp } from '../../types/utils';
 
 const ScheduleCardContainer = styled.View`
@@ -65,7 +62,7 @@ const VerticalBar = styled(Bar)`
 const ClassesContainer = styled.View<{ isCurrentDay: boolean }>`
   flex: 9;
   border-left-color: ${({ theme }) => theme.borderColor};
-  border-left-width: ${({ isCurrentDay }) => isCurrentDay ? BORDER_WIDTH : 0};
+  border-left-width: ${({ isCurrentDay }) => (isCurrentDay ? BORDER_WIDTH : 0)};
 `;
 
 const Title = styled(Text)`
@@ -85,9 +82,7 @@ function getDayProgress(date: Date, daySchedule: DaySchedule) {
   }
 
   const index = daySchedule.findIndex(([, , mod]) => mod === searchMod);
-  const modHeights = daySchedule.map(([, , mod]) => (
-    SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1)
-  ));
+  const modHeights = daySchedule.map(([, , mod]) => SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1));
   const finishedHeight = sum(modHeights.slice(0, index));
   const totalHeight = sum(modHeights);
 
@@ -104,54 +99,65 @@ interface ScheduleCardProps {
   navigation: NavigationProp;
 }
 
-const makeCardDayScheduleSelector = () => createSelector(
-  (state: AppState) => state.dates,
-  (_: any, schedule: ScheduleItem[]) => schedule,
-  (dates, schedule) => {
-    const { day } = schedule[0];
-    const now = new Date();
-    const currentDay = now.getDay();
-    const cardDate = setDay(now, day);
-    const scheduleType = getScheduleTypeOnDate(cardDate, dates, true);
-    const daySchedule = SCHEDULES[scheduleType];
-    const isCurrentDay = currentDay === day;
-    const isFinals = scheduleType === 'FINALS';
+const makeCardDayScheduleSelector = () =>
+  createSelector(
+    (state: AppState) => state.dates,
+    (state: AppState) => state.elearningPlans,
+    (_: any, schedule: ScheduleItem[]) => schedule,
+    (dates, elearningPlans, schedule) => {
+      const now = new Date();
 
-    const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule, scheduleType, day);
-    // PATCH: scheduleType === 'WEDNESDAY' && day !== 3 condition is needed since the first item is already
-    // sliced off for normal Wednesday schedules (i.e. day === 3, see interpolateOpenMods)
-    const userDaySchedule = revisedUserDaySchedule.slice(scheduleType === 'WEDNESDAY' && day !== 3 ? 1 : 0);
+      // NOTE: E-learning patch means that the current day is not necessarily the right day in the user's schedule (see getScheduleDay)
+      const { day: cardDay } = schedule[0]; // day that the schedule card represents (1 is Monday, not 0)
+      const cardDate = setDay(now, cardDay);
+      const cardScheduleType = getDisplayScheduleTypeOnDate(cardDate, dates);
+      const cardDaySchedule = SCHEDULES[cardScheduleType];
+      const isCardDateFinals = cardScheduleType === 'FINALS';
 
-    const cardDaySchedule = daySchedule.map(([start, end, modNumber]) => {
-      const startTime = formatTime(start);
-      const endTime = formatTime(end);
-      const isAssembly = modNumber === ModNumber.ASSEMBLY;
-      return createClassItem(
-        `${startTime} - ${endTime}`, '', modNumber, isAssembly ? ModNumber.FOUR : modNumber + 1, day, 'course',
-      );
-    });
-    return { cardDate, cardDaySchedule, daySchedule, userDaySchedule, isCurrentDay, isFinals };
-  },
-);
+      const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule, cardScheduleType, cardDay);
+      const patchedUserDaySchedule = revisedUserDaySchedule.slice(cardScheduleType === 'WEDNESDAY' ? 1 : 0);
+
+      const displayCardDaySchedule = cardDaySchedule.map(([start, end, modNumber]) => {
+        const startTime = formatTime(start);
+        const endTime = formatTime(end);
+        const isAssembly = modNumber === ModNumber.ASSEMBLY;
+        return createClassItem(`${startTime} - ${endTime}`, '', modNumber, isAssembly ? ModNumber.FOUR : modNumber + 1, cardDay, 'course');
+      });
+      return {
+        cardDate,
+        cardDaySchedule: displayCardDaySchedule,
+        daySchedule: cardDaySchedule,
+        userDaySchedule: patchedUserDaySchedule,
+        isFinals: isCardDateFinals,
+        elearningPlans,
+      };
+    },
+  );
 export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps) {
   const cardDayScheduleSelector = useMemo(makeCardDayScheduleSelector, []);
-  const {
-    cardDate,
-    cardDaySchedule,
-    userDaySchedule,
-    daySchedule,
-    isCurrentDay,
-    isFinals,
-  } = useSelector((state: AppState) => cardDayScheduleSelector(state, schedule));
+  const { cardDate, cardDaySchedule, userDaySchedule, daySchedule, isFinals, elearningPlans } = useSelector((state: AppState) =>
+    cardDayScheduleSelector(state, schedule),
+  );
+
+  const now = new Date();
+  const [elearningPlan, setELearningPlan] = useState(getPlanOnDate(now, elearningPlans));
+  const [isCurrentDay, setIsCurrentDay] = useState(() => {
+    const { scheduleDay: currentScheduleDay } = getScheduleDay(now, elearningPlans);
+    return currentScheduleDay === cardDate.getDay() - 1;
+  });
 
   const [showTimes, setShowTimes] = useState(false);
-  const [progress, setProgress] = useState(isCurrentDay ? getDayProgress(new Date(), daySchedule) : 0);
+  const [progress, setProgress] = useState(isCurrentDay ? getDayProgress(now, daySchedule) : 0);
   const { accentColor, backgroundColor } = useSelector((state: AppState) => state.theme);
 
   const updateDayProgress = (newStatus: AppStateStatus) => {
-    if (isCurrentDay && newStatus === 'active') {
-      setProgress(getDayProgress(new Date(), daySchedule));
+    const future = new Date();
+    const { scheduleDay } = getScheduleDay(future, elearningPlans);
+    const newIsCurrentDay = scheduleDay === cardDate.getDay() - 1;
+    if (newIsCurrentDay && newStatus === 'active') {
+      setProgress(getDayProgress(future, daySchedule));
     }
+    setIsCurrentDay(newIsCurrentDay);
   };
   useEffect(() => {
     RNAppState.addEventListener('change', updateDayProgress);
@@ -168,39 +174,47 @@ export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps
 
   const classes = scheduleToShow.map((scheduleItem, index) => {
     if (scheduleItem.hasOwnProperty('columns')) {
-      return (
-        <CrossSectionedCardItem
-          key={scheduleItem.sourceId}
-          first={index === 0}
-          scheduleItem={scheduleItem as CrossSectionedItem}
-        />
-      );
+      return <CrossSectionedCardItem key={scheduleItem.sourceId} first={index === 0} scheduleItem={scheduleItem as CrossSectionedItem} />;
     }
-    return (
-      <ClassCardItem
-        key={scheduleItem.sourceId}
-        first={index === 0}
-        scheduleItem={scheduleItem as ClassItem}
-        isFinals={isFinals}
-      />
-    );
+    return <ClassCardItem key={scheduleItem.sourceId} first={index === 0} scheduleItem={scheduleItem as ClassItem} isFinals={isFinals} />;
   });
-  const totalHeight = sum(daySchedule.map(([, , mod]) => (
-    SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1)
-  )));
+  const totalHeight = sum(daySchedule.map(([, , mod]) => SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1)));
   const progressBar = (
     <BarContainer>
       <VerticalBar width={totalHeight} progress={progress} color={accentColor} />
     </BarContainer>
   );
 
+  let header = (
+    <>
+      <Title minimumFontScale={0.5}>{formattedDay}</Title>
+      <Subtext minimumFontScale={0.5}>{formattedDate}</Subtext>
+    </>
+  );
+
+  const isELearning = elearningPlan !== undefined;
+  if (isELearning) {
+    const planStartDate = new Date(elearningPlan!.dates[0]);
+    const now = new Date();
+    const startOfELearningCycle = format(startOfWeek(now, { weekStartsOn: planStartDate.getDay() as 1 | 2 | 3 | 4 | 5 }), 'MMM d');
+    const endOfELearningCycle = format(lastDayOfWeek(now, { weekStartsOn: planStartDate.getDay() as 1 | 2 | 3 | 4 | 5 }), 'MMM d');
+
+    header = (
+      <>
+        <Title minimumFontScale={0.5}>Day {`${cardDate.getDay()} `}</Title>
+        {isCurrentDay && (
+          <Subtext minimumFontScale={0.5}>
+            {startOfELearningCycle} - {endOfELearningCycle}
+          </Subtext>
+        )}
+      </>
+    );
+  }
+
   return (
     <ScheduleCardContainer>
       <Header>
-        <Body>
-          <Title minimumFontScale={0.5}>{formattedDay}</Title>
-          <Subtext minimumFontScale={0.5}>{formattedDate}</Subtext>
-        </Body>
+        <Body>{header}</Body>
         <Switch
           value={showTimes}
           onValueChange={setShowTimes}

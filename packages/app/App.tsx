@@ -18,10 +18,10 @@ import Schedule from './src/screens/Schedule';
 import Loading from './src/screens/Loading';
 import Themer from './src/components/common/Themer';
 import { store, persistor } from './src/utils/store';
-import { fetchDates, fetchSchoolPicture, fetchUserInfo } from './src/actions/async';
+import { fetchDates, fetchSchoolPicture, fetchUserInfo, fetchELearningPlans } from './src/actions/async';
 import { getProfilePhoto } from './src/utils/manage-photos';
 import { setUserInfo, setDaySchedule, setRefreshed } from './src/actions/creators';
-import { getScheduleTypeOnDate, isScheduleEmpty } from './src/utils/query-schedule';
+import { isScheduleEmpty, getScheduleTypeOnDate } from './src/utils/query-schedule';
 import Settings from './src/screens/Settings';
 import AddSchedule from './src/screens/AddSchedule';
 import registerNotificationScheduler, { scheduleNotifications } from './src/utils/notifications';
@@ -45,19 +45,25 @@ export default class App extends Component<{}, AppComponentState> {
   private rehydrateProfilePhoto = async () => {
     client.leaveBreadcrumb('Rehydrating profile photo');
 
-    const { user: { username, schoolPicture } } = store.getState();
-    const profilePhoto = await getProfilePhoto(username) || schoolPicture;
+    const {
+      user: { username, schoolPicture },
+    } = store.getState();
+    const profilePhoto = (await getProfilePhoto(username)) || schoolPicture;
     store.dispatch(setUserInfo({ profilePhoto }));
-  }
+  };
 
   private updateDayScheduleIfNeeded(newStatus: AppStateStatus = 'active') {
-    client.leaveBreadcrumb('Updating today\'s schedule if needed');
+    client.leaveBreadcrumb("Updating today's schedule if needed");
 
     if (newStatus === 'active') {
-      const { dates, day: { schedule: dayScheduleType } } = store.getState();
+      const {
+        dates,
+        elearningPlans,
+        day: { schedule: dayScheduleType },
+      } = store.getState();
       const now = new Date();
 
-      const newDayScheduleType = getScheduleTypeOnDate(now, dates);
+      const newDayScheduleType = getScheduleTypeOnDate(now, dates, elearningPlans);
       if (newDayScheduleType === dayScheduleType) {
         return;
       }
@@ -89,8 +95,7 @@ export default class App extends Component<{}, AppComponentState> {
       return PushNotification.cancelAllLocalNotifications();
     }
 
-    const shouldRefresh = (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo)
-      || (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
+    const shouldRefresh = (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo) || (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
     client.leaveBreadcrumb(`Should refresh? ${shouldRefresh}`);
     if (isScheduleEmpty(schedule) || shouldRefresh) {
       client.leaveBreadcrumb('Refreshing semesters one/two');
@@ -107,62 +112,71 @@ export default class App extends Component<{}, AppComponentState> {
     try {
       await store.dispatch(fetchSchoolPicture());
       await store.dispatch(fetchDates());
+      await store.dispatch(fetchELearningPlans());
       await scheduleNotifications();
     } catch {
       client.leaveBreadcrumb('Update failed silently');
     }
-  }
+  };
 
   private createNavigationContainer = (isLoggedIn: boolean) => {
-    const Authorized = createDrawerNavigator({
-      Dashboard: {
-        screen: Dashboard,
-        navigationOptions: { drawerIcon: 'dashboard' },
-      },
-      Schedule: {
-        screen: Schedule,
-        navigationOptions: {
-          drawerIcon: 'schedule',
-          drawerLabel: 'My Schedule',
+    const Authorized = createDrawerNavigator(
+      {
+        Dashboard: {
+          screen: Dashboard,
+          navigationOptions: { drawerIcon: 'dashboard' },
+        },
+        Schedule: {
+          screen: Schedule,
+          navigationOptions: {
+            drawerIcon: 'schedule',
+            drawerLabel: 'My Schedule',
+          },
+        },
+        AddSchedule: {
+          screen: AddSchedule,
+          navigationOptions: {
+            drawerIcon: 'add',
+            drawerLabel: 'Add Schedule',
+          },
+        },
+        Settings: {
+          screen: Settings,
+          navigationOptions: {
+            drawerIcon: 'settings',
+          },
         },
       },
-      AddSchedule: {
-        screen: AddSchedule,
-        navigationOptions: {
-          drawerIcon: 'add',
-          drawerLabel: 'Add Schedule',
-        },
+      {
+        initialRouteName: 'Dashboard',
+        contentComponent: Drawer,
       },
-      Settings: {
-        screen: Settings,
-        navigationOptions: {
-          drawerIcon: 'settings',
-        },
+    );
+    const Navigator = createAnimatedSwitchNavigator(
+      {
+        Login: { screen: Login },
+        Authorized: { screen: Authorized },
       },
-    }, {
-      initialRouteName: 'Dashboard',
-      contentComponent: Drawer,
-    });
-    const Navigator = createAnimatedSwitchNavigator({
-      Login: { screen: Login },
-      Authorized: { screen: Authorized },
-    }, {
-      initialRouteName: isLoggedIn ? 'Authorized' : 'Login',
-      transition: (
-        <Transition.Together>
-          <Transition.In type="slide-top" durationMs={400} interpolation="easeInOut" />
-          <Transition.Out type="slide-bottom" durationMs={200} interpolation="easeInOut" />
-        </Transition.Together>
-      ),
-    });
+      {
+        initialRouteName: isLoggedIn ? 'Authorized' : 'Login',
+        transition: (
+          <Transition.Together>
+            <Transition.In type="slide-top" durationMs={400} interpolation="easeInOut" />
+            <Transition.Out type="slide-bottom" durationMs={200} interpolation="easeInOut" />
+          </Transition.Together>
+        ),
+      },
+    );
     return createAppContainer(Navigator);
-  }
+  };
 
   private handleRehydrate = async () => {
     client.leaveBreadcrumb('Rehydrated!');
 
     try {
-      const { user: { username, password } } = store.getState();
+      const {
+        user: { username, password },
+      } = store.getState();
       const isLoggedIn = username.length > 0 && password.length > 0;
 
       if (isLoggedIn) {
@@ -171,7 +185,9 @@ export default class App extends Component<{}, AppComponentState> {
         await this.refreshScheduleIfNeeded();
         this.updateDayScheduleIfNeeded();
 
-        const { dates: { semesterOneStart } } = store.getState();
+        const {
+          dates: { semesterOneStart },
+        } = store.getState();
         if (semesterOneStart !== null) {
           const freshmenDay = subDays(semesterOneStart, 1);
           if (isBefore(new Date(), freshmenDay)) {
@@ -184,16 +200,22 @@ export default class App extends Component<{}, AppComponentState> {
     } catch (error) {
       reportError(error);
     }
-  }
+  };
 
   private renderApp = () => {
     client.leaveBreadcrumb('Rendering navigation container');
 
-    const { user: { username, password } } = store.getState();
+    const {
+      user: { username, password },
+    } = store.getState();
     const isLoggedIn = username.length > 0 && password.length > 0;
     const AppContainer = this.createNavigationContainer(isLoggedIn);
-    return (<Themer><AppContainer /></Themer>);
-  }
+    return (
+      <Themer>
+        <AppContainer />
+      </Themer>
+    );
+  };
 
   public componentDidMount() {
     RNAppState.addEventListener('change', this.updateDayScheduleIfNeeded);
@@ -206,11 +228,7 @@ export default class App extends Component<{}, AppComponentState> {
   public render() {
     return (
       <Provider store={store}>
-        <PersistGate
-          loading={<Loading />}
-          persistor={persistor}
-          onBeforeLift={this.handleRehydrate}
-        >
+        <PersistGate loading={<Loading />} persistor={persistor} onBeforeLift={this.handleRehydrate}>
           {this.renderApp()}
         </PersistGate>
       </Provider>

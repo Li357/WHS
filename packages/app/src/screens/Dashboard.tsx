@@ -16,6 +16,7 @@ import { reportError, splice } from '../utils/utils';
 import { PROFILE_HEIGHT } from '../constants/style';
 import { injectAssemblyOrFinalsIfNeeded } from '../utils/process-schedule';
 import client from '../utils/bugsnag';
+import { getScheduleDay } from '../utils/query-schedule';
 
 const dayScheduleSelector = createSelector(
   ({ day }: AppState) => day.schedule,
@@ -24,22 +25,20 @@ const dayScheduleSelector = createSelector(
 const scheduleSelector = createSelector(
   ({ user }: AppState) => user.schedule,
   ({ day }: AppState) => day.schedule,
-  (schedule, dayScheduleType) => {
+  (state: AppState) => state.elearningPlans,
+  (schedule, dayScheduleType, elearningPlans) => {
+    const { scheduleDay } = getScheduleDay(new Date(), elearningPlans); // already returns correct index (not off by one)
     if (['BREAK', 'SUMMER', 'WEEKEND'].includes(dayScheduleType)) {
-      return schedule;
+      return schedule[scheduleDay];
     }
-
-    const now = new Date();
-    const day = now.getDay();
-    const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
-    return splice(schedule, day - 1, 1, [revisedUserDaySchedule]);
+    return injectAssemblyOrFinalsIfNeeded(schedule[scheduleDay], dayScheduleType, scheduleDay);
   },
 );
 export default authorizedRoute('', function Dashboard({ navigation }) {
   const userInfo = useSelector((state: AppState) => state.user);
   const { accentColor, borderColor } = useSelector((state: AppState) => state.theme);
   const daySchedule = useSelector(dayScheduleSelector);
-  const userSchedule = useSelector(scheduleSelector);
+  const userDaySchedule = useSelector(scheduleSelector);
   const dispatch = useDispatch();
 
   const selectPhoto = async (newPhoto: string, base64: boolean = true) => {
@@ -65,15 +64,15 @@ export default authorizedRoute('', function Dashboard({ navigation }) {
     await removeProfilePhoto(username);
   };
 
-  const DetailsHeader = (<Details userInfo={userInfo} />);
-  const ProfileHeader = (<Profile userInfo={userInfo} onPhotoSelect={selectPhoto} onPhotoReset={resetPhoto} />);
+  const DetailsHeader = <Details userInfo={userInfo} />;
+  const ProfileHeader = <Profile userInfo={userInfo} onPhotoSelect={selectPhoto} onPhotoReset={resetPhoto} />;
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Swiper height={PROFILE_HEIGHT} loop={false} activeDotColor={accentColor} dotColor={borderColor}>
         {ProfileHeader}
         {DetailsHeader}
       </Swiper>
-      <Info daySchedule={daySchedule} userSchedule={userSchedule} navigation={navigation} />
+      <Info daySchedule={daySchedule} userDaySchedule={userDaySchedule} navigation={navigation} />
     </ScrollView>
   );
 });

@@ -24,7 +24,7 @@
           end-placeholder="Pick end date"
         ></el-date-picker>
       </div>
-      <div class="add-date-dialog-row">
+      <div v-if="commentable" class="add-date-dialog-row">
         <el-input v-model="comment" placeholder="Add comment"></el-input>
       </div>
       <div slot="footer">
@@ -51,6 +51,7 @@ export default class AddDateModal extends Vue {
   @Prop(String) private readonly dateType!: DateType;
   @Prop(Boolean) private readonly addingDates!: boolean;
   @Prop(Function) private readonly add!: (dates: DateSchemaWithoutID[]) => void;
+  @Prop(Boolean) private readonly commentable?: boolean;
   private dates: [Date, Date] | Date | null = null;
   private comment = '';
 

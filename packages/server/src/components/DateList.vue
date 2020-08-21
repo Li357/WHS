@@ -2,23 +2,40 @@
   <div class="date-list">
     <el-container>
       <el-header class="date-list-header" height="75px">
-        {{ startYear }} - {{ Number(startYear) + 1 }} {{ dateTypeNames[dateType] }}
+        {{ startYear }} - {{ Number(startYear) + 1 }}
+        {{ dateTypeNames[dateType] }}
         <div>
           <el-button
-            type="primary" icon="el-icon-plus"
-            @click="addingDates = true" :disabled="loading" round
-          >Add Date</el-button>
+            type="primary"
+            icon="el-icon-plus"
+            @click="addingDates = true"
+            :disabled="loading"
+            round
+            >Add Date</el-button
+          >
           <el-button
-            type="danger" icon="el-icon-check"
-            @click="saveDates(startYear, dateType)" :disabled="loading" round
-          >Save Dates</el-button>
+            type="danger"
+            icon="el-icon-check"
+            @click="saveDates(startYear, dateType)"
+            :disabled="loading"
+            round
+            >Save Dates</el-button
+          >
           <el-button
-            class="mobile" type="primary" icon="el-icon-plus"
-            @click="addingDates = true" :disabled="loading" round
+            class="mobile"
+            type="primary"
+            icon="el-icon-plus"
+            @click="addingDates = true"
+            :disabled="loading"
+            round
           ></el-button>
           <el-button
-            class="mobile" type="danger" icon="el-icon-check"
-            @click="saveDates(startYear, dateType)" :disabled="loading" round
+            class="mobile"
+            type="danger"
+            icon="el-icon-check"
+            @click="saveDates(startYear, dateType)"
+            :disabled="loading"
+            round
           ></el-button>
         </div>
       </el-header>
@@ -27,18 +44,30 @@
         <el-table-column prop="comment" label="Comment"></el-table-column>
         <el-table-column align="right">
           <template slot-scope="scope">
-            <span v-if="!scope.row.saved" class="date-list-unsaved">Unsaved</span>
+            <span v-if="!scope.row.saved" class="date-list-unsaved">
+              Unsaved
+            </span>
             <el-button
-              type="danger" size="mini" icon="el-icon-delete"
-              @click="removeDate(scope.row.type, scope.row.year, scope.row.date)"
-            >Delete</el-button>
+              type="danger"
+              size="mini"
+              icon="el-icon-delete"
+              @click="
+                removeDate(scope.row.type, scope.row.year, scope.row.date)
+              "
+            >
+              Delete
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-container>
     <add-date-modal
-      :adding-dates="addingDates" :start-year="startYear" :date-type="dateType"
-      @add="addDates" @close="addingDates = false"
+      :adding-dates="addingDates"
+      :start-year="startYear"
+      :date-type="dateType"
+      @add="addDates"
+      @close="addingDates = false"
+      commentable
     ></add-date-modal>
   </div>
 </template>
@@ -50,7 +79,11 @@ import { Component, Prop } from 'vue-property-decorator';
 import { format, isSameDay, isDate } from 'date-fns';
 
 import AddDateModal from './AddDateModal.vue';
-import { DateListType, DateSchemaWithoutID, DateSchema } from '../../shared/types/api';
+import {
+  DateListType,
+  DateSchemaWithoutID,
+  DateSchema,
+} from '../../shared/types/api';
 import { ClientDate } from '../types/DateList';
 import { dateTypeNames } from '../utils';
 import API from '../api-wrapper';
@@ -74,13 +107,21 @@ export default class DateList extends Vue {
     return this.addingDates || this.savingDates || this.loadingDates;
   }
 
-  public beforeRouteEnter(to: Route, from: Route, next: (cb: (vm: DateList) => void) => void) {
+  public beforeRouteEnter(
+    to: Route,
+    from: Route,
+    next: (cb: (vm: DateList) => void) => void,
+  ) {
     next((vm: DateList) => {
       vm.fetchDates(vm.startYear, vm.dateType);
     });
   }
 
-  public async beforeRouteUpdate({ params: toParams }: Route, from: Route, next: () => void) {
+  public async beforeRouteUpdate(
+    { params: toParams }: Route,
+    from: Route,
+    next: () => void,
+  ) {
     await this.saveDates(this.startYear, this.dateType);
     next();
     this.fetchDates(toParams.startYear, toParams.dateType as DateListType);
@@ -103,10 +144,13 @@ export default class DateList extends Vue {
     try {
       const dates = await API.getDates(startYear, dateType);
       this.dates = dates.map((date) => ({ ...date, saved: true }));
-      this.existingDates = this.dates.reduce((obj: { [key: string]: boolean }, { date }) => {
-        obj[date] = true;
-        return obj;
-      }, {});
+      this.existingDates = this.dates.reduce(
+        (obj: { [key: string]: boolean }, { date }) => {
+          obj[date] = true;
+          return obj;
+        },
+        {},
+      );
     } catch ({ message }) {
       this.$notify({
         title: 'Error',
@@ -117,23 +161,28 @@ export default class DateList extends Vue {
   }
 
   private addDates(dates: DateSchemaWithoutID[]) {
-    const { filtered, duplicate } = dates.reduce((
-      obj: {
-        duplicate: DateSchemaWithoutID[],
-        filtered: DateSchemaWithoutID[],
+    const { filtered, duplicate } = dates.reduce(
+      (
+        obj: {
+          duplicate: DateSchemaWithoutID[];
+          filtered: DateSchemaWithoutID[];
+        },
+        dateObj,
+      ) => {
+        if (this.existingDates[dateObj.date]) {
+          obj.duplicate.push(dateObj);
+        } else {
+          this.existingDates[dateObj.date] = true;
+          obj.filtered.push(dateObj);
+        }
+        return obj;
       },
-      dateObj,
-    ) => {
-      if (this.existingDates[dateObj.date]) {
-        obj.duplicate.push(dateObj);
-      } else {
-        this.existingDates[dateObj.date] = true;
-        obj.filtered.push(dateObj);
-      }
-      return obj;
-    }, { filtered: [], duplicate: [] });
+      { filtered: [], duplicate: [] },
+    );
     if (duplicate.length > 0) {
-      const datesString = duplicate.map(({ date }) => format(date, 'MMMM D, YYYY')).join(', ');
+      const datesString = duplicate
+        .map(({ date }) => format(date, 'MMMM D, YYYY'))
+        .join(', ');
       this.$notify({
         title: 'Info',
         message: `Duplicate date(s): ${datesString} were not added.`,
@@ -156,7 +205,9 @@ export default class DateList extends Vue {
         this.dates = this.dates.map((date) => ({ ...date, saved: true }));
         this.$notify({
           title: 'Success',
-          message: `${startYear} - ${Number(startYear) + 1} ${this.dateTypeNames[dateType]} saved!`,
+          message: `${startYear} - ${Number(startYear) + 1} ${
+            this.dateTypeNames[dateType]
+          } saved!`,
         });
       } else {
         this.$notify({
@@ -177,7 +228,10 @@ export default class DateList extends Vue {
     const dateToRemove = new Date(date);
     this.dates = this.dates.filter((dateObj) => {
       const dateInDB = new Date(dateObj.date);
-      const isDateToRemove = dateObj.type === type && dateObj.year === year && isSameDay(dateToRemove, dateInDB);
+      const isDateToRemove =
+        dateObj.type === type &&
+        dateObj.year === year &&
+        isSameDay(dateToRemove, dateInDB);
       if (isDateToRemove) {
         API.removeDate(type, year, dateInDB.toISOString());
       }

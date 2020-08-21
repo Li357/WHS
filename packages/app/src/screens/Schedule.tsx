@@ -10,7 +10,7 @@ import Subtext from '../components/common/Subtext';
 import { ScheduleItem } from '../types/schedule';
 import { wp } from '../utils/style';
 import { SCREEN_MARGIN_HORIZONTAL, LARGE_ICON_SIZE } from '../constants/style';
-import { isScheduleEmpty } from '../utils/query-schedule';
+import { isScheduleEmpty, getScheduleDay } from '../utils/query-schedule';
 import { AppState } from '../types/store';
 import client from '../utils/bugsnag';
 
@@ -30,6 +30,7 @@ export default authorizedRoute(
   function Schedule({ navigation }) {
     const schedule = navigation.getParam('schedule', []);
     const theme = useSelector((state: AppState) => state.theme);
+    const elearningPlans = useSelector((state: AppState) => state.elearningPlans);
 
     if (isScheduleEmpty(schedule)) {
       client.leaveBreadcrumb('Schedule is empty');
@@ -44,15 +45,13 @@ export default authorizedRoute(
       );
     }
 
-    const renderItem = ({ item }: { item: ScheduleItem[], index: number }) => (
-      <ScheduleCard schedule={item} navigation={navigation} />
-    );
-    const currentDay = new Date().getDay();
+    const renderItem = ({ item }: { item: ScheduleItem[]; index: number }) => <ScheduleCard schedule={item} navigation={navigation} />;
+    const { scheduleDay } = getScheduleDay(new Date(), elearningPlans);
 
     return (
       <Carousel
         loop={true}
-        firstItem={Math.min(currentDay - 1, 4)}
+        firstItem={Math.min(scheduleDay, 4)}
         data={schedule}
         renderItem={renderItem}
         sliderWidth={wp('100%')}

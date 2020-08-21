@@ -5,17 +5,13 @@ import { max, eachWeekOfInterval, setDay, format, subMinutes, isAfter, isSameDay
 
 import { ClassItem, ScheduleItem, DaySchedule } from '../types/schedule';
 import { store } from './store';
-import { getScheduleTypeOnDate, convertTimeToDate, getModAtTime } from './query-schedule';
+import { convertTimeToDate, getModAtTime, getScheduleTypeOnDate, getPlanOnDate } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
-import {
-  NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT,
-} from '../constants/fetch';
+import { NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT } from '../constants/fetch';
 import { injectAssemblyOrFinalsIfNeeded } from './process-schedule';
 import client from './bugsnag';
 
-export function scheduleNotificationForScheduleItem(
-  scheduleItem: ScheduleItem, daySchedule: DaySchedule, fireDate: Date,
-) {
+export function scheduleNotificationForScheduleItem(scheduleItem: ScheduleItem, daySchedule: DaySchedule, fireDate: Date) {
   // No notifications for 'no homeroom' schedule item on wednesdays
   const isCrossSection = scheduleItem.hasOwnProperty('columns');
   const classItem = scheduleItem as ClassItem;
@@ -25,11 +21,11 @@ export function scheduleNotificationForScheduleItem(
 
   let message: string;
   if (isCrossSection) {
-    message = 'You\'re cross sectioned for your next class, please check your schedule';
+    message = "You're cross sectioned for your next class, please check your schedule";
   } else {
     const { title, body, sourceType } = scheduleItem as ClassItem;
     if (sourceType === 'open') {
-      message = 'You\'re open next mod!';
+      message = "You're open next mod!";
     } else {
       const roomNumber = body.replace(/\s+\(.+\)\s*/, '');
       message = `Your next class is ${title} in ${roomNumber}`;
@@ -43,7 +39,8 @@ export function scheduleNotificationForScheduleItem(
   PushNotification.localNotificationSchedule({
     title: 'Next Class',
     message,
-    id, userInfo: { id },
+    id,
+    userInfo: { id },
     ticker: message,
     tag: `${PACKAGE_NAME}.id.${id}`,
     visibility: 'public',
@@ -68,8 +65,19 @@ export async function scheduleNotifications() {
   }
 
   PushNotification.cancelAllLocalNotifications();
+
   const start = new Date();
-  const { dates, user: { schedule }, day: { refreshedSemesterTwo } } = store.getState();
+  const {
+    dates,
+    elearningPlans,
+    user: { schedule },
+    day: { refreshedSemesterTwo },
+  } = store.getState();
+  // No notifications during elearning, less annoying hopefully.
+  if (getPlanOnDate(start, elearningPlans) !== undefined) {
+    return BackgroundFetch.FETCH_RESULT_NO_DATA;
+  }
+
   if (dates.semesterTwoEnd !== null && dates.semesterOneStart !== null && dates.semesterOneEnd) {
     const sundaysUntilEnd = eachWeekOfInterval({
       start: max([start, dates.semesterOneStart]),
@@ -85,7 +93,7 @@ export async function scheduleNotifications() {
           continue;
         }
 
-        const dayScheduleType = getScheduleTypeOnDate(weekday, dates);
+        const dayScheduleType = getScheduleTypeOnDate(weekday, dates, elearningPlans);
         const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
         if (['FINALS', 'BREAK', 'WEEKEND', 'SUMMER'].includes(dayScheduleType)) {
           continue;
@@ -137,12 +145,15 @@ export default async function registerNotificationScheduler() {
 
   const { alert } = await checkForPermissions();
   if (alert) {
-    BackgroundFetch.configure({
-      minimumFetchInterval: 40,
-      stopOnTerminate: false,
-      startOnBoot: true,
-      requiredNetworkType: BackgroundFetch.NETWORK_TYPE_ANY,
-      enableHeadless: true,
-    }, notificationScheduler);
+    BackgroundFetch.configure(
+      {
+        minimumFetchInterval: 40,
+        stopOnTerminate: false,
+        startOnBoot: true,
+        requiredNetworkType: BackgroundFetch.NETWORK_TYPE_ANY,
+        enableHeadless: true,
+      },
+      notificationScheduler,
+    );
   }
 }

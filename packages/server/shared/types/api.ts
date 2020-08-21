@@ -4,20 +4,28 @@ export interface DatesQuery {
 }
 
 export interface Schema {
-  _id: string;
+  _id?: string;
 }
 
-export type DateListType = 'assembly' | 'no-school' | 'early-dismissal' | 'late-start';
-export type YearSettingType = 'semester-one-start' | 'semester-one-end' | 'semester-two-start' | 'semester-two-end';
-export type DateType = DateListType | YearSettingType;
-export type DateTypeNames = { [K in DateType]: string; };
-export interface DateSchema extends Schema {
-  type: DateType;
+export type DateListType =
+  | 'assembly'
+  | 'no-school'
+  | 'early-dismissal'
+  | 'late-start';
+export type YearSettingType =
+  | 'semester-one-start'
+  | 'semester-one-end'
+  | 'semester-two-start'
+  | 'semester-two-end';
+export type DateType = DateListType | YearSettingType | 'elearning';
+export type DateTypeNames = { [K in DateType]: string };
+export interface DateSchema<T = DateType> extends Schema {
+  type: T;
   year: string;
   date: string;
   comment: string;
 }
-export type DateSchemaWithoutID = Omit<DateSchema, '_id'>;
+export type DateSchemaWithoutID<T = DateType> = Omit<DateSchema<T>, '_id'>;
 
 export interface UserSchema extends Schema {
   username: string;
@@ -28,4 +36,17 @@ export interface UserSchema extends Schema {
 export interface LoginBody {
   username?: string;
   password?: string;
+}
+
+export type NameGroup = [string, string];
+export type Day = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
+export interface ELearningPlanSchema extends Schema {
+  year: string;
+  name: string;
+  groups: { [K in Day]: NameGroup[] };
+  dates: string[]; // ISO strings
+}
+
+export interface ELearningQuery {
+  year?: string;
 }

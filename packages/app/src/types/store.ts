@@ -2,6 +2,7 @@ import { Action } from 'redux';
 
 import { Schedule, TeacherSchedule } from './schedule';
 import * as SCHEDULES from '../constants/schedules';
+import { ELearningPlanSchema } from '@whs/server';
 
 export type UserOverviewKeys = 'homeroom' | 'counselor' | 'dean' | 'id';
 export type UserOverviewMap = { [K in UserOverviewKeys]: string };
@@ -31,13 +32,13 @@ export enum UserActions {
   ADD_TEACHER_SCHEDULE = 'ADD_TEACHER_SCHEDULE',
 }
 
-interface AppActionType<K, P> extends Action<K> { payload: P; }
+interface AppActionType<K, P> extends Action<K> {
+  payload: P;
+}
 
-export type SetUserCredentialsAction = AppActionType<
-  UserActions.SET_USER_CREDENTIALS, Pick<UserState, 'username' | 'password'>
->;
+export type SetUserCredentialsAction = AppActionType<UserActions.SET_USER_CREDENTIALS, Pick<UserState, 'username' | 'password'>>;
 
-export type UserInfoKeys = | 'name' | 'schoolPicture' | 'profilePhoto' | 'isTeacher' | 'classOf' | UserOverviewKeys;
+export type UserInfoKeys = 'name' | 'schoolPicture' | 'profilePhoto' | 'isTeacher' | 'classOf' | UserOverviewKeys;
 export type UserInfo = Pick<UserState, UserInfoKeys>;
 export type SetUserInfoAction = AppActionType<UserActions.SET_USER_INFO, Partial<UserInfo>>;
 
@@ -110,6 +111,14 @@ export enum DatesActions {
 
 export type SetDatesAction = AppActionType<DatesActions.SET_DATES, Partial<DatesState>>;
 
+export type ELearningPlansState = ELearningPlanSchema[];
+
+export enum ELearningPlansActions {
+  SET_PLANS = 'SET_PLANS',
+}
+
+export type SetELearningPlansAction = AppActionType<ELearningPlansActions.SET_PLANS, ELearningPlansState>;
+
 export enum MiscellaneousActions {
   LOG_OUT = 'LOG_OUT',
   OTHER = '',
@@ -119,11 +128,16 @@ export interface LogOutAction extends Action<MiscellaneousActions.LOG_OUT> {}
 export interface OtherAction extends Action<MiscellaneousActions.OTHER> {} /* handles third-party actions for TS */
 
 export type UserAction =
-  | SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction
-  | AddTeacherScheduleAction | OtherAction;
+  | SetUserCredentialsAction
+  | SetUserInfoAction
+  | SetUserScheduleAction
+  | SetTeacherSchedulesAction
+  | AddTeacherScheduleAction
+  | OtherAction;
 export type DayAction = SetRefreshedAction | SetDayScheduleAction | OtherAction;
 export type ThemeAction = SetThemeAction | OtherAction;
 export type DatesAction = SetDatesAction | OtherAction;
+export type ELearningPlansAction = SetELearningPlansAction | OtherAction;
 export type MiscellaneousAction = LogOutAction | OtherAction;
 
 export interface AppState {
@@ -131,5 +145,6 @@ export interface AppState {
   day: DayState;
   dates: DatesState;
   theme: ThemeState;
+  elearningPlans: ELearningPlansState;
 }
-export type AppAction = UserAction | DayAction | ThemeAction | DatesAction | MiscellaneousAction;
+export type AppAction = UserAction | DayAction | ThemeAction | DatesAction | ELearningPlansAction | MiscellaneousAction;

@@ -23,16 +23,16 @@ export const TEACHER_URL = '/teachers';
 export const TEACHER_FETCH_LIMIT = 10;
 
 const API_VERSION = 'v3';
-export const SERVER_URL = process.env.NODE_ENV === 'development'
-  ? Platform.select({ ios: 'http://localhost:5000', android: 'http://10.0.2.2:5000' })
-  : 'https://whs-server.herokuapp.com'; // TODO: More dynamic system for production server
+export const SERVER_URL =
+  process.env.NODE_ENV === 'development'
+    ? Platform.select({ ios: 'http://localhost:5000', android: 'http://10.0.2.2:5000' })
+    : 'https://whs-server.herokuapp.com'; // TODO: More dynamic system for production server
 export const DATES_URL = `${SERVER_URL}/api/${API_VERSION}/dates`;
+export const ELEARNINGPLANS_URL = `${SERVER_URL}/api/${API_VERSION}/elearning-plans`;
 export const FETCH_TIMEOUT = 5000;
 
 export const DATE_TYPES: DateListType[] = ['assembly', 'no-school', 'early-dismissal', 'late-start', 'wednesday'];
-export const SETTING_TYPES: YearSettingType[] = [
-  'semester-one-start', 'semester-one-end', 'semester-two-start', 'semester-two-end',
-];
+export const SETTING_TYPES: YearSettingType[] = ['semester-one-start', 'semester-one-end', 'semester-two-start', 'semester-two-end'];
 
 export const HEADER_SELECTOR = '.header-title';
 export const STUDENT_OVERVIEW_SELECTOR = '.card:first-child > .card-block > .card-subtitle:not(.text-muted)';
