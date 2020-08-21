@@ -122,7 +122,13 @@ export function getUserInfoFromHTML($: CheerioSelector): UserInfo {
 export function getUserScheduleFromHTML($: CheerioSelector): Schedule {
   // .text returns empty string in script
   const matches = ($(SCHEDULE_SELECTOR).html() || '').trim().match(SCHEDULE_REGEX);
-  const rawSchedule: RawSchedule = matches === null ? [] : JSON.parse(matches[1]).schedule;
+  let rawSchedule: RawSchedule = [];
+  if (matches !== null) {
+    const pageData = JSON.parse(matches[1]);
+    if (pageData.schedule !== undefined) {
+      rawSchedule = pageData.schedule as RawSchedule;
+    }
+  }
   return processSchedule(rawSchedule);
 }
 
