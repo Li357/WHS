@@ -1,9 +1,26 @@
-import { isAfter, isBefore, toDate, isWithinInterval, isSameDay, subDays, differenceInSeconds, differenceInCalendarWeeks } from 'date-fns';
+import {
+  isAfter,
+  isBefore,
+  toDate,
+  isWithinInterval,
+  isSameDay,
+  subDays,
+  differenceInSeconds,
+  differenceInCalendarWeeks,
+} from 'date-fns';
+import { ELearningPlanSchema } from '@whs/server';
 
-import { DaySchedule, ModNumber, Schedule, ScheduleInfo, UserDaySchedule, ScheduleItem, ClassItem } from '../types/schedule';
+import {
+  DaySchedule,
+  ModNumber,
+  Schedule,
+  ScheduleInfo,
+  UserDaySchedule,
+  ScheduleItem,
+  ClassItem,
+} from '../types/schedule';
 import { DatesState, DayScheduleType, ELearningPlansState } from '../types/store';
 import { last } from './utils';
-import { ELearningPlanSchema } from '@whs/server';
 
 /**
  * Converts a `h:mm` time (from a day schedule timpair) to a date for comparison
@@ -45,7 +62,10 @@ export function getModAtTime(date: Date, daySchedule: DaySchedule): Pick<Schedul
       end: modEnd,
     });
     if (isThisMod) {
-      const nextMod = modNumber === ModNumber.FOURTEEN || modNumber === ModNumber.FINALS_FOUR ? ModNumber.AFTER_SCHOOL : ModNumber.PASSING_PERIOD;
+      const nextMod =
+        modNumber === ModNumber.FOURTEEN || modNumber === ModNumber.FINALS_FOUR
+          ? ModNumber.AFTER_SCHOOL
+          : ModNumber.PASSING_PERIOD;
       return { current: modNumber, next: nextMod };
     }
 
@@ -96,14 +116,20 @@ export function getClassAtMod(modNumber: ModNumber, userDaySchedule: UserDaySche
  * @param daySchedule schedule of the specified date
  * @param schedule user's schedule of classes
  */
-export function getScheduleInfoAtTime(datetime: Date, daySchedule: DaySchedule, userDaySchedule: UserDaySchedule): ScheduleInfo {
+export function getScheduleInfoAtTime(
+  datetime: Date,
+  daySchedule: DaySchedule,
+  userDaySchedule: UserDaySchedule,
+): ScheduleInfo {
   // This returns PASSING_PERIOD, BEFORE_SCHOOL, and AFTER_SCHOOL which are not actual class times
   const { current, next } = getModAtTime(datetime, daySchedule);
   // Since this function is only used to display current class during a class mod,
   // no need to check if current is passing period
   const isNextPassingPeriod = next === ModNumber.PASSING_PERIOD;
   // DO NOT use find and add one since mod numbers may not be continuous
-  const nextClassMod = isNextPassingPeriod ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2] : next;
+  const nextClassMod = isNextPassingPeriod
+    ? daySchedule[daySchedule.findIndex((triplet) => triplet[2] === current) + 1][2]
+    : next;
 
   const currentClass = getClassAtMod(current, userDaySchedule);
   const nextClass = getClassAtMod(nextClassMod, userDaySchedule);
@@ -166,13 +192,17 @@ export function getDisplayScheduleTypeOnDate(queryDate: Date, dates: DatesState)
 }
 
 /**
- * Gets day schedule TYPE on a certain date accounting for additional school logic (i.e. summer, holidays, e-learning logic), not only
- * for display on schedule cards.
+ * Gets day schedule TYPE on a certain date accounting for additional school logic (i.e. summer,
+ * holidays, e-learning logic), not only for display on schedule cards.
  * @param queryDate certain date to query
  * @param dates map of special dates from server
  * @param elearningPlans elearning plans from store
  */
-export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, elearningPlans: ELearningPlansState): DayScheduleType {
+export function getScheduleTypeOnDate(
+  queryDate: Date,
+  dates: DatesState,
+  elearningPlans: ELearningPlansState,
+): DayScheduleType {
   const { semesterOneStart } = dates;
 
   // Always let summer/break take precedence over weekend
@@ -199,13 +229,17 @@ export function getScheduleTypeOnDate(queryDate: Date, dates: DatesState, elearn
  * but students actually follow their THURSDAY schedule in-person, i.e. 3.
  *
  */
-export function getScheduleDay(queryDate: Date, elearningPlans: ELearningPlansState): { scheduleDay: number; calendarDay: number } {
+export function getScheduleDay(
+  queryDate: Date,
+  elearningPlans: ELearningPlansState,
+): { scheduleDay: number; calendarDay: number } {
   const calendarDay = queryDate.getDay() - 1;
   const clone = new Date(queryDate.getTime()); // avoid mutation...
   clone.setHours(0, 0, 0, 0);
 
   /**
-   * In completely online (red) or completely in person (green) the days proceeds as normal (guessing it proceeds directly from calendar day)
+   * In completely online (red) or completely in person (green) the days proceeds as normal
+   * (guessing it proceeds directly from calendar day)
    * In partial modes, the days are tied
    */
 
@@ -217,7 +251,9 @@ export function getScheduleDay(queryDate: Date, elearningPlans: ELearningPlansSt
       // we begin calculation of current partial day by getting the plan start day
       // then counting the number of weeks mod 5 (days of week)
       const startDate = new Date(currentPlan.dates[0]);
-      const weeksSincePlanStart = differenceInCalendarWeeks(queryDate, startDate, { weekStartsOn: startDate.getDay() as 1 | 2 | 3 | 4 | 5 });
+      const weeksSincePlanStart = differenceInCalendarWeeks(queryDate, startDate, {
+        weekStartsOn: startDate.getDay() as 1 | 2 | 3 | 4 | 5,
+      });
       scheduleDay = weeksSincePlanStart % 5;
     }
   }

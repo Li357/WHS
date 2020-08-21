@@ -1,7 +1,7 @@
-import { ScheduleInfo, ModNumber, ScheduleItem, ClassItem, DaySchedule, Schedule, UserDaySchedule } from '../types/schedule';
+import { ScheduleInfo, ModNumber, ScheduleItem, ClassItem, DaySchedule, UserDaySchedule } from '../types/schedule';
 import { DashboardInfoGetter } from '../types/dashboard-info';
 import { formatDuration } from './duration';
-import { isHalfMod, getModNameFromModNumber, isScheduleEmpty } from './query-schedule';
+import { isHalfMod, getModNameFromModNumber } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
 
 function createTimeLeftInfo(name: string) {
@@ -66,7 +66,11 @@ function dayEndsInfo(timeLeft: number, scheduleInfo: ScheduleInfo, dayEnd: numbe
  * Gets the information to show on the dashboard based on current mod
  * @param scheduleInfo contains current mod
  */
-export function getDashboardInfo(daySchedule: DaySchedule, userDaySchedule: UserDaySchedule, { current }: ScheduleInfo): DashboardInfoGetter[] {
+export function getDashboardInfo(
+  daySchedule: DaySchedule,
+  userDaySchedule: UserDaySchedule,
+  { current }: ScheduleInfo,
+): DashboardInfoGetter[] {
   if (userDaySchedule.length === 0) {
     return [scheduleEmptyInfo];
   }

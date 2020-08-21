@@ -31,7 +31,9 @@ const dateTransform = createTransform<DatesState, SerializedDatesState>(
         if (dateOrDates === null) {
           map[dateType] = dateOrDates;
         } else {
-          map[dateType] = Array.isArray(dateOrDates) ? dateOrDates.map((date) => date.toISOString()) : dateOrDates.toISOString();
+          map[dateType] = Array.isArray(dateOrDates)
+            ? dateOrDates.map((date) => date.toISOString())
+            : dateOrDates.toISOString();
         }
         return map;
       },
@@ -47,7 +49,9 @@ const dateTransform = createTransform<DatesState, SerializedDatesState>(
         if (dateOrDates === null) {
           map[dateType] = dateOrDates;
         } else {
-          map[dateType] = Array.isArray(dateOrDates) ? dateOrDates.map((date) => new Date(date)) : new Date(dateOrDates);
+          map[dateType] = Array.isArray(dateOrDates)
+            ? dateOrDates.map((date) => new Date(date))
+            : new Date(dateOrDates);
         }
         return map;
       },
@@ -88,10 +92,12 @@ const middleware: Middleware[] = [thunk];
 if (process.env.NODE_ENV === 'development') {
   middleware.push(createLogger());
 }
-const store = createStore<AppState & PersistPartial, AppAction, { dispatch: ThunkDispatch<AppState, undefined, AppAction> }, {}>(
-  persistedReducer,
-  applyMiddleware(...middleware),
-);
+const store = createStore<
+  AppState & PersistPartial,
+  AppAction,
+  { dispatch: ThunkDispatch<AppState, undefined, AppAction> },
+  {}
+>(persistedReducer, applyMiddleware(...middleware));
 const persistor = persistStore(store);
 
 export { store, persistor };

@@ -7,11 +7,20 @@ import { ClassItem, ScheduleItem, DaySchedule } from '../types/schedule';
 import { store } from './store';
 import { convertTimeToDate, getModAtTime, getScheduleTypeOnDate, getPlanOnDate } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
-import { NO_HOMEROOM_TITLE, PACKAGE_NAME, IOS_MAX_NOTIFICATIONS, MAX_NOTIFICATION_SETUP_TIMEOUT } from '../constants/fetch';
+import {
+  NO_HOMEROOM_TITLE,
+  PACKAGE_NAME,
+  IOS_MAX_NOTIFICATIONS,
+  MAX_NOTIFICATION_SETUP_TIMEOUT,
+} from '../constants/fetch';
 import { injectAssemblyOrFinalsIfNeeded } from './process-schedule';
 import client from './bugsnag';
 
-export function scheduleNotificationForScheduleItem(scheduleItem: ScheduleItem, daySchedule: DaySchedule, fireDate: Date) {
+export function scheduleNotificationForScheduleItem(
+  scheduleItem: ScheduleItem,
+  daySchedule: DaySchedule,
+  fireDate: Date,
+) {
   // No notifications for 'no homeroom' schedule item on wednesdays
   const isCrossSection = scheduleItem.hasOwnProperty('columns');
   const classItem = scheduleItem as ClassItem;

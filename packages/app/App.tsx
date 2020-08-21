@@ -95,7 +95,9 @@ export default class App extends Component<{}, AppComponentState> {
       return PushNotification.cancelAllLocalNotifications();
     }
 
-    const shouldRefresh = (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo) || (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
+    const shouldRefresh =
+      (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo) ||
+      (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
     client.leaveBreadcrumb(`Should refresh? ${shouldRefresh}`);
     if (isScheduleEmpty(schedule) || shouldRefresh) {
       client.leaveBreadcrumb('Refreshing semesters one/two');

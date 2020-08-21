@@ -5,23 +5,26 @@
     "quotemark": [true, "single", "jsx-double", "avoid-template", "avoid-escape"],
     "object-literal-sort-keys": false,
     "interface-name": [true, "never-prefix"],
-    "ordered-imports": [true, {
-      "import-sources-order": "any",
-      "named-imports-order": "any",
-      "grouped-imports": true,
-      "groups": [
-        {
-          "name": "packages",
-          "match": "^(?:(?!\\.\\/).)+$",
-          "order": 10
-        },
-        {
-          "name": "relative imports",
-          "match": "^\\.",
-          "order": 20
-        }
-      ]
-    }],
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "any",
+        "named-imports-order": "any",
+        "grouped-imports": true,
+        "groups": [
+          {
+            "name": "packages",
+            "match": "^(?:(?!\\.\\/).)+$",
+            "order": 10
+          },
+          {
+            "name": "relative imports",
+            "match": "^\\.",
+            "order": 20
+          }
+        ]
+      }
+    ],
     "no-submodule-imports": false,
     "no-implicit-dependencies": [true, "dev"],
     "arrow-parens": true,
@@ -29,6 +32,15 @@
     "member-ordering": false,
     "no-unused-declaration": true,
     "throw-error": true,
-    "react-hooks-nesting": true
+    "react-hooks-nesting": true,
+    "prefer-conditional-expression": false,
+    "jsx-wrap-multiline": false,
+    "max-line-length": [
+      true,
+      {
+        "ignore-pattern": "//"
+      }
+    ],
+    "semicolon": [true, "always", "strict-bound-class-methods"]
   }
 }

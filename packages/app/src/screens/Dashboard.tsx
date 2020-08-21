@@ -12,7 +12,7 @@ import { AppState, DayScheduleType } from '../types/store';
 import { setUserInfo } from '../actions/creators';
 import { setProfilePhoto, removeProfilePhoto } from '../utils/manage-photos';
 import * as SCHEDULES from '../constants/schedules';
-import { reportError, splice } from '../utils/utils';
+import { reportError } from '../utils/utils';
 import { PROFILE_HEIGHT } from '../constants/style';
 import { injectAssemblyOrFinalsIfNeeded } from '../utils/process-schedule';
 import client from '../utils/bugsnag';
@@ -27,7 +27,7 @@ const scheduleSelector = createSelector(
   ({ day }: AppState) => day.schedule,
   (state: AppState) => state.elearningPlans,
   (schedule, dayScheduleType, elearningPlans) => {
-    const { scheduleDay } = getScheduleDay(new Date(), elearningPlans); // already returns correct index (not off by one)
+    const { scheduleDay } = getScheduleDay(new Date(), elearningPlans);
     if (['BREAK', 'SUMMER', 'WEEKEND'].includes(dayScheduleType)) {
       return schedule[scheduleDay];
     }

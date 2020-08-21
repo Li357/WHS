@@ -1,8 +1,8 @@
 import { Action } from 'redux';
+import { ELearningPlanSchema } from '@whs/server';
 
 import { Schedule, TeacherSchedule } from './schedule';
 import * as SCHEDULES from '../constants/schedules';
-import { ELearningPlanSchema } from '@whs/server';
 
 export type UserOverviewKeys = 'homeroom' | 'counselor' | 'dean' | 'id';
 export type UserOverviewMap = { [K in UserOverviewKeys]: string };
@@ -36,7 +36,10 @@ interface AppActionType<K, P> extends Action<K> {
   payload: P;
 }
 
-export type SetUserCredentialsAction = AppActionType<UserActions.SET_USER_CREDENTIALS, Pick<UserState, 'username' | 'password'>>;
+export type SetUserCredentialsAction = AppActionType<
+  UserActions.SET_USER_CREDENTIALS,
+  Pick<UserState, 'username' | 'password'>
+>;
 
 export type UserInfoKeys = 'name' | 'schoolPicture' | 'profilePhoto' | 'isTeacher' | 'classOf' | UserOverviewKeys;
 export type UserInfo = Pick<UserState, UserInfoKeys>;

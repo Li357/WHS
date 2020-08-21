@@ -10,7 +10,6 @@ import {
   SetDatesAction,
   SetRefreshedAction,
   DatesState,
-  ELearningPlansState,
   SetELearningPlansAction,
 } from '../types/store';
 import { fetch } from '../utils/utils';
@@ -26,7 +25,15 @@ import {
   getELearningPlans,
 } from '../utils/process-info';
 import { getProfilePhoto, setProfilePhoto } from '../utils/manage-photos';
-import { setUserInfo, setUserSchedule, setTeacherSchedules, setUserCredentials, setDates, setRefreshed, setELearningPlans } from './creators';
+import {
+  setUserInfo,
+  setUserSchedule,
+  setTeacherSchedules,
+  setUserCredentials,
+  setDates,
+  setRefreshed,
+  setELearningPlans,
+} from './creators';
 import { LoginError } from '../utils/error';
 import { FETCH_TIMEOUT, DATE_TYPES, SETTING_TYPES } from '../constants/fetch';
 import { getSchoolYearFromDate } from '../utils/query-schedule';
@@ -36,7 +43,11 @@ export function fetchUserInfo(username: string, password: string) {
     Promise<void>,
     AppState,
     undefined,
-    SetUserCredentialsAction | SetUserInfoAction | SetUserScheduleAction | SetTeacherSchedulesAction | SetRefreshedAction
+    | SetUserCredentialsAction
+    | SetUserInfoAction
+    | SetUserScheduleAction
+    | SetTeacherSchedulesAction
+    | SetRefreshedAction
   > = async (dispatch, getState) => {
     const {
       user,
@@ -84,9 +95,14 @@ export function fetchUserInfo(username: string, password: string) {
 }
 
 export function fetchSchoolPicture(username: string = '', password: string = '') {
-  const fetchSchoolPictureThunk: ThunkAction<Promise<string>, AppState, undefined, SetUserInfoAction> = async (dispatch, getState) => {
+  const fetchSchoolPictureThunk: ThunkAction<Promise<string>, AppState, undefined, SetUserInfoAction> = async (
+    dispatch,
+    getState,
+  ) => {
     const { user } = getState();
-    const $ = await parseHTMLFromURL(getLoginURL(user.username || username, user.password || password), { method: 'POST' });
+    const $ = await parseHTMLFromURL(getLoginURL(user.username || username, user.password || password), {
+      method: 'POST',
+    });
     const schoolPicture = getSchoolPictureFromHTML($);
     dispatch(setUserInfo({ schoolPicture }));
     return schoolPicture;
@@ -140,7 +156,9 @@ export function fetchDates(year?: number) {
 }
 
 export function fetchELearningPlans(year?: number) {
-  const fetchELearningPlansThunk: ThunkAction<Promise<void>, AppState, undefined, SetELearningPlansAction> = async (dispatch) => {
+  const fetchELearningPlansThunk: ThunkAction<Promise<void>, AppState, undefined, SetELearningPlansAction> = async (
+    dispatch,
+  ) => {
     if (!year) {
       year = getSchoolYearFromDate(new Date());
     }

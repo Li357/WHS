@@ -45,7 +45,9 @@ export default authorizedRoute(
       );
     }
 
-    const renderItem = ({ item }: { item: ScheduleItem[]; index: number }) => <ScheduleCard schedule={item} navigation={navigation} />;
+    const renderItem = ({ item }: { item: ScheduleItem[]; index: number }) => (
+      <ScheduleCard schedule={item} navigation={navigation} />
+    );
     const { scheduleDay } = getScheduleDay(new Date(), elearningPlans);
 
     return (
