@@ -99,7 +99,6 @@ export function fetchDates(year?: number) {
     if (!year) {
       year = getSchoolYearFromDate(new Date());
     }
-
     const [assembly, noSchool, earlyDismissal, lateStart, wednesday] = await Promise.all(
       DATE_TYPES.map(async (type) => {
         const dates = await getDates(type, year!);

@@ -217,7 +217,7 @@ export function getScheduleDay(queryDate: Date, elearningPlans: ELearningPlansSt
       // we begin calculation of current partial day by getting the plan start day
       // then counting the number of weeks mod 5 (days of week)
       const startDate = new Date(currentPlan.dates[0]);
-      const weeksSincePlanStart = differenceInCalendarWeeks(queryDate, startDate, { weekStartsOn: startDate.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6 });
+      const weeksSincePlanStart = differenceInCalendarWeeks(queryDate, startDate, { weekStartsOn: startDate.getDay() as 1 | 2 | 3 | 4 | 5 });
       scheduleDay = weeksSincePlanStart % 5;
     }
   }

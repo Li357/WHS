@@ -114,8 +114,7 @@ export default class App extends Component<{}, AppComponentState> {
       await store.dispatch(fetchDates());
       await store.dispatch(fetchELearningPlans());
       await scheduleNotifications();
-    } catch (e) {
-      console.log(e);
+    } catch {
       client.leaveBreadcrumb('Update failed silently');
     }
   };

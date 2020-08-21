@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Switch, ScrollView, AppState as RNAppState, AppStateStatus } from 'react-native';
 import styled from 'styled-components/native';
 import { useSelector } from 'react-redux';
-import { setDay, format, differenceInSeconds } from 'date-fns';
+import { setDay, format, differenceInSeconds, startOfWeek, lastDayOfWeek } from 'date-fns';
 import { createSelector } from 'reselect';
 import { Bar } from 'react-native-progress';
 
@@ -114,10 +114,6 @@ const makeCardDayScheduleSelector = () =>
       const cardDaySchedule = SCHEDULES[cardScheduleType];
       const isCardDateFinals = cardScheduleType === 'FINALS';
 
-      const isELearning = getPlanOnDate(now, elearningPlans) !== undefined;
-      const { scheduleDay: currentScheduleDay } = getScheduleDay(new Date(), elearningPlans); // day that students actually follow in their schedule
-      const isCardCurrentScheduleDay = currentScheduleDay === cardDay - 1; // currentScheduleDay is 0 based, cardDay is 1 based
-
       const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule, cardScheduleType, cardDay);
       const patchedUserDaySchedule = revisedUserDaySchedule.slice(cardScheduleType === 'WEDNESDAY' ? 1 : 0);
 
@@ -132,26 +128,36 @@ const makeCardDayScheduleSelector = () =>
         cardDaySchedule: displayCardDaySchedule,
         daySchedule: cardDaySchedule,
         userDaySchedule: patchedUserDaySchedule,
-        isCurrentDay: isCardCurrentScheduleDay,
         isFinals: isCardDateFinals,
-        isELearning,
+        elearningPlans,
       };
     },
   );
 export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps) {
   const cardDayScheduleSelector = useMemo(makeCardDayScheduleSelector, []);
-  const { cardDate, cardDaySchedule, userDaySchedule, daySchedule, isCurrentDay, isFinals, isELearning } = useSelector((state: AppState) =>
+  const { cardDate, cardDaySchedule, userDaySchedule, daySchedule, isFinals, elearningPlans } = useSelector((state: AppState) =>
     cardDayScheduleSelector(state, schedule),
   );
 
+  const now = new Date();
+  const [elearningPlan, setELearningPlan] = useState(getPlanOnDate(now, elearningPlans));
+  const [isCurrentDay, setIsCurrentDay] = useState(() => {
+    const { scheduleDay: currentScheduleDay } = getScheduleDay(now, elearningPlans);
+    return currentScheduleDay === cardDate.getDay() - 1;
+  });
+
   const [showTimes, setShowTimes] = useState(false);
-  const [progress, setProgress] = useState(isCurrentDay ? getDayProgress(new Date(), daySchedule) : 0);
+  const [progress, setProgress] = useState(isCurrentDay ? getDayProgress(now, daySchedule) : 0);
   const { accentColor, backgroundColor } = useSelector((state: AppState) => state.theme);
 
   const updateDayProgress = (newStatus: AppStateStatus) => {
-    if (isCurrentDay && newStatus === 'active') {
-      setProgress(getDayProgress(new Date(), daySchedule));
+    const future = new Date();
+    const { scheduleDay } = getScheduleDay(future, elearningPlans);
+    const newIsCurrentDay = scheduleDay === cardDate.getDay() - 1;
+    if (newIsCurrentDay && newStatus === 'active') {
+      setProgress(getDayProgress(future, daySchedule));
     }
+    setIsCurrentDay(newIsCurrentDay);
   };
   useEffect(() => {
     RNAppState.addEventListener('change', updateDayProgress);
@@ -179,12 +185,31 @@ export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps
     </BarContainer>
   );
 
-  const header = (
+  let header = (
     <>
       <Title minimumFontScale={0.5}>{formattedDay}</Title>
-      {!isELearning && <Subtext minimumFontScale={0.5}>{formattedDate}</Subtext>}
+      <Subtext minimumFontScale={0.5}>{formattedDate}</Subtext>
     </>
   );
+
+  const isELearning = elearningPlan !== undefined;
+  if (isELearning) {
+    const planStartDate = new Date(elearningPlan!.dates[0]);
+    const now = new Date();
+    const startOfELearningCycle = format(startOfWeek(now, { weekStartsOn: planStartDate.getDay() as 1 | 2 | 3 | 4 | 5 }), 'MMM d');
+    const endOfELearningCycle = format(lastDayOfWeek(now, { weekStartsOn: planStartDate.getDay() as 1 | 2 | 3 | 4 | 5 }), 'MMM d');
+
+    header = (
+      <>
+        <Title minimumFontScale={0.5}>Day {`${cardDate.getDay()} `}</Title>
+        {isCurrentDay && (
+          <Subtext minimumFontScale={0.5}>
+            {startOfELearningCycle} - {endOfELearningCycle}
+          </Subtext>
+        )}
+      </>
+    );
+  }
 
   return (
     <ScheduleCardContainer>
