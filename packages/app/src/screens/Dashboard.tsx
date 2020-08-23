@@ -29,7 +29,7 @@ const scheduleSelector = createSelector(
   (schedule, dayScheduleType, elearningPlans) => {
     const { scheduleDay } = getScheduleDay(new Date(), elearningPlans);
     if (['BREAK', 'SUMMER', 'WEEKEND'].includes(dayScheduleType)) {
-      return schedule[scheduleDay];
+      return []; // NOTE: this might be a regression, since before entire schedule was returned. See getDashboardInfo for details
     }
     return injectAssemblyOrFinalsIfNeeded(schedule[scheduleDay], dayScheduleType, scheduleDay);
   },
