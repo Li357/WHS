@@ -71,10 +71,7 @@ export function getDashboardInfo(
   userDaySchedule: UserDaySchedule,
   { current }: ScheduleInfo,
 ): DashboardInfoGetter[] {
-  if (userDaySchedule.length === 0) {
-    return [scheduleEmptyInfo];
-  }
-
+  // Handle these cases first
   switch (daySchedule) {
     case SCHEDULES.BREAK:
       return [breakInfo];
@@ -82,6 +79,10 @@ export function getDashboardInfo(
       return [weekendInfo];
     case SCHEDULES.SUMMER:
       return [summerInfo];
+  }
+
+  if (userDaySchedule.length === 0) {
+    return [scheduleEmptyInfo];
   }
 
   switch (current) {

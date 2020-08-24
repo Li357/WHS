@@ -215,6 +215,11 @@ export function getScheduleTypeOnDate(
     return 'BREAK';
   }
 
+  const calendarDay = queryDate.getDay() - 1; // this is duplicate code, but weekend should take precedence over elearning
+  if (calendarDay > 4 || calendarDay < 0) {
+    return 'WEEKEND';
+  }
+
   const currentPlan = getPlanOnDate(queryDate, elearningPlans);
   if (currentPlan !== undefined) {
     return 'REGULAR';
@@ -234,8 +239,6 @@ export function getScheduleDay(
   elearningPlans: ELearningPlansState,
 ): { scheduleDay: number; calendarDay: number } {
   const calendarDay = queryDate.getDay() - 1;
-  const clone = new Date(queryDate.getTime()); // avoid mutation...
-  clone.setHours(0, 0, 0, 0);
 
   /**
    * In completely online (red) or completely in person (green) the days proceeds as normal
