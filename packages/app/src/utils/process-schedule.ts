@@ -350,10 +350,14 @@ export function replaceNoHomeroom(processedSchedule: UserDaySchedule[]) {
       const classItem = item as ClassItem;
       if (classItem.title === NO_HOMEROOM_TITLE) {
         const fallbackItem = createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.ONE, 2, 'homeroom');
-        const normalItem = { ...processedSchedule[0][0], day: 3, sourceId: fallbackItem.sourceId } as
-          | ClassItem
-          | undefined;
-        const homeroomItem = normalItem?.title?.includes('Homeroom') ? normalItem : fallbackItem;
+        const homeroomItem = processedSchedule[0][0]; // these checks are here in case it isn't a homeroom item
+        if (homeroomItem !== undefined && !homeroomItem.hasOwnProperty('columns')) {
+          const wedHomeroomItem = { ...homeroomItem, day: 3, sourceId: fallbackItem.sourceId };
+          const wedHomeroomClassItem = wedHomeroomItem as ClassItem;
+          if (wedHomeroomClassItem.title?.includes('Homeroom')) {
+            return wedHomeroomItem;
+          }
+        }
         return homeroomItem;
       }
     }
