@@ -5,6 +5,8 @@ import {
   DateSchema,
   ELearningPlanSchema,
   ELearningQuery,
+  CustomDatesQuery,
+  CustomDateSchema,
 } from '../shared/types/api';
 import { asyncRoute, log, requiresAuth } from './utils';
 
@@ -84,6 +86,18 @@ api.post(
       ),
     );
     res.status(200).end();
+  }),
+);
+
+api.get(
+  '/custom-dates',
+  asyncRoute(async ({ query, db }, res) => {
+    const { year } = query as CustomDatesQuery;
+    const collection = db!.collection<CustomDateSchema>('customDates');
+    const dates = await collection
+      .find(year !== undefined ? { year } : {})
+      .toArray();
+    res.status(200).json(dates);
   }),
 );
 

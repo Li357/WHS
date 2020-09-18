@@ -1,11 +1,18 @@
 import {
-  ScheduleItem, ClassItem, CrossSectionedItem, CrossSectionedColumn,
-  RawSchedule, UserDaySchedule, RawClassItem, ModNumber,
+  ScheduleItem,
+  ClassItem,
+  CrossSectionedItem,
+  CrossSectionedColumn,
+  RawSchedule,
+  UserDaySchedule,
+  RawClassItem,
+  ModNumber,
 } from '../types/schedule';
 import { sortByProps, insert, getWithFallback, splice } from './utils';
 import { getModNameFromModNumber, isDuplicateItem } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
 import { DayScheduleType } from '../types/store';
+import { NO_HOMEROOM_TITLE } from '../constants/fetch';
 
 /**
  * Generates a simple but unique sourceId for an open mod or cross-sectioned item
@@ -48,7 +55,12 @@ function createScheduleItem(startMod: number, endMod: number, day: number) {
  * @param sourceType sourceType of the item
  */
 export function createClassItem(
-  title: string, body: string, startMod: number, endMod: number, day: number, sourceType: string,
+  title: string,
+  body: string,
+  startMod: number,
+  endMod: number,
+  day: number,
+  sourceType: string,
 ): ClassItem {
   return { ...createScheduleItem(startMod, endMod, day), title, body, sourceType };
 }
@@ -61,7 +73,10 @@ export function createClassItem(
  * @param day  day of the item
  */
 export function createCrossSectionedItem(
-  columns: CrossSectionedColumn[], startMod: number, endMod: number, day: number,
+  columns: CrossSectionedColumn[],
+  startMod: number,
+  endMod: number,
+  day: number,
 ): CrossSectionedItem {
   return { ...createScheduleItem(startMod, endMod, day), columns };
 }
@@ -80,9 +95,7 @@ export function createOpenItem(startMod: number, endMod: number, day: number): C
  * Converts a raw item from website to class item
  * @param rawItem raw schedule item to convert to class item
  */
-export function convertToClassItem({
-  title, body, startMod, endMod, day, sourceType,
-}: RawClassItem): ClassItem {
+export function convertToClassItem({ title, body, startMod, endMod, day, sourceType }: RawClassItem): ClassItem {
   return createClassItem(title, body, startMod, endMod, day, sourceType);
 }
 
@@ -108,15 +121,20 @@ export function interpolateCrossSectionedItems(userDaySchedule: ClassItem[], day
 
     const isPreviousOverlapping = prev !== undefined && prev.endMod > current.startMod;
     const isNextOverlapping = next !== undefined && current.endMod > next.startMod;
-    if (isPreviousOverlapping || isNextOverlapping) { // if we have a cross-section
+    if (isPreviousOverlapping || isNextOverlapping) {
+      // if we have a cross-section
       const isNewBlock = currentBlockEndMod <= current.startMod;
       if (isNewBlock) {
-        if (currentBlockColumns.length > 0) { // if we've already appended to columns, i.e. not first block in day
+        if (currentBlockColumns.length > 0) {
+          // if we've already appended to columns, i.e. not first block in day
           const crossSectionedItem = createCrossSectionedItem(
-            currentBlockColumns, currentBlockStartMod, currentBlockEndMod, day,
+            currentBlockColumns,
+            currentBlockStartMod,
+            currentBlockEndMod,
+            day,
           );
           transformed = splice(transformed, currentBlockStartIndex, currentBlockSize, [crossSectionedItem]);
-          indexShift += currentBlockSize - 1;  // once a splice occurs, now offset by previous block size - 1 indices
+          indexShift += currentBlockSize - 1; // once a splice occurs, now offset by previous block size - 1 indices
         }
 
         currentBlockStartIndex = index - indexShift;
@@ -126,9 +144,9 @@ export function interpolateCrossSectionedItems(userDaySchedule: ClassItem[], day
       } else {
         currentBlockSize++;
 
-        const availableColumn = currentBlockColumns.findIndex((column) => (
-          column.some((scheduleItem) => current.startMod >= scheduleItem.endMod)
-        ));
+        const availableColumn = currentBlockColumns.findIndex((column) =>
+          column.some((scheduleItem) => current.startMod >= scheduleItem.endMod),
+        );
         if (availableColumn > -1) {
           currentBlockColumns[availableColumn].push(current);
         } else {
@@ -144,7 +162,10 @@ export function interpolateCrossSectionedItems(userDaySchedule: ClassItem[], day
     if (index === userDaySchedule.length - 1 && currentBlockColumns.length > 0) {
       // Once we've iterated through the entire schedule, splice any remaining blocks as items to schedule
       const crossSectionedItem = createCrossSectionedItem(
-        currentBlockColumns, currentBlockStartMod, currentBlockEndMod, day,
+        currentBlockColumns,
+        currentBlockStartMod,
+        currentBlockEndMod,
+        day,
       );
       return splice(transformed, currentBlockStartIndex, currentBlockSize, [crossSectionedItem]);
     }
@@ -205,51 +226,47 @@ export function interpolateAssembly(userDaySchedule: UserDaySchedule, day: numbe
     return insert(userDaySchedule, [assemblyItem], itemIndex);
   }
 
-  const itemDuringIndex = userDaySchedule.findIndex(({ startMod, endMod }) => (
-    startMod < assemblyMod && endMod > assemblyMod
-  ));
+  const itemDuringIndex = userDaySchedule.findIndex(
+    ({ startMod, endMod }) => startMod < assemblyMod && endMod > assemblyMod,
+  );
   const itemDuringAssembly = userDaySchedule[itemDuringIndex];
   // The assembly item will be cutting through an cross sectioned item
   if (itemDuringAssembly.hasOwnProperty('columns')) {
     const crossSectionedItem = itemDuringAssembly as CrossSectionedItem;
-    const [firstColumns, secondColumns] = crossSectionedItem.columns.reduce((
-      [first, second]: [CrossSectionedColumn[], CrossSectionedColumn[]],
-      column,
-    ) => {
-      const splitIndex = column.findIndex(({ endMod }) => endMod > assemblyMod);
-      if (splitIndex < 0) {
-        first.push(column);
-        second.push([]);
+    const [firstColumns, secondColumns] = crossSectionedItem.columns.reduce(
+      ([first, second]: [CrossSectionedColumn[], CrossSectionedColumn[]], column) => {
+        const splitIndex = column.findIndex(({ endMod }) => endMod > assemblyMod);
+        if (splitIndex < 0) {
+          first.push(column);
+          second.push([]);
+          return [first, second];
+        }
+
+        const columnItem = column[splitIndex];
+        // mod in column traverses assembly
+        if (columnItem.startMod <= assemblyMod) {
+          const [firstHalf, secondHalf] = splitClassItem(columnItem, ModNumber.THREE);
+          const firstHalfColumn = column.slice(0, splitIndex);
+          const secondHalfColumn = column.slice(splitIndex + 1);
+          if (firstHalf !== null) {
+            firstHalfColumn.push(firstHalf);
+          }
+          if (secondHalf !== null) {
+            secondHalfColumn.unshift(secondHalf);
+          }
+          first.push(firstHalfColumn);
+          second.push(secondHalfColumn);
+        } else {
+          first.push(column.slice(0, splitIndex));
+          second.push(column.slice(splitIndex));
+        }
         return [first, second];
-      }
-
-      const columnItem = column[splitIndex];
-      // mod in column traverses assembly
-      if (columnItem.startMod <= assemblyMod) {
-        const [firstHalf, secondHalf] = splitClassItem(columnItem, ModNumber.THREE);
-        const firstHalfColumn = column.slice(0, splitIndex);
-        const secondHalfColumn = column.slice(splitIndex + 1);
-        if (firstHalf !== null) {
-          firstHalfColumn.push(firstHalf);
-        }
-        if (secondHalf !== null) {
-          secondHalfColumn.unshift(secondHalf);
-        }
-        first.push(firstHalfColumn);
-        second.push(secondHalfColumn);
-      } else {
-        first.push(column.slice(0, splitIndex));
-        second.push(column.slice(splitIndex));
-      }
-      return [first, second];
-    }, [[], []]);
-
-    const firstCrossSection = createCrossSectionedItem(
-      firstColumns, crossSectionedItem.startMod, ModNumber.THREE, day,
+      },
+      [[], []],
     );
-    const secondCrossSection = createCrossSectionedItem(
-      secondColumns, ModNumber.THREE, crossSectionedItem.endMod, day,
-    );
+
+    const firstCrossSection = createCrossSectionedItem(firstColumns, crossSectionedItem.startMod, ModNumber.THREE, day);
+    const secondCrossSection = createCrossSectionedItem(secondColumns, ModNumber.THREE, crossSectionedItem.endMod, day);
     return splice(userDaySchedule, itemDuringIndex, 1, [firstCrossSection, assemblyItem, secondCrossSection]);
   }
 
@@ -270,10 +287,12 @@ export function interpolateAssembly(userDaySchedule: UserDaySchedule, day: numbe
 export function getFinalsSchedule(userDaySchedule: UserDaySchedule, day: number): UserDaySchedule {
   const fallBackHomeroom = createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.FINALS_ONE, day, 'homeroom');
   const [homeroom = fallBackHomeroom] = userDaySchedule;
-  const finals = Array(4).fill(undefined).map((_, i) => {
-    const startMod = ModNumber.FINALS_ONE + i;
-    return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, homeroom.day, 'finals');
-  });
+  const finals = Array(4)
+    .fill(undefined)
+    .map((_, i) => {
+      const startMod = ModNumber.FINALS_ONE + i;
+      return createClassItem(getModNameFromModNumber(startMod), '', startMod, startMod + 1, homeroom.day, 'finals');
+    });
   return [homeroom, ...finals];
 }
 
@@ -281,7 +300,9 @@ export function getFinalsSchedule(userDaySchedule: UserDaySchedule, day: number)
  * Utility function to add assemblies/finals when needed to current schedule
  */
 export function injectAssemblyOrFinalsIfNeeded(
-  userDaySchedule: UserDaySchedule, dayScheduleType: DayScheduleType, day: number,
+  userDaySchedule: UserDaySchedule,
+  dayScheduleType: DayScheduleType,
+  day: number,
 ) {
   switch (dayScheduleType) {
     case 'ASSEMBLY':
@@ -315,4 +336,32 @@ export function processSchedule(rawSchedule: RawSchedule) {
       const withCrossSections = interpolateCrossSectionedItems(sorted, scheduleDay);
       return interpolateOpenItems(withCrossSections, scheduleDay);
     });
+}
+
+/**
+ * Idempotent function to path replace "No Homeroom" to a homeroom classitem
+ * since it will only show up when a custom non-Wednesday schedule is on a Wednesday
+ * @param processedSchedule
+ */
+export function replaceNoHomeroom(processedSchedule: UserDaySchedule[]) {
+  const wednesday = processedSchedule[2].map((item) => {
+    const isCrossSectionBlock = item.hasOwnProperty('columns');
+    if (!isCrossSectionBlock) {
+      const classItem = item as ClassItem;
+      if (classItem.title === NO_HOMEROOM_TITLE) {
+        const fallbackItem = createClassItem('Homeroom', '', ModNumber.HOMEROOM, ModNumber.ONE, 2, 'homeroom');
+        const homeroomItem = processedSchedule[0][0]; // these checks are here in case it isn't a homeroom item
+        if (homeroomItem !== undefined && !homeroomItem.hasOwnProperty('columns')) {
+          const wedHomeroomItem = { ...homeroomItem, day: 3, sourceId: fallbackItem.sourceId };
+          const wedHomeroomClassItem = wedHomeroomItem as ClassItem;
+          if (wedHomeroomClassItem.title?.includes('Homeroom')) {
+            return wedHomeroomItem;
+          }
+        }
+        return homeroomItem;
+      }
+    }
+    return item;
+  });
+  return splice(processedSchedule, 2, 1, [wednesday]);
 }

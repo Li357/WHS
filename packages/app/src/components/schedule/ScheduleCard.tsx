@@ -7,10 +7,24 @@ import { createSelector } from 'reselect';
 import { Bar } from 'react-native-progress';
 
 import Text from '../common/Text';
-import { CARD_BORDER_RADIUS, CARD_PADDING, SUBTEXT_SIZE, BORDER_WIDTH, SCHEDULE_CARD_ITEM_HEIGHT } from '../../constants/style';
+import {
+  CARD_BORDER_RADIUS,
+  CARD_PADDING,
+  SUBTEXT_SIZE,
+  BORDER_WIDTH,
+  SCHEDULE_CARD_ITEM_HEIGHT,
+} from '../../constants/style';
 import { ClassItem, CrossSectionedItem, ScheduleItem, DaySchedule, ModNumber } from '../../types/schedule';
 import { AppState } from '../../types/store';
-import { getModAtTime, isHalfMod, convertTimeToDate, getScheduleDay, getDisplayScheduleTypeOnDate, getPlanOnDate } from '../../utils/query-schedule';
+import {
+  getModAtTime,
+  isHalfMod,
+  convertTimeToDate,
+  getScheduleDay,
+  getDisplayScheduleTypeOnDate,
+  getPlanOnDate,
+  containsDate,
+} from '../../utils/query-schedule';
 import * as SCHEDULES from '../../constants/schedules';
 import { createClassItem, injectAssemblyOrFinalsIfNeeded } from '../../utils/process-schedule';
 import ClassCardItem from './ClassCardItem';
@@ -82,7 +96,9 @@ function getDayProgress(date: Date, daySchedule: DaySchedule) {
   }
 
   const index = daySchedule.findIndex(([, , mod]) => mod === searchMod);
-  const modHeights = daySchedule.map(([, , mod]) => SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1));
+  const modHeights = daySchedule.map(
+    ([, , mod]) => SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1),
+  );
   const finishedHeight = sum(modHeights.slice(0, index));
   const totalHeight = sum(modHeights);
 
@@ -102,15 +118,22 @@ interface ScheduleCardProps {
 const makeCardDayScheduleSelector = () =>
   createSelector(
     (state: AppState) => state.dates,
+    (state: AppState) => state.customDates,
     (state: AppState) => state.elearningPlans,
     (_: any, schedule: ScheduleItem[]) => schedule,
-    (dates, elearningPlans, schedule) => {
+    (dates, customDates, elearningPlans, schedule) => {
       const now = new Date();
+      const currentElearningPlan = getPlanOnDate(now, elearningPlans);
+      const isELearning = currentElearningPlan !== undefined;
+      const isCustomDate = containsDate(
+        now,
+        customDates.map((dateObj) => new Date(dateObj.date)),
+      );
 
       // NOTE: E-learning patch means that the current day is not necessarily the right day in the user's schedule (see getScheduleDay)
       const { day: cardDay } = schedule[0]; // day that the schedule card represents (1 is Monday, not 0)
       const cardDate = setDay(now, cardDay);
-      const cardScheduleType = getDisplayScheduleTypeOnDate(cardDate, dates);
+      const cardScheduleType = getDisplayScheduleTypeOnDate(cardDate, dates, customDates, elearningPlans);
       const cardDaySchedule = SCHEDULES[cardScheduleType];
       const isCardDateFinals = cardScheduleType === 'FINALS';
 
@@ -121,7 +144,14 @@ const makeCardDayScheduleSelector = () =>
         const startTime = formatTime(start);
         const endTime = formatTime(end);
         const isAssembly = modNumber === ModNumber.ASSEMBLY;
-        return createClassItem(`${startTime} - ${endTime}`, '', modNumber, isAssembly ? ModNumber.FOUR : modNumber + 1, cardDay, 'course');
+        return createClassItem(
+          `${startTime} - ${endTime}`,
+          '',
+          modNumber,
+          isAssembly ? ModNumber.FOUR : modNumber + 1,
+          cardDay,
+          'course',
+        );
       });
       return {
         cardDate,
@@ -129,20 +159,30 @@ const makeCardDayScheduleSelector = () =>
         daySchedule: cardDaySchedule,
         userDaySchedule: patchedUserDaySchedule,
         isFinals: isCardDateFinals,
+        customDates,
         elearningPlans,
+        isELearning,
+        isCustomDate,
       };
     },
   );
 export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps) {
   const cardDayScheduleSelector = useMemo(makeCardDayScheduleSelector, []);
-  const { cardDate, cardDaySchedule, userDaySchedule, daySchedule, isFinals, elearningPlans } = useSelector((state: AppState) =>
-    cardDayScheduleSelector(state, schedule),
-  );
+  const {
+    cardDate,
+    cardDaySchedule,
+    userDaySchedule,
+    daySchedule,
+    isFinals,
+    customDates,
+    elearningPlans,
+    isELearning,
+    isCustomDate,
+  } = useSelector((state: AppState) => cardDayScheduleSelector(state, schedule));
 
   const now = new Date();
-  const [elearningPlan, setELearningPlan] = useState(getPlanOnDate(now, elearningPlans));
   const [isCurrentDay, setIsCurrentDay] = useState(() => {
-    const { scheduleDay: currentScheduleDay } = getScheduleDay(now, elearningPlans);
+    const { scheduleDay: currentScheduleDay } = getScheduleDay(now, customDates, elearningPlans);
     return currentScheduleDay === cardDate.getDay() - 1;
   });
 
@@ -152,7 +192,7 @@ export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps
 
   const updateDayProgress = (newStatus: AppStateStatus) => {
     const future = new Date();
-    const { scheduleDay } = getScheduleDay(future, elearningPlans);
+    const { scheduleDay } = getScheduleDay(future, customDates, elearningPlans);
     const newIsCurrentDay = scheduleDay === cardDate.getDay() - 1;
     if (newIsCurrentDay && newStatus === 'active') {
       setProgress(getDayProgress(future, daySchedule));
@@ -174,42 +214,43 @@ export default function ScheduleCard({ schedule, navigation }: ScheduleCardProps
 
   const classes = scheduleToShow.map((scheduleItem, index) => {
     if (scheduleItem.hasOwnProperty('columns')) {
-      return <CrossSectionedCardItem key={scheduleItem.sourceId} first={index === 0} scheduleItem={scheduleItem as CrossSectionedItem} />;
+      return (
+        <CrossSectionedCardItem
+          key={scheduleItem.sourceId}
+          first={index === 0}
+          scheduleItem={scheduleItem as CrossSectionedItem}
+        />
+      );
     }
-    return <ClassCardItem key={scheduleItem.sourceId} first={index === 0} scheduleItem={scheduleItem as ClassItem} isFinals={isFinals} />;
+    return (
+      <ClassCardItem
+        key={scheduleItem.sourceId}
+        first={index === 0}
+        scheduleItem={scheduleItem as ClassItem}
+        isFinals={isFinals}
+      />
+    );
   });
-  const totalHeight = sum(daySchedule.map(([, , mod]) => SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1)));
+  const totalHeight = sum(
+    daySchedule.map(([, , mod]) => SCHEDULE_CARD_ITEM_HEIGHT / (isHalfMod(mod) || mod === ModNumber.HOMEROOM ? 2 : 1)),
+  );
   const progressBar = (
     <BarContainer>
       <VerticalBar width={totalHeight} progress={progress} color={accentColor} />
     </BarContainer>
   );
 
-  let header = (
-    <>
-      <Title minimumFontScale={0.5}>{formattedDay}</Title>
-      <Subtext minimumFontScale={0.5}>{formattedDate}</Subtext>
-    </>
-  );
-
-  const isELearning = elearningPlan !== undefined;
-  if (isELearning) {
-    const planStartDate = new Date(elearningPlan!.dates[0]);
-    const now = new Date();
-    const startOfELearningCycle = format(startOfWeek(now, { weekStartsOn: planStartDate.getDay() as 1 | 2 | 3 | 4 | 5 }), 'MMM d');
-    const endOfELearningCycle = format(lastDayOfWeek(now, { weekStartsOn: planStartDate.getDay() as 1 | 2 | 3 | 4 | 5 }), 'MMM d');
-
-    header = (
+  let header =
+    !isELearning && !isCustomDate ? (
+      <>
+        <Title minimumFontScale={0.5}>{formattedDay}</Title>
+        <Subtext minimumFontScale={0.5}>{formattedDate}</Subtext>
+      </>
+    ) : (
       <>
         <Title minimumFontScale={0.5}>Day {`${cardDate.getDay()} `}</Title>
-        {isCurrentDay && (
-          <Subtext minimumFontScale={0.5}>
-            {startOfELearningCycle} - {endOfELearningCycle}
-          </Subtext>
-        )}
       </>
     );
-  }
 
   return (
     <ScheduleCardContainer>

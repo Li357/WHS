@@ -21,6 +21,8 @@ import {
   SetRefreshedAction,
   ELearningPlansState,
   ELearningPlansActions,
+  CustomDatesState,
+  CustomDatesActions,
 } from '../types/store';
 import { Schedule, TeacherSchedule } from '../types/schedule';
 
@@ -71,6 +73,11 @@ export const setDates = (payload: Partial<DatesState>) => ({
 
 export const setELearningPlans = (payload: ELearningPlansState) => ({
   type: ELearningPlansActions.SET_PLANS,
+  payload,
+});
+
+export const setCustomDates = (payload: CustomDatesState) => ({
+  type: CustomDatesActions.SET_DATES,
   payload,
 });
 

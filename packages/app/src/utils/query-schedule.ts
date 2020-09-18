@@ -19,7 +19,7 @@ import {
   ScheduleItem,
   ClassItem,
 } from '../types/schedule';
-import { DatesState, DayScheduleType, ELearningPlansState } from '../types/store';
+import { DatesState, DayScheduleType, ELearningPlansState, CustomDatesState } from '../types/store';
 import { last } from './utils';
 
 /**
@@ -152,7 +152,12 @@ export function containsDate(queryDate: Date, dates: Date[]) {
  * @param dates map of special dates from server
  * @param elearningPlans elearning plans from store
  */
-export function getDisplayScheduleTypeOnDate(queryDate: Date, dates: DatesState): DayScheduleType {
+export function getDisplayScheduleTypeOnDate(
+  queryDate: Date,
+  dates: DatesState,
+  customDates: CustomDatesState,
+  elearningPlans: ELearningPlansState,
+): DayScheduleType {
   const { semesterOneEnd, semesterTwoEnd } = dates;
   if (semesterOneEnd !== null && semesterTwoEnd !== null) {
     const semesterOneFinalsOne = subDays(semesterOneEnd, 1);
@@ -174,6 +179,15 @@ export function getDisplayScheduleTypeOnDate(queryDate: Date, dates: DatesState)
     return 'ASSEMBLY';
   }
 
+  const currentPlan = getPlanOnDate(queryDate, elearningPlans);
+  if (currentPlan !== undefined) {
+    return 'REGULAR';
+  }
+  const customDateObj = customDates.find((obj) => isSameDay(queryDate, new Date(obj.date)));
+  if (customDateObj !== undefined) {
+    return customDateObj.wednesday ? 'WEDNESDAY' : 'REGULAR';
+  }
+
   if (containsDate(queryDate, dates.lateStart)) {
     if (calendarDay === 2) {
       return 'LATE_START_WEDNESDAY';
@@ -193,7 +207,7 @@ export function getDisplayScheduleTypeOnDate(queryDate: Date, dates: DatesState)
 
 /**
  * Gets day schedule TYPE on a certain date accounting for additional school logic (i.e. summer,
- * holidays, e-learning logic), not only for display on schedule cards.
+ * holidays), not only for display on schedule cards.
  * @param queryDate certain date to query
  * @param dates map of special dates from server
  * @param elearningPlans elearning plans from store
@@ -201,6 +215,7 @@ export function getDisplayScheduleTypeOnDate(queryDate: Date, dates: DatesState)
 export function getScheduleTypeOnDate(
   queryDate: Date,
   dates: DatesState,
+  customDates: CustomDatesState,
   elearningPlans: ELearningPlansState,
 ): DayScheduleType {
   const { semesterOneStart } = dates;
@@ -220,12 +235,7 @@ export function getScheduleTypeOnDate(
     return 'WEEKEND';
   }
 
-  const currentPlan = getPlanOnDate(queryDate, elearningPlans);
-  if (currentPlan !== undefined) {
-    return 'REGULAR';
-  }
-
-  return getDisplayScheduleTypeOnDate(queryDate, dates);
+  return getDisplayScheduleTypeOnDate(queryDate, dates, customDates, elearningPlans);
 }
 
 /**
@@ -236,16 +246,21 @@ export function getScheduleTypeOnDate(
  */
 export function getScheduleDay(
   queryDate: Date,
+  customDates: CustomDatesState,
   elearningPlans: ELearningPlansState,
 ): { scheduleDay: number; calendarDay: number } {
   const calendarDay = queryDate.getDay() - 1;
+
+  const customDateObj = customDates.find((dateObj) => isSameDay(queryDate, new Date(dateObj.date)));
+  if (customDateObj !== undefined) {
+    return { calendarDay, scheduleDay: customDateObj.scheduleDay };
+  }
 
   /**
    * In completely online (red) or completely in person (green) the days proceeds as normal
    * (guessing it proceeds directly from calendar day)
    * In partial modes, the days are tied
    */
-
   let scheduleDay = calendarDay; // by default (i.e. a full plan, see isPartialPlan for definitions, follows the calendar day)
   const currentPlan = getPlanOnDate(queryDate, elearningPlans);
   if (currentPlan !== undefined) {

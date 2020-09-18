@@ -25,9 +25,10 @@ const dayScheduleSelector = createSelector(
 const scheduleSelector = createSelector(
   ({ user }: AppState) => user.schedule,
   ({ day }: AppState) => day.schedule,
+  (state: AppState) => state.customDates,
   (state: AppState) => state.elearningPlans,
-  (schedule, dayScheduleType, elearningPlans) => {
-    const { scheduleDay } = getScheduleDay(new Date(), elearningPlans);
+  (schedule, dayScheduleType, customDates, elearningPlans) => {
+    const { scheduleDay } = getScheduleDay(new Date(), customDates, elearningPlans);
     if (['BREAK', 'SUMMER', 'WEEKEND'].includes(dayScheduleType)) {
       return []; // NOTE: this might be a regression, since before entire schedule was returned. See getDashboardInfo for details
     }

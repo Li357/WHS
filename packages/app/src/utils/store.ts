@@ -10,6 +10,8 @@ import rootReducer from '../reducers/root';
 import { reportNotEnoughSpace } from './utils';
 import datesReducer from '../reducers/dates';
 import elearningPlansReducer from '../reducers/elearningPlans';
+import customDatesReducer from '../reducers/customDates';
+import { replaceNoHomeroom } from './process-schedule';
 
 // Do not persist the profile-photo, it will be manually rehydrated
 const profilePhotoTransform = createTransform<UserState, UserState>(
@@ -75,11 +77,19 @@ const migrations = {
     ...state,
     elearningPlans: elearningPlansReducer(undefined, { type: MiscellaneousActions.OTHER }),
   }),
+  6: (state: AppState) => ({
+    ...state,
+    user: {
+      ...state.user,
+      schedule: replaceNoHomeroom(state.user.schedule),
+    },
+    customDates: customDatesReducer(undefined, { type: MiscellaneousActions.OTHER }),
+  }),
 };
 
 const persistConfig = {
   key: 'root',
-  version: 5,
+  version: 6,
   storage: AsyncStorage,
   timeout: 0,
   transforms: [profilePhotoTransform, dateTransform],

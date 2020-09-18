@@ -11,6 +11,7 @@ import {
   SetRefreshedAction,
   DatesState,
   SetELearningPlansAction,
+  SetCustomDatesActions,
 } from '../types/store';
 import { fetch } from '../utils/utils';
 import {
@@ -23,6 +24,7 @@ import {
   getTeacherSchedules,
   getDates,
   getELearningPlans,
+  getCustomDates,
 } from '../utils/process-info';
 import { getProfilePhoto, setProfilePhoto } from '../utils/manage-photos';
 import {
@@ -33,6 +35,7 @@ import {
   setDates,
   setRefreshed,
   setELearningPlans,
+  setCustomDates,
 } from './creators';
 import { LoginError } from '../utils/error';
 import { FETCH_TIMEOUT, DATE_TYPES, SETTING_TYPES } from '../constants/fetch';
@@ -166,4 +169,17 @@ export function fetchELearningPlans(year?: number) {
     dispatch(setELearningPlans(plans));
   };
   return fetchELearningPlansThunk;
+}
+
+export function fetchCustomDates(year?: number) {
+  const fetchCustomDatesThunk: ThunkAction<Promise<void>, AppState, undefined, SetCustomDatesActions> = async (
+    dispatch,
+  ) => {
+    if (!year) {
+      year = getSchoolYearFromDate(new Date());
+    }
+    const dates = await getCustomDates(year);
+    dispatch(setCustomDates(dates));
+  };
+  return fetchCustomDatesThunk;
 }

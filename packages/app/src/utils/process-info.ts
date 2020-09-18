@@ -1,8 +1,8 @@
 import { load } from 'react-native-cheerio';
-import { DateType, DateSchema, ELearningPlanSchema } from '@whs/server';
+import { DateType, DateSchema, ELearningPlanSchema, CustomDateSchema } from '@whs/server';
 
 import { fetch, isResponseOk } from './utils';
-import { processSchedule } from './process-schedule';
+import { processSchedule, replaceNoHomeroom } from './process-schedule';
 import {
   HEADER_SELECTOR,
   STUDENT_OVERVIEW_SELECTOR,
@@ -21,6 +21,7 @@ import {
   TEACHER_URL,
   TEACHER_FETCH_LIMIT,
   ELEARNINGPLANS_URL,
+  CUSTOM_DATES_URL,
 } from '../constants/fetch';
 import { UserInfo, UserOverviewMap, UserOverviewKeys } from '../types/store';
 import { Schedule, TeacherSchedule, RawSchedule } from '../types/schedule';
@@ -129,7 +130,7 @@ export function getUserScheduleFromHTML($: CheerioSelector): Schedule {
       rawSchedule = pageData.schedule as RawSchedule;
     }
   }
-  return processSchedule(rawSchedule);
+  return replaceNoHomeroom(processSchedule(rawSchedule));
 }
 
 /**
@@ -212,6 +213,20 @@ export function getTeacherURL(id: number, username: string, password: string) {
  */
 export async function getELearningPlans(year: number): Promise<ELearningPlanSchema[]> {
   const response = await fetch(`${ELEARNINGPLANS_URL}?year=${year}`, {
+    timeout: FETCH_TIMEOUT,
+    headers: {
+      'Pragma': 'no-cache',
+      'Cache-Control': 'no-cache',
+    },
+  });
+  if (!response.ok) {
+    throw new NetworkError();
+  }
+  return response.json();
+}
+
+export async function getCustomDates(year: number): Promise<CustomDateSchema[]> {
+  const response = await fetch(`${CUSTOM_DATES_URL}?year=${year}`, {
     timeout: FETCH_TIMEOUT,
     headers: {
       'Pragma': 'no-cache',
