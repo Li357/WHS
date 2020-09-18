@@ -179,6 +179,7 @@ export function fetchCustomDates(year?: number) {
       year = getSchoolYearFromDate(new Date());
     }
     const dates = await getCustomDates(year);
+    console.log(dates, '!!!!');
     dispatch(setCustomDates(dates));
   };
   return fetchCustomDatesThunk;

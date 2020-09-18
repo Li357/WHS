@@ -7,7 +7,7 @@ export default function customDatesReducer(
 ) {
   switch (action.type) {
     case CustomDatesActions.SET_DATES:
-      return { ...state, ...action.payload };
+      return action.payload;
     default:
       return state;
   }

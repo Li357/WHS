@@ -125,7 +125,7 @@ export type SetELearningPlansAction = AppActionType<ELearningPlansActions.SET_PL
 export type CustomDatesState = CustomDateSchema[];
 
 export enum CustomDatesActions {
-  SET_DATES = 'SET_DATES',
+  SET_DATES = 'SET_CUSTOM_DATES',
 }
 
 export type SetCustomDatesActions = AppActionType<CustomDatesActions.SET_DATES, CustomDatesState>;

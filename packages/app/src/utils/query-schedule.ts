@@ -251,12 +251,16 @@ export function getScheduleDay(
 ): { scheduleDay: number; calendarDay: number } {
   const calendarDay = queryDate.getDay() - 1;
 
+  const customDateObj = customDates.find((dateObj) => isSameDay(queryDate, new Date(dateObj.date)));
+  if (customDateObj !== undefined) {
+    return { calendarDay, scheduleDay: customDateObj.scheduleDay };
+  }
+
   /**
    * In completely online (red) or completely in person (green) the days proceeds as normal
    * (guessing it proceeds directly from calendar day)
    * In partial modes, the days are tied
    */
-
   let scheduleDay = calendarDay; // by default (i.e. a full plan, see isPartialPlan for definitions, follows the calendar day)
   const currentPlan = getPlanOnDate(queryDate, elearningPlans);
   if (currentPlan !== undefined) {

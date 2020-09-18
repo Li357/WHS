@@ -2,7 +2,7 @@ import { load } from 'react-native-cheerio';
 import { DateType, DateSchema, ELearningPlanSchema, CustomDateSchema } from '@whs/server';
 
 import { fetch, isResponseOk } from './utils';
-import { processSchedule } from './process-schedule';
+import { processSchedule, replaceNoHomeroom } from './process-schedule';
 import {
   HEADER_SELECTOR,
   STUDENT_OVERVIEW_SELECTOR,
@@ -130,7 +130,7 @@ export function getUserScheduleFromHTML($: CheerioSelector): Schedule {
       rawSchedule = pageData.schedule as RawSchedule;
     }
   }
-  return processSchedule(rawSchedule);
+  return replaceNoHomeroom(processSchedule(rawSchedule));
 }
 
 /**
