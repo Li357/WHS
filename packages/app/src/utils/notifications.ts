@@ -79,6 +79,7 @@ export async function scheduleNotifications() {
   const {
     dates,
     elearningPlans,
+    customDates,
     user: { schedule },
     day: { refreshedSemesterTwo },
   } = store.getState();
@@ -102,7 +103,7 @@ export async function scheduleNotifications() {
           continue;
         }
 
-        const dayScheduleType = getScheduleTypeOnDate(weekday, dates, elearningPlans);
+        const dayScheduleType = getScheduleTypeOnDate(weekday, dates, customDates, elearningPlans);
         const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
         if (['FINALS', 'BREAK', 'WEEKEND', 'SUMMER'].includes(dayScheduleType)) {
           continue;

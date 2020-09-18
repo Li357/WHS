@@ -31,6 +31,7 @@ export default authorizedRoute(
     const schedule = navigation.getParam('schedule', []);
     const theme = useSelector((state: AppState) => state.theme);
     const elearningPlans = useSelector((state: AppState) => state.elearningPlans);
+    const customDates = useSelector((state: AppState) => state.customDates);
 
     if (isScheduleEmpty(schedule)) {
       client.leaveBreadcrumb('Schedule is empty');
@@ -48,7 +49,7 @@ export default authorizedRoute(
     const renderItem = ({ item }: { item: ScheduleItem[]; index: number }) => (
       <ScheduleCard schedule={item} navigation={navigation} />
     );
-    const { scheduleDay } = getScheduleDay(new Date(), elearningPlans);
+    const { scheduleDay } = getScheduleDay(new Date(), customDates, elearningPlans);
 
     return (
       <Carousel
