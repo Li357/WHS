@@ -28,6 +28,7 @@ export const SERVER_URL =
     ? Platform.select({ ios: 'http://localhost:5000', android: 'http://10.0.2.2:5000' })
     : 'https://whs-server.herokuapp.com'; // TODO: More dynamic system for production server
 export const DATES_URL = `${SERVER_URL}/api/${API_VERSION}/dates`;
+export const CUSTOM_DATES_URL = `${SERVER_URL}/api/${API_VERSION}/customDates`;
 export const ELEARNINGPLANS_URL = `${SERVER_URL}/api/${API_VERSION}/elearning-plans`;
 export const FETCH_TIMEOUT = 5000;
 

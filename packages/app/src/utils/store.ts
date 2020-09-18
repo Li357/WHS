@@ -10,6 +10,7 @@ import rootReducer from '../reducers/root';
 import { reportNotEnoughSpace } from './utils';
 import datesReducer from '../reducers/dates';
 import elearningPlansReducer from '../reducers/elearningPlans';
+import customDatesReducer from '../reducers/customDates';
 
 // Do not persist the profile-photo, it will be manually rehydrated
 const profilePhotoTransform = createTransform<UserState, UserState>(
@@ -74,6 +75,10 @@ const migrations = {
   5: (state: AppState) => ({
     ...state,
     elearningPlans: elearningPlansReducer(undefined, { type: MiscellaneousActions.OTHER }),
+  }),
+  6: (state: AppState) => ({
+    ...state,
+    customDates: customDatesReducer(undefined, { type: MiscellaneousActions.OTHER }),
   }),
 };
 

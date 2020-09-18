@@ -50,3 +50,14 @@ export interface ELearningPlanSchema extends Schema {
 export interface ELearningQuery {
   year?: string;
 }
+
+export interface CustomDatesQuery {
+  year?: string;
+}
+
+export interface CustomDateSchema extends Schema {
+  year: string;
+  date: string;
+  scheduleDay: number;
+  wednesday: boolean;
+}

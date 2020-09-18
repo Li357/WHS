@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { ELearningPlanSchema } from '@whs/server';
+import { ELearningPlanSchema, CustomDateSchema } from '@whs/server';
 
 import { Schedule, TeacherSchedule } from './schedule';
 import * as SCHEDULES from '../constants/schedules';
@@ -122,6 +122,14 @@ export enum ELearningPlansActions {
 
 export type SetELearningPlansAction = AppActionType<ELearningPlansActions.SET_PLANS, ELearningPlansState>;
 
+export type CustomDatesState = CustomDateSchema[];
+
+export enum CustomDatesActions {
+  SET_DATES = 'SET_DATES',
+}
+
+export type SetCustomDatesActions = AppActionType<CustomDatesActions.SET_DATES, CustomDatesState>;
+
 export enum MiscellaneousActions {
   LOG_OUT = 'LOG_OUT',
   OTHER = '',
@@ -141,6 +149,7 @@ export type DayAction = SetRefreshedAction | SetDayScheduleAction | OtherAction;
 export type ThemeAction = SetThemeAction | OtherAction;
 export type DatesAction = SetDatesAction | OtherAction;
 export type ELearningPlansAction = SetELearningPlansAction | OtherAction;
+export type CustomDatesAction = SetCustomDatesActions | OtherAction;
 export type MiscellaneousAction = LogOutAction | OtherAction;
 
 export interface AppState {
@@ -149,5 +158,13 @@ export interface AppState {
   dates: DatesState;
   theme: ThemeState;
   elearningPlans: ELearningPlansState;
+  customDates: CustomDatesState;
 }
-export type AppAction = UserAction | DayAction | ThemeAction | DatesAction | ELearningPlansAction | MiscellaneousAction;
+export type AppAction =
+  | UserAction
+  | DayAction
+  | ThemeAction
+  | DatesAction
+  | ELearningPlansAction
+  | CustomDatesAction
+  | MiscellaneousAction;
