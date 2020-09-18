@@ -64,12 +64,13 @@ export default class App extends Component<{}, AppComponentState> {
     if (newStatus === 'active') {
       const {
         dates,
+        customDates,
         elearningPlans,
         day: { schedule: dayScheduleType },
       } = store.getState();
       const now = new Date();
 
-      const newDayScheduleType = getScheduleTypeOnDate(now, dates, elearningPlans);
+      const newDayScheduleType = getScheduleTypeOnDate(now, dates, customDates, elearningPlans);
       if (newDayScheduleType === dayScheduleType) {
         return;
       }
