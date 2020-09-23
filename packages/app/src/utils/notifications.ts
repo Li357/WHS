@@ -3,7 +3,7 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import BackgroundFetch from 'react-native-background-fetch';
 import { max, eachWeekOfInterval, setDay, format, subMinutes, isAfter, isSameDay } from 'date-fns';
 
-import { ClassItem, ScheduleItem, DaySchedule } from '../types/schedule';
+import { ClassItem, ScheduleItem, DaySchedule, ModNumber } from '../types/schedule';
 import { store } from './store';
 import { convertTimeToDate, getModAtTime, getScheduleTypeOnDate, getPlanOnDate } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
@@ -104,13 +104,23 @@ export async function scheduleNotifications() {
         }
 
         const dayScheduleType = getScheduleTypeOnDate(weekday, dates, customDates, elearningPlans);
-        const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
         if (['FINALS', 'BREAK', 'WEEKEND', 'SUMMER'].includes(dayScheduleType)) {
           continue;
         }
 
         const daySchedule = SCHEDULES[dayScheduleType];
-        for (const scheduleItem of userDaySchedule) {
+        const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
+
+        // See process-schedule.js and replaceHomeroom
+        // To accomodate custom schedules, i.e. Wednesdays (calendar day) that follow a regular schedule (in class),
+        // the userDaySchedule array for all Wednesdays includes a homeroom mod, but is not found in the Wednesday schedule
+        // in constants/schedule.ts. So, it is filtered so that an error does not occur in scheduleNotificationForScheduleItem
+        const withoutHomeroom =
+          dayScheduleType === 'WEDNESDAY'
+            ? userDaySchedule.filter((scheduleItem) => scheduleItem.startMod !== ModNumber.HOMEROOM)
+            : userDaySchedule;
+
+        for (const scheduleItem of withoutHomeroom) {
           if (isSameDay(start, weekday)) {
             // only schedule notifications after current mod
             const { current, next } = getModAtTime(start, daySchedule);
