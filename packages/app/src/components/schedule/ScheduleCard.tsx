@@ -123,19 +123,19 @@ const makeCardDayScheduleSelector = () =>
     (_: any, schedule: ScheduleItem[]) => schedule,
     (dates, customDates, elearningPlans, schedule) => {
       const now = new Date();
-      const currentElearningPlan = getPlanOnDate(now, elearningPlans);
-      const isELearning = currentElearningPlan !== undefined;
-      const isCustomDate = containsDate(
-        now,
-        customDates.map((dateObj) => new Date(dateObj.date)),
-      );
-
       // NOTE: E-learning patch means that the current day is not necessarily the right day in the user's schedule (see getScheduleDay)
       const { day: cardDay } = schedule[0]; // day that the schedule card represents (1 is Monday, not 0)
       const cardDate = setDay(now, cardDay);
       const cardScheduleType = getDisplayScheduleTypeOnDate(cardDate, dates, customDates, elearningPlans);
       const cardDaySchedule = SCHEDULES[cardScheduleType];
       const isCardDateFinals = cardScheduleType === 'FINALS';
+
+      const currentElearningPlan = getPlanOnDate(cardDate, elearningPlans);
+      const isELearning = currentElearningPlan !== undefined;
+      const isCustomDate = containsDate(
+        cardDate,
+        customDates.map((dateObj) => new Date(dateObj.date)),
+      );
 
       const revisedUserDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule, cardScheduleType, cardDay);
       const patchedUserDaySchedule = revisedUserDaySchedule.slice(cardScheduleType === 'WEDNESDAY' ? 1 : 0);
