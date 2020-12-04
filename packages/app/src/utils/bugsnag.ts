@@ -9,6 +9,8 @@ function serializeState(state: AppState): IMetadata {
     dates,
     theme,
     user: { name, username, password, id, ...user },
+    customDates,
+    elearningPlans, // TODO: eh
   } = state;
 
   const dateTypes = Object.keys(dates) as Array<keyof DatesState>;
@@ -18,6 +20,8 @@ function serializeState(state: AppState): IMetadata {
     return serialized;
   }, {});
 
+  const serializedCustomDates = customDates.map(({ year, date, scheduleDay, wednesday }) => `${year}|${date}|${scheduleDay}|${wednesday}`);
+
   return {
     type: 'state',
     // day consists of booleans and strings
@@ -25,11 +29,12 @@ function serializeState(state: AppState): IMetadata {
     dates: serializedDates,
     theme: (theme as unknown) as IMetadataValue,
     user: (user as unknown) as IMetadataValue,
+    customDates: { value: serializedCustomDates.join('\n') }, // hack
   };
 }
 
 const config = new Configuration();
-config.codeBundleId = '3.0.1-b12';
+config.codeBundleId = '3.0.1-b13';
 config.notifyReleaseStages = ['production'];
 config.registerBeforeSendCallback((report) => {
   const state = store.getState();
