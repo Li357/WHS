@@ -58,6 +58,6 @@ export interface CustomDatesQuery {
 export interface CustomDateSchema extends Schema {
   year: string;
   date: string;
-  scheduleDay: number;
+  scheduleDay: number; // is INDEX in date array, i.e. 0 Monday, 4 Friday
   wednesday: boolean;
 }
