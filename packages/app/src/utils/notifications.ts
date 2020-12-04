@@ -5,7 +5,7 @@ import { max, eachWeekOfInterval, setDay, format, subMinutes, isAfter, isSameDay
 
 import { ClassItem, ScheduleItem, DaySchedule, ModNumber } from '../types/schedule';
 import { store } from './store';
-import { convertTimeToDate, getModAtTime, getScheduleTypeOnDate, getPlanOnDate } from './query-schedule';
+import { convertTimeToDate, getModAtTime, getScheduleTypeOnDate, getPlanOnDate, containsDate } from './query-schedule';
 import * as SCHEDULES from '../constants/schedules';
 import {
   NO_HOMEROOM_TITLE,
@@ -37,7 +37,7 @@ export function scheduleNotificationForScheduleItem(
       message = "You're open next mod!";
     } else {
       const roomNumber = body.replace(/\s+\(.+\)\s*/, '');
-      message = `Your next class is ${title} in ${roomNumber}`;
+      message = `Your next class is ${title}${roomNumber.length > 0 ? ` in ${roomNumber}` : ''}`;
     }
   }
 
@@ -109,7 +109,12 @@ export async function scheduleNotifications() {
         }
 
         const daySchedule = SCHEDULES[dayScheduleType];
-        const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[day - 1], dayScheduleType, day);
+        // accounts for custom dates, i.e. on server-side and e-learning when a Friday (calendar day) might have a day 2 schedule (userSchedule day)
+        const customDateIfExists = customDates.find((customDate) => isSameDay(new Date(customDate.date), weekday));
+        const userScheduleIndex = customDateIfExists ? customDateIfExists.scheduleDay : day - 1; // the former is already 0-based, the latter isn't
+
+        // select user's class schedule based on the userSchedule day, not calendar day
+        const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[userScheduleIndex], dayScheduleType, userScheduleIndex + 1);
 
         // See process-schedule.js and replaceHomeroom
         // To accomodate custom schedules, i.e. Wednesdays (calendar day) that follow a regular schedule (in class),
