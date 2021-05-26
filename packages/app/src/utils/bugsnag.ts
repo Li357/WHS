@@ -20,7 +20,9 @@ function serializeState(state: AppState): IMetadata {
     return serialized;
   }, {});
 
-  const serializedCustomDates = customDates.map(({ year, date, scheduleDay, wednesday }) => `${year}|${date}|${scheduleDay}|${wednesday}`);
+  const serializedCustomDates = customDates.map(
+    ({ year, date, scheduleDay, wednesday }) => `${year}|${date}|${scheduleDay}|${wednesday}`,
+  );
 
   return {
     type: 'state',
@@ -34,7 +36,7 @@ function serializeState(state: AppState): IMetadata {
 }
 
 const config = new Configuration();
-config.codeBundleId = '3.0.1-b13';
+config.codeBundleId = '3.0.1-b14';
 config.notifyReleaseStages = ['production'];
 config.registerBeforeSendCallback((report) => {
   const state = store.getState();
