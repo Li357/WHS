@@ -7,6 +7,7 @@ import {
   subDays,
   differenceInSeconds,
   differenceInCalendarWeeks,
+  getYear,
 } from 'date-fns';
 import { ELearningPlanSchema } from '@whs/server';
 
@@ -162,6 +163,16 @@ export function getDisplayScheduleTypeOnDate(
   if (semesterOneEnd !== null && semesterTwoEnd !== null) {
     const semesterOneFinalsOne = subDays(semesterOneEnd, 1);
     const semesterTwoFinalsOne = subDays(semesterTwoEnd, 1);
+
+    // 3.0.1-b14 patch -- no finals in 2021
+    if (getYear(semesterTwoEnd) === 2021) {
+      if (isSameDay(semesterTwoFinalsOne, queryDate)) {
+        return 'WEDNESDAY'; // may 26, 2021
+      }
+      if (isSameDay(semesterTwoEnd, queryDate)) {
+        return 'TWELVE_EARLY_DISMISSAL'; // may 27, 2021
+      }
+    }
 
     const isSemesterOneFinals = isSameDay(semesterOneFinalsOne, queryDate) || isSameDay(semesterOneEnd, queryDate);
     const isSemesterTwoFinals = isSameDay(semesterTwoFinalsOne, queryDate) || isSameDay(semesterTwoEnd, queryDate);

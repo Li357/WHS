@@ -53,6 +53,24 @@ export const EARLY_DISMISSAL: DaySchedule = [
   ['12:45', '13:10', ModNumber.FOURTEEN],
 ];
 
+export const TWELVE_EARLY_DISMISSAL: DaySchedule = [
+  ['8:00', '8:20', ModNumber.HOMEROOM],
+  ['8:25', '8:45', ModNumber.ONE],
+  ['8:50', '9:10', ModNumber.TWO],
+  ['9:15', '9:35', ModNumber.THREE],
+  ['9:40', '9:50', ModNumber.FOUR],
+  ['9:55', '10:05', ModNumber.FIVE],
+  ['10:10', '10:20', ModNumber.SIX],
+  ['10:25', '10:35', ModNumber.SEVEN],
+  ['10:40', '10:50', ModNumber.EIGHT],
+  ['10:55', '11:05', ModNumber.NINE],
+  ['11:10', '11:20', ModNumber.TEN],
+  ['11:25', '11:35', ModNumber.ELEVEN],
+  ['11:40', '12:00', ModNumber.TWELVE],
+  ['12:05', '12:25', ModNumber.THIRTEEN],
+  ['12:30', '12:50', ModNumber.FOURTEEN],
+];
+
 export const LATE_START: DaySchedule = [
   ['10:00', '10:05', ModNumber.HOMEROOM],
   ['10:10', '10:40', ModNumber.ONE],

@@ -114,7 +114,7 @@ PODS:
     - React
   - RNVectorIcons (6.6.0):
     - React
-  - SSZipArchive (2.2.2)
+  - SSZipArchive (2.2.3)
   - yoga (0.60.4.React)
 
 DEPENDENCIES:
@@ -267,9 +267,9 @@ SPEC CHECKSUMS:
   RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
   RNReanimated: 1b52415c4302f198cb581282a0166690bad62c43
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
-  SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
+  SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   yoga: c2c050f6ae6e222534760cc82f559b89214b67e2
 
-PODFILE CHECKSUM: e6847c2c400140e9f10a719f1e854aeb193e1495
+PODFILE CHECKSUM: cb7fa914246870c8aec1173c71a2ca25f468f089
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1
