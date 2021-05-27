@@ -1,7 +1,7 @@
 import PushNotification, { PushNotificationPermissions } from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import BackgroundFetch from 'react-native-background-fetch';
-import { max, eachWeekOfInterval, setDay, format, subMinutes, isAfter, isSameDay } from 'date-fns';
+import { max, eachWeekOfInterval, setDay, format, subMinutes, isAfter, isSameDay, startOfDay } from 'date-fns';
 
 import { ClassItem, ScheduleItem, DaySchedule, ModNumber } from '../types/schedule';
 import { store } from './store';
@@ -90,7 +90,7 @@ export async function scheduleNotifications() {
 
   if (dates.semesterTwoEnd !== null && dates.semesterOneStart !== null && dates.semesterOneEnd) {
     const sundaysUntilEnd = eachWeekOfInterval({
-      start: max([start, dates.semesterOneStart]),
+      start: max([startOfDay(start), dates.semesterOneStart]), // startOfDay prevents invalid interval since all dates from server are at 12AM
       end: dates.semesterTwoEnd,
     });
 
@@ -114,7 +114,11 @@ export async function scheduleNotifications() {
         const userScheduleIndex = customDateIfExists ? customDateIfExists.scheduleDay : day - 1; // the former is already 0-based, the latter isn't
 
         // select user's class schedule based on the userSchedule day, not calendar day
-        const userDaySchedule = injectAssemblyOrFinalsIfNeeded(schedule[userScheduleIndex], dayScheduleType, userScheduleIndex + 1);
+        const userDaySchedule = injectAssemblyOrFinalsIfNeeded(
+          schedule[userScheduleIndex],
+          dayScheduleType,
+          userScheduleIndex + 1,
+        );
 
         // See process-schedule.js and replaceHomeroom
         // To accomodate custom schedules, i.e. Wednesdays (calendar day) that follow a regular schedule (in class),

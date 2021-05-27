@@ -5,7 +5,14 @@ import debounce from 'lodash.debounce';
 
 import client from './bugsnag';
 import { NetworkError, LoginError } from './error';
-import { ERROR, CAUTION, LOGIN_CREDENTIALS_CHANGED_MSG, NETWORK_REQUEST_FAILED_MSG, UNKNOWN_ERROR_MSG, NO_SPACE_MSG } from '../constants/fetch';
+import {
+  ERROR,
+  CAUTION,
+  LOGIN_CREDENTIALS_CHANGED_MSG,
+  NETWORK_REQUEST_FAILED_MSG,
+  UNKNOWN_ERROR_MSG,
+  NO_SPACE_MSG,
+} from '../constants/fetch';
 
 /**
  * Split array without mutation
