@@ -9,7 +9,7 @@ import codePush from 'react-native-code-push';
 import PushNotification from 'react-native-push-notification';
 // https://github.com/kmagiera/react-native-gesture-handler/issues/320
 import 'react-native-gesture-handler';
-import { isAfter, isBefore, subDays } from 'date-fns';
+import { differenceInDays, isAfter, isBefore, subDays } from 'date-fns';
 
 import Drawer from './src/components/drawer/Drawer';
 import Login from './src/screens/Login';
@@ -94,7 +94,8 @@ export default class App extends Component<{}, AppComponentState> {
     if (semesterOneStart === null || semesterTwoStart === null || semesterTwoEnd === null) {
       return;
     }
-    if (isAfter(now, semesterTwoEnd)) {
+    // this has to be differenceInDays because the dates come from server at 12:00AM (start of the day)
+    if (differenceInDays(now, semesterTwoEnd) > 0) {
       client.leaveBreadcrumb('Refreshing dates after end of year');
 
       await store.dispatch(fetchDates(now.getFullYear()));
@@ -103,8 +104,8 @@ export default class App extends Component<{}, AppComponentState> {
     }
 
     const shouldRefresh =
-      (isAfter(now, semesterTwoStart) && !refreshedSemesterTwo) ||
-      (isAfter(now, semesterOneStart) && !refreshedSemesterOne);
+      (differenceInDays(now, semesterTwoStart) > 0 && !refreshedSemesterTwo) ||
+      (differenceInDays(now, semesterOneStart) > 0 && !refreshedSemesterOne);
     client.leaveBreadcrumb(`Should refresh? ${shouldRefresh}`);
     if (isScheduleEmpty(schedule) || shouldRefresh) {
       client.leaveBreadcrumb('Refreshing semesters one/two');
