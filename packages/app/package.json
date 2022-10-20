@@ -38,7 +38,7 @@
     "react-native-photo-upload": "https://github.com/Li357/react-native-photo-upload.git#app",
     "react-native-progress": "^3.6.0",
     "react-native-push-notification": "https://github.com/Li357/react-native-push-notification",
-    "react-native-reanimated": "^1.2.0",
+    "react-native-reanimated": "^2.10.0",
     "react-native-responsive-screen": "^1.2.2",
     "react-native-snap-carousel": "^3.8.0",
     "react-native-swiper": "^1.5.14",
