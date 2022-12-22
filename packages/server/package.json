@@ -27,7 +27,7 @@
     "element-ui": "^2.4.5",
     "express": "^4.17.1",
     "helmet": "^3.18.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongodb": "^3.2.7",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
